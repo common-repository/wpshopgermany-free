@@ -1,0 +1,46 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@daschmi.de)
+     * Date: 07.08.2016
+     * Time: 10:52
+     */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Versand- und Zahlungsart', 'wpsg')); ?>
+
+    <?php echo wpsg_drawForm_TextStart(); ?>
+        <?php echo wpsg_hspc($this->view['oOrder']->getShippingLabel()); ?>
+        <?php $shippingCost = $this->view['oOrder']->getShippingAmount($this->getBackendTaxview()); ?>
+        <?php if ($shippingCost > 0) { ?>
+        (<?php echo wpsg_ff($shippingCost, $this->get_option('wpsg_currency')); ?>)
+        <?php } ?>
+    <?php echo wpsg_drawForm_TextEnd(__('Versandart', 'wpsg')); ?>
+
+    <?php echo wpsg_drawForm_TextStart(); ?>
+        <?php echo wpsg_hspc($this->view['oOrder']->getPaymentLabel()); ?>
+        <?php $paymentCost = $this->view['oOrder']->getPaymentAmount($this->getBackendTaxview()); ?>
+        <?php if ($paymentCost > 0) { ?>
+        (<?php echo wpsg_ff($paymentCost, $this->get_option('wpsg_currency')); ?>)
+        <?php } ?>
+    <?php echo wpsg_drawForm_TextEnd(__('Zahlungsart', 'wpsg')); ?>
+
+    <?php $this->callMods('order_view_afterpayment', array(&$this->view['data']['id'])); ?>
+    
+    <?php /* Retourenlabel DHL  ?>
+    <?php echo wpsg_drawForm_TextStart();?>
+		<a href="https://amsel.dpwn.net/abholportal/gw/lp/portal/[portalname]/customer/RpOrder.action?onInit=&delivery=RetourenLager01&SHIPMENT_REFERENCE=<?php echo $this->view['data']['onr']; ?>
+		   &ADDR_SEND_STREET_ADD=<?php echo $this->view['data']['onr']; ?>
+		   &ADDR_SEND_FIRST_NAME=<?php echo rawurlencode(utf8_decode($this->view['oOrder']->getInvoiceFirstname())); ?>
+		   &ADDR_SEND_LAST_NAME=<?php echo rawurlencode(utf8_decode($this->view['oOrder']->getInvoiceName())); ?>
+		   &ADDR_SEND_NAME_ADD=<?php echo rawurlencode(utf8_decode($company)); ?>
+		   &ADDR_SEND_EMAIL=<?php echo $this->view['data']['email']; ?>
+		   &ADDR_SEND_STREET=<?php echo rawurlencode(utf8_decode($this->view['oOrder']->getInvoiceStreet())); ?>
+		   &ADDR_SEND_ZIP=<?php echo $this->view['oOrder']->getInvoiceZip(); ?>
+		   &ADDR_SEND_CITY=<?php echo rawurlencode(utf8_decode($this->view['oOrder']->getInvoiceCity())); ?>
+		   " target="_blank"><?php echo __('Retourenlabel anfordern', 'wpsg'); ?></a>
+    	
+    <?php echo wpsg_drawForm_TextEnd(__('Retourenlabel', 'wpsg')); ?> */?>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

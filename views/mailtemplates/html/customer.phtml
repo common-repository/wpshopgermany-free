@@ -1,0 +1,191 @@
+
+<?php if ($this->hasMod('wpsg_mod_shippingadress') && $this->callMod('wpsg_mod_shippingadress', 'check_different_shippingadress', array('k_id' => $this->view['basket']['checkout']['k_id'], 'o_id' => $this->view['o_id']))) { ?>
+<h2><?php echo __('Rechnungsadresse:', 'wpsg'); ?></h2> 
+
+<table class="contenttable">
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Firma', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['firma']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Name', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['vname'].' '.$this->view['basket']['checkout']['name']); ?></td>		
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Straße', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['strasse'].rtrim(_($this->view['basket']['checkout']['nr']??''))); ?></td>	
+	</tr>
+	<?php if (trim($this->view['basket']['checkout']['ustidnr']) != "") { ?>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('USt.IdNr.', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['ustidnr']); ?></td>
+	</tr>
+	<?php } ?>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Ort', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['plz'].' '.$this->view['basket']['checkout']['ort']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Land', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['land']['name']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Telefon', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['tel']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Fax', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['fax']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('E-Mail Adresse', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><a href="mailto:<?php echo wpsg_hspc($this->view['basket']['checkout']['email']); ?>"><?php echo wpsg_hspc($this->view['basket']['checkout']['email']); ?></a></td>
+	</tr>	
+</table>
+
+<h2><?php echo __('Lieferadresse', 'wpsg'); ?>:</h2>
+
+<table class="contenttable">
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Firma', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['shipping_firma']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Name', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['shipping_vname'].' '.$this->view['basket']['checkout']['shipping_name']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Straße', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['shipping_strasse']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Ort', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['shipping_plz'].' '.$this->view['basket']['checkout']['shipping_ort']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Land', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['shipping_land']['name']); ?></td>
+	</tr>
+</table>
+<?php } else { ?>
+
+<h2><?php echo __('Rechnungs-/Lieferadresse', 'wpsg'); ?>:</h2>
+
+<table class="contenttable">
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Firma', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['firma']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Name', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['vname'].' '.$this->view['basket']['checkout']['name']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Straße', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['strasse'].rtrim(($this->view['basket']['checkout']['nr']))); ?></td>
+	</tr>
+	<?php if (trim($this->view['basket']['checkout']['ustidnr']) != "") { ?>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('USt.IdNr.', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['ustidnr']); ?></td>
+	</tr>
+	<?php } ?>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Ort', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['plz'].' '.$this->view['basket']['checkout']['ort']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Land', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['land']['name']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Telefon', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['tel']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Fax', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_hspc($this->view['basket']['checkout']['fax']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('E-Mail Adresse', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><a href="mailto:<?php echo wpsg_hspc($this->view['basket']['arCalculation']['sum']['topay_brutto']); ?>"><?php echo wpsg_hspc($this->view['basket']['checkout']['email']); ?></a></td>
+	</tr>
+</table>
+
+<?php } ?>
+ 
+<h2><?php echo __('Bestelldaten', 'wpsg'); ?>:</h2>
+ 
+<table class="contenttable">
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Kundennummer', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo $this->view['basket']['checkout']['knr']; ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Bestellnummer', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo $this->view['basket']['checkout']['onr']; ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Bestelldatum', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo date("d.m.Y H:i:s", $this->view['basket']['checkout']['datum']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Rechnungsbetrag', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><strong><?php echo wpsg_ff($this->view['basket']['arCalculation']['sum']['topay_brutto'], $this->get_option('wpsg_currency')); ?></strong></td>
+	</tr>
+	<?php if ($this->get_option('wpsg_kleinunternehmer') != '1') { ?>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col0"><?php echo __('Steueranteil', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:middle;" class="col1"><?php echo wpsg_ff($this->view['basket']['sum']['mwst'], $this->get_option('wpsg_currency')); ?></td>
+	</tr>
+	<?php } ?>
+</table>
+
+<?php if ($this->get_option('wpsg_kleinunternehmer') == '1') { ?>
+<table class="contenttable">
+	<tr>
+		<td style="padding:8px 2px 8px 2px; line-height:100%; vertical-align:middle;">
+			<?php echo $this->get_option('wpsg_kleinunternehmer_text'); ?>
+		</td>
+	</tr>
+</table>
+<?php } ?>
+
+<h2><?php echo __('Versand- und Lieferart', 'wpsg'); ?>:</h2>
+
+<table class="contenttable">
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:top;" class="col0"><?php echo __('Versandart', 'wpsg'); ?>:</td>
+		<td style="padding:2px; line-height:100%; vertical-align:top;" class="col1">
+			<?php echo wpsg_hspc($this->arShipping[$this->view['basket']['checkout']['shipping']]['name']); ?>
+			<?php $this->callMods('mail_shipping'); ?> 
+		</td>		
+	</tr>
+	<tr>
+		<td style="padding:2px; line-height:100%; vertical-align:top;" class="col0"><?php echo __('Zahlungsart', 'wpsg'); ?>:
+<br />		
+
+<?php
+	
+	require_once WPSG_PATH_LIB.'phpgirocode.class.php';
+	
+	if (isset($this->view['mod_prepayment']['subject'])) {
+			
+		if (in_array('kundenmail.phtml', $this->arTemplateStack)) {
+		
+			echo $this->callMod('wpsg_mod_prepayment', 'genQRCode', array($this->view['o_id'], $this->view['mod_prepayment']['subject'], $this->view['basket']['sum']['preis_gesamt_brutto'], 3, PhpGirocode::OUTPUT_FILE));
+
+		}
+		
+	}
+	
+?>
+		
+		
+		</td>
+		<td style="padding:2px; line-height:100%; vertical-align:top;" class="col1">
+			<?php echo wpsg_hspc($this->arPayment[$this->view['basket']['checkout']['payment']]['name']); ?><br />
+			<?php $this->callMods('mail_payment'); ?>
+		</td>				
+	</tr>
+</table>

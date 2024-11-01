@@ -1,0 +1,110 @@
+<?php
+
+    /**
+     * Template für das Bearbeiten der Versand- und Zahlungsart im Backend
+     */
+
+    $arCalculation = $this->view['oCalculation']->getCalculationArray();
+     
+    $arShippingSelect = [];
+    foreach ($this->arShipping as $shipping_id => $shipping_data) {
+        
+        $arShippingSelect[$shipping_id] = $shipping_data['name'];
+        
+        if (wpsg_isSizedDouble($shipping_data['price'])) {
+
+            $arShippingSelect[$shipping_id] .= ' ('.wpsg_ff($shipping_data['price'],$this->get_option('wpsg_currency')).')';
+            
+        }
+        
+    }
+
+    $arPaymentSelect = [];
+    foreach ($this->arPayment as $payment_id => $payment_data) {
+
+        $arPaymentSelect[$payment_id] = $payment_data['name'];
+    
+        if (wpsg_isSizedDouble($payment_data['preis'])) {
+
+            $arPaymentSelect[$payment_id] .= ' ('.wpsg_ff($payment_data['preis'],$this->get_option('wpsg_currency')).')';
+    
+        }
+    
+    }
+    
+    if ($this->getBackendTaxview() === WPSG_BRUTTO) {
+        
+    	$price_shipping = wpsg_ff(wpsg_getInt($arCalculation['shipping'][0]['brutto_single']), $this->get_option('wpsg_currency'));
+		$price_payment = wpsg_ff(wpsg_getInt($arCalculation['payment'][0]['brutto_single']), $this->get_option('wpsg_currency'));
+    	         
+        $price_suffix = ' ('.__('Brutto', 'wpsg').')';
+        
+    } else {
+	
+		$price_shipping = wpsg_ff(wpsg_getInt($arCalculation['shipping'][0]['netto_single']), $this->get_option('wpsg_currency'));
+		$price_payment = wpsg_ff(wpsg_getInt($arCalculation['payment'][0]['netto_single']), $this->get_option('wpsg_currency'));
+
+        $price_suffix = ' ('.__('Netto', 'wpsg').')';
+        
+    }
+        
+?>
+
+<div id="editPayShipping">
+    
+    <?php echo wpsg_drawForm_Select('edit_shipping_type', __('Versandart', 'wpsg'), $arShippingSelect,$this->view['data']['type_shipping']); ?>
+    <?php echo wpsg_drawForm_Input('edit_shipping_price', __('Kosten', 'wpsg').$price_suffix, $price_shipping);  ?> 
+    
+    <br />
+
+    <?php echo wpsg_drawForm_Select('edit_payment_type', __('Zahlungsart', 'wpsg'), $arPaymentSelect,$this->view['data']['type_payment']); ?>
+    <?php echo wpsg_drawForm_Input('edit_payment_price', __('Kosten', 'wpsg').$price_suffix, $price_payment);  ?>
+
+</div>
+
+<script>
+
+   var arShipping = <?php echo json_encode($this->arShipping); ?>;
+   var arPayment = <?php echo json_encode($this->arPayment); ?>;
+       
+   jQuery('#edit_shipping_type').on('change', function() {
+ 
+       for (var i in arShipping) {
+           
+           if (i == jQuery(this).val()) {
+               
+                var price = parseFloat(jQuery('#edit_shipping_price').val().replace('EUR', '').replace(',', '.'));
+                                
+                if (isNaN(price) || price <= 0) {
+                 
+                    jQuery('#edit_shipping_price').val(wpsg_number_format(arShipping[i].price, 2, ',') + ' <?php echo $this->get_option('wpsg_currency'); ?>');
+                    
+                }
+                
+           }
+           
+       }
+       
+   } ).change();
+
+   jQuery('#edit_payment_type').on('change', function() {
+
+       for (var i in arPayment) {
+
+           if (i == jQuery(this).val()) {
+
+               var price = parseFloat(jQuery('#edit_payment_price').val().replace('EUR', '').replace(',', '.'));
+
+               if (isNaN(price) || price <= 0) {
+
+                   jQuery('#edit_payment_price').val(wpsg_number_format(arPayment[i].preis, 2, ',') + ' <?php echo $this->get_option('wpsg_currency'); ?>');
+
+               }
+
+           }
+
+       }
+
+   } ).change();
+   
+</script>

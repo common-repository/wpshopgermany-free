@@ -1,0 +1,15 @@
+<?php
+
+	/**
+	 * Template für die Integration der optionalen Newsletteranmeldung in den Checkout
+	 * Wird von der checkout.phtml aufgerufen
+	 */
+
+?>
+<div class="wpsg_checkoutblock">
+	<input type="hidden" name="wpsg[checkout][wpsg_mod_nlsatolo]" value="0" />
+	<input class="wpsg_checkout" type="checkbox" id="wpsg_mod_nlsatolo" name="wpsg[checkout][wpsg_mod_nlsatolo]" value="1" <?php echo (($this->view['basket']['checkout']['wpsg_mod_nlsatolo'] == '1')?'checked="checked"':''); ?> />
+	<label for="wpsg_mod_nlsatolo">
+		<?php echo __("Für Newsletter anmelden.", "wpsg"); ?>						
+	</label>	
+</div>

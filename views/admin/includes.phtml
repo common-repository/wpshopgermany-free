@@ -1,0 +1,55 @@
+<?php
+
+	/**
+	 * Template für den Admin Bereich der eingebundenen Bibliotheken/Styles
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>
+		<?php } ?>
+	</div>
+
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=includes&noheader=1'; ?>">
+
+		<?php echo wp_nonce_field('wpsg-admin-includes'); ?>
+		
+		<?php echo wpsg_drawForm_AdminboxStart(__('Bibliotheken/Includes', 'wpsg')); ?>
+
+			<?php echo wpsg_drawForm_Checkbox('wpsg_load_css', __('Shop CSS styles nicht einbinden', 'wpsg'), $this->get_option('wpsg_load_css'), array('help' => 'wpsg_load_css')); ?>
+			
+			<br />
+			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_load_jquery', __('JQuery einbinden', 'wpsg'), $this->get_option('wpsg_load_jquery'), array('help' => 'wpsg_load_jquery')); ?>
+			
+			<br />
+			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_load_thickbox_js', __('Thickbox einbinden (JavaScript)', 'wpsg'), $this->get_option('wpsg_load_thickbox_js'), array('help' => 'wpsg_load_thickbox')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_load_thickbox_css', __('Thickbox einbinden (Styles)', 'wpsg'), $this->get_option('wpsg_load_thickbox_css'), array('help' => 'wpsg_load_thickbox')); ?>
+			
+			<br />
+			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_load_validierung_js', __('Javascript Validierung laden', 'wpsg'), $this->get_option('wpsg_load_validierung_js'), array('help' => 'wpsg_load_validierung')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_load_validierung_css', __('CSS der Javascript Validierung laden', 'wpsg'), $this->get_option('wpsg_load_validierung_css'), array('help' => 'wpsg_load_validierung')); ?>
+						
+			<br />
+			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_load_bootstrap_glyphfont_css', __('Bootstrap Glyphfont CSS im Frontend laden', 'wpsg'), $this->get_option('wpsg_load_bootstrap_glyphfont_css'), array('help' => 'wpsg_load_bootstrap_glyphfont_css')); ?>
+			
+			<br />
+			
+			<?php $this->callMods('admin_includes'); ?>
+
+		<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+
+	</form>
+</div>

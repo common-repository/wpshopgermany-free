@@ -1,0 +1,18 @@
+<div id="wpsg_customer_newsletter" class="postbox">	
+	<h3 class="wpsg_handlediv">
+		<span class="handlediv" title="<?php echo __('Zum Ein/Ausklappen hier klicken', 'wpsg'); ?>"><br /></span>
+		<span><?php echo __('Newsletter', 'wpsg'); ?></span>
+	</h3>
+	<div class="inside">		
+		<?php if ($this->view['wpsg_mod_newsletter']['found'] === true) { ?>
+		<input type="hidden" name="wpsg_mod_newsletter[abo_id]" value="<?php echo $this->view['wpsg_mod_newsletter']['abo_id']; ?>" />
+		<?php echo wpsg_drawForm_Input('', __('Name', 'wpsg'), $this->view['wpsg_mod_newsletter']['name'], array('text' => true, 'nohspc' => true)); ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_newsletter[status]', __('Status', 'wpsg'), $this->view['wpsg_mod_newsletter']['arStatus'], $this->view['wpsg_mod_newsletter']['status']); ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_newsletter[group_id]', __('Abonnentengruppe', 'wpsg'), $this->view['wpsg_mod_newsletter']['arGroups'], $this->view['wpsg_mod_newsletter']['groupIds'], array('multiple' => ((sizeof($this->view['wpsg_mod_newsletter']['arGroups']) > 5)?5:sizeof($this->view['wpsg_mod_newsletter']['arGroups'])))); ?>
+		<?php echo wpsg_drawForm_Checkbox('wpsg_mod_newsletter[update]', __('Daten übernehmen', 'wpsg'), false); ?>
+		
+		<?php } else { ?>
+		<?php echo wpsg_drawForm_Input('',	__('Status', 'wpsg'), $this->view['wpsg_mod_newsletter']['status'], array('text' => true, 'nohspc' => true)); ?>
+		<?php } ?>
+	</div>
+</div>

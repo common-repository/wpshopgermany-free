@@ -1,0 +1,124 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Kundenverwaltungsdialoges
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_kundenverwaltung_perpage', __('Kunden pro Seite (Backend)', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_perpage'), array('help' => 'wpsg_mod_kundenverwaltung_perpage')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_showCheckoutLogin', __('Login in Checkout integrieren', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_showCheckoutLogin'), array('help' => 'wpsg_mod_kundenverwaltung_showCheckoutLogin')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_showCheckoutRegister', __('Registrierung im Checkout', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_showCheckoutRegister'), array('help' => 'wpsg_mod_kundenverwaltung_showCheckoutRegister')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_showCheckoutRegisterzwang', __('Registrierungzwang im Checkout', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_showCheckoutRegisterzwang'), array('help' => 'wpsg_mod_kundenverwaltung_showCheckoutRegisterzwang')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_loginZwang', __('E-Mail darf nur für einmaligen Einkauf genutzt werden', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_loginZwang'), array('help' => 'wpsg_mod_kundenverwaltung_loginZwang')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_preisAnzeige', __('Bestellung und Preisanzeige nur für eingeloggte Benutzer', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_preisAnzeige'), array('help' => 'wpsg_mod_kundenverwaltung_preisAnzeige')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Select('wpsg_mod_kundenverwaltung_redirectlogin', __('Weiterleitung nach Login', 'wpsg'), wpsg_array_merge(array(	
+	'0' => __('Auf aktueller Seite bleiben', 'wpsg')		
+), $this->view['arPageWithoutCreate']), $this->get_option('wpsg_mod_kundenverwaltung_redirectlogin'), array('help' => 'wpsg_mod_kundenverwaltung_redirectlogin')); ?>
+
+<?php echo wpsg_drawForm_Select('wpsg_mod_kundenverwaltung_redirectLogout', __('Weiterleitung nach Logout', 'wpsg'), wpsg_array_merge(array(	
+	'0' => __('Auf aktueller Seite bleiben', 'wpsg')		
+), $this->view['arPageWithoutCreate']), $this->get_option('wpsg_mod_kundenverwaltung_redirectLogout'), array('help' => 'wpsg_mod_kundenverwaltung_redirectLogout')); ?>
+
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_kundenverwaltung_status', __('Status nach Registrierung', 'wpsg'), array('inaktiv', 'aktiv'), $this->get_option('wpsg_page_mod_kundenverwaltung_status'), array('help' => 'wpsg_mod_kundenverwaltung_status')); ?>
+<div class="wpsg_form_field">
+	<div class="wpsg_form_left">
+		<label for="">&nbsp;</label>
+	</div>
+	<div class="wpsg_form_right">
+		<a onclick="if (!confirm('<?php echo __('Sind Sie sich sicher, dass Sie alle Kunden auf Aktiv setzen möchten?', 'wpsg'); ?>')) return false;" style="float:left;" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_kundenverwaltung&wpsg_mod_kundenverwaltung_setActiv=1&noheader=1"><?php echo __('Alle Kunden aktivieren', 'wpsg'); ?></a>
+		<a onclick="if (!confirm('<?php echo __('Sind Sie sich sicher, dass Sie alle Kunden auf Inaktiv setzen möchten?', 'wpsg'); ?>')) return false;" style="float:right; margin-right:25px;" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_kundenverwaltung&wpsg_mod_kundenverwaltung_setInactiv=1&noheader=1"><?php echo __('Alle Kunden deaktivieren', 'wpsg'); ?></a>
+	</div>
+	<div class="wpsg_clear"></div>
+</div>
+
+<br />
+
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_kundenverwaltung_profil', __('Profilseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_kundenverwaltung_profil'), array('help' => 'wpsg_page_mod_kundenverwaltung_profil')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_kundenverwaltung_registrierung', __('Registrierungsseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_kundenverwaltung_registrierung'), array('help' => 'wpsg_page_mod_kundenverwaltung_registrierung')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_kundenverwaltung_weiterleitung_nach_registrierung', __('Weiterleitung nach Registrierung', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_kundenverwaltung_weiterleitung_nach_registrierung'), array('help' => 'wpsg_page_mod_kundenverwaltung_weiterleitung_nach_registrierung')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_kundenverwaltung_passwordsend', __('Passwort gesendet', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_kundenverwaltung_passwordsend'), array('help' => 'wpsg_page_mod_kundenverwaltung_passwordsend')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_kundenverwaltung_order', __('Bestellübersichtsseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_kundenverwaltung_order'), array('help' => 'wpsg_mod_kundenverwaltung_order')); ?>
+
+<br />
+
+<?php if ($this->hasMod('wpsg_mod_abo') == '1') { ?>
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_kundenverwaltung_abo', __('Abonnementenübersichtsseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_kundenverwaltung_abo'), array('help' => 'wpsg_mod_kundenverwaltung_abo')); ?>
+<?php } ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_wpuser', __('Wordpress User koppeln', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_wpuser'), array('help' => 'wpsg_mod_kundenverwaltung_wpuser_role')); ?>
+<div id="wpsg_mod_kundenverwaltung_wpuser_layer" style="display:none;">
+	
+	<?php echo wpsg_drawForm_Select('wpsg_mod_kundenverwaltung_wpuser_role', __('Benutzerrolle', 'wpsg'), $this->view['arRoles'], $this->get_option('wpsg_mod_kundenverwaltung_wpuser_role')); ?>
+    <br />
+    
+</div>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_aweber', __('AWeber Integration', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_aweber'), array('help' => 'wpsg_mod_kundenverwaltung_aweber')); ?>
+<div id="wpsg_mod_kundenverwaltung_aweber_layer" style="display:none;">
+
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenverwaltung_aweber_formid', __('AWeber meta_web_form_id', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_aweber_formid')); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenverwaltung_aweber_listname', __('AWeber listname', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_aweber_listname')); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenverwaltung_aweber_metaAdtracking', __('AWeber meta_adtracking', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_aweber_metaAdtracking')); ?>
+    <br />    
+    
+</div>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenverwaltung_recaptcha_register', __('reCaptcha V2 für Registrierung', 'wpsg'), $this->get_option('wpsg_mod_kundenverwaltung_recaptcha_register')); ?>
+<div id="wpsg_mod_kundenverwaltung_register_recaptcha_layer" style="display:none;">
+    
+    <?php echo wpsg_drawForm_Input('wpsg_mod_kundenveraltung_recaptcha_key', __('Websiteschlüssel', 'wpsg'), $this->get_option('wpsg_mod_kundenveraltung_recaptcha_key')); ?>
+    <?php echo wpsg_drawForm_Input('wpsg_mod_kundenveraltung_recaptcha_secretkey', __('Geheimer Schlüssel', 'wpsg'), $this->get_option('wpsg_mod_kundenveraltung_recaptcha_secretkey')); ?>
+    
+</div>
+<script> 
+    
+    jQuery('#wpsg_mod_kundenverwaltung_recaptcha_register').on('change', function() { 
+       
+        if (jQuery(this).prop('checked')) jQuery('#wpsg_mod_kundenverwaltung_register_recaptcha_layer').show();
+        else jQuery('#wpsg_mod_kundenverwaltung_register_recaptcha_layer').hide();
+    
+    } ).change(); </script>
+
+<br />
+<div class="info">
+	<?php echo wpsg_translate(__('Die Einstellungen für die E-Mails (Betreff, Absender, CC) können in der <a href="#1#">E-Mail Konfiguration</a> durchgeführt werden.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=emailconf'); ?>
+</div>
+
+<script type="text/javascript">
+
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_mod_kundenverwaltung_wpuser').bind('change', function() {
+
+			if (jQuery(this).attr("checked") == "checked") jQuery('#wpsg_mod_kundenverwaltung_wpuser_layer').show();
+			else jQuery('#wpsg_mod_kundenverwaltung_wpuser_layer').hide();
+			
+		} ).change();
+
+		jQuery('#wpsg_mod_kundenverwaltung_aweber').bind('change', function() {
+
+			if (jQuery(this).attr('checked') == 'checked') jQuery('#wpsg_mod_kundenverwaltung_aweber_layer').show();
+			else jQuery('#wpsg_mod_kundenverwaltung_aweber_layer').hide();
+			
+		} ).change();
+		 
+	} );
+
+</script>

@@ -1,0 +1,128 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen innerhalb des Posts
+	 */
+
+?>
+
+<style type="text/css">
+ 
+#wpsg_mod_productindex_layer { height:20rem; }
+#wpsg_mod_productindex_layer select,
+#wpsg_mod_productindex_layer input { width:25rem; }
+#wpsg_mod_productindex_layer #wpsg_mod_productindex_hideOrder,
+#wpsg_mod_productindex_layer #wpsg_mod_productindex_hideViewSelect { width:15px; height:15px; }
+
+</style>
+
+<br /> 
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productindex_active', __('Seite als Produktseite verwenden', 'wpsg'), get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_active', true)); ?>
+
+<br />
+
+<div id="wpsg_mod_productindex_layer" style="display:none; height:20rem;">
+	
+	<div style="width:50%; float:left;">
+		
+		<?php /* alle Produkte */ ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_productindex_show', __('Produkte', 'wpsg'), $this->view['wpsg_mod_productindex']['arShow'], get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_show', true)); ?>		
+		<br />
+		
+		<?php /* Produktanzahl */ ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_productindex_perPage', __('Pro Seite', 'wpsg'), get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_perPage', true)); ?>
+		<br /> 
+		
+		<?php /* kommagetrennte Produktauswahl */ ?>
+		<div class="wpsg_mod_productindex_layershow wpsg_mod_productindex_layer_1" style="display:none;">
+			<?php echo wpsg_drawForm_Input('wpsg_mod_productindex_productids', __('Produktauswahl (Kommagetrennte IDs)', 'wpsg'), get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_productids', true)); ?>	
+			<br />
+		</div>	
+		
+		<?php /* Produktgruppenauswahl*/ ?> 
+		<div class="wpsg_mod_productindex_layershow wpsg_mod_productindex_layer_2" style="display:none;">
+			<?php if (sizeof($this->view['wpsg_mod_productindex']['arProductGroups']) <= 0) { ?>
+				<?php echo wpsg_drawForm_Input('', __('Produktgruppen', 'wpsg'), __('Keine Produktgruppen angelegt.', 'wpsg'), array('text' => true)); ?>
+			<?php } else { ?>
+				<?php echo wpsg_drawForm_Select('wpsg_mod_productindex_groups', __('Produktgruppen', 'wpsg'), $this->view['wpsg_mod_productindex']['arProductGroups'], get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_groups', true), array('multiple' => ((sizeof($this->view['wpsg_mod_productindex']['arProductGroups']) < 5)?sizeof($this->view['wpsg_mod_productindex']['arProductGroups']):5))); ?>
+			<?php } ?>		
+			<br />		
+		</div>	
+		
+		<?php /* Produktkategorieauswahl */ ?> 
+		<div class="wpsg_mod_productindex_layershow wpsg_mod_productindex_layer_3" style="display:none;">
+			<?php if (sizeof($this->view['wpsg_mod_productindex']['arCategories']) <= 0) { ?>
+				<?php echo wpsg_drawForm_Input('', __('Kategorien', 'wpsg'), __('Keine Kategorien angelegt.', 'wpsg'), array('text' => true)); ?>
+			<?php } else { ?>
+				<?php echo wpsg_drawForm_Select('wpsg_mod_productindex_categories', __('Kategorien', 'wpsg'), $this->view['wpsg_mod_productindex']['arCategories'], get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_categories', true), array('multiple' => ((sizeof($this->view['wpsg_mod_productindex']['arCategories']) < 5)?sizeof($this->view['wpsg_mod_productindex']['arCategories']):5))); ?>
+			<?php } ?>			
+			<br />			
+		</div>
+		
+	</div>
+	
+	<div style="width:50%; float:right;">
+	
+		<?php /* Produkttemplateauswahl list/grid */ ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_productindex_template', __('Template', 'wpsg'), $this->view['wpsg_mod_productindex']['arTemplates'], get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_template', true), array('noIndex' => true)); ?>
+		
+		<br /> 
+		
+		<?php /* Standardsortierauswahl */ ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_productindex_order', __('Standardsortierung', 'wpsg'), $this->view['wpsg_mod_productindex']['arOrder'], get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_order', true)); ?>
+	
+		<br />
+		
+		<?php /* Sortierauswahl ausblenden */ ?>
+		<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productindex_hideOrder', __('Sortierungsauswahl ausblenden', 'wpsg'), get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_hideOrder', true)); ?>
+		
+		<br /> 
+		
+		<?php /* Ansichtswechsel ausblenden */ ?>
+		<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productindex_hideViewSelect', __('Ansichtenwechsel ausblenden', 'wpsg'), get_post_meta($this->view['wpsg_mod_productindex']['post_id'], 'wpsg_mod_productindex_hideViewSelect', true)); ?>
+	 	 	
+	</div>
+		
+</div> 
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	/**
+	 * Zeigt / Versteckt die Optionen für die Produktübersichtsseite
+	 */
+	function wpsg_mod_productindex_activate()
+	{
+		
+		if (jQuery('#wpsg_mod_productindex_active').attr('checked'))
+		{
+			jQuery('#wpsg_mod_productindex_layer').show();
+		}
+		else
+		{
+			jQuery('#wpsg_mod_productindex_layer').hide();
+		}
+		
+	} // wpsg_mod_productindex_activate()
+	
+	function wpsg_mod_productindex_switchShow()
+	{
+
+		var show = jQuery('#wpsg_mod_productindex_show').val();
+ 
+		jQuery('.wpsg_mod_productindex_layershow').hide();
+		jQuery('.wpsg_mod_productindex_layer_' + show).show();
+		
+	} // function wpsg_mod_productindex_switchShow()
+	
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_mod_productindex_active').bind('change', function() { wpsg_mod_productindex_activate(); } );
+		jQuery('#wpsg_mod_productindex_show').bind('change', function() { wpsg_mod_productindex_switchShow(); } );
+		
+		wpsg_mod_productindex_activate();		
+		wpsg_mod_productindex_switchShow();
+
+	} );
+	
+/* ]]> */</script>

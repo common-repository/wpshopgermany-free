@@ -1,0 +1,27 @@
+<?php 
+
+	/* Wichtig, da die Module sonst kein HTML zurückgeben */
+	$this->htmlMail = true;
+
+	include(WPSG_PATH_VIEW . 'mailtemplates/html/logo.phtml');
+
+?>
+
+<p><?php echo __('Hallo Administrator,', 'wpsg'); ?></p> 
+ 
+<p><?php echo __('Eine neue Bestellung ist im Online-Shop eingegangen!', 'wpsg'); ?></p> 
+ 
+<?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/customer.phtml'); ?>
+
+<br />
+
+<h2><?php echo __('Warenkorb', 'wpsg'); ?>:</h2>
+
+<?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/order.phtml'); ?> 
+
+<?php $this->callMods('mail_aftercalculation', array(&$this->view['basket']['checkout']['o_id'])); ?> 
+
+<?php if (wpsg_isSizedString($this->view['basket']['checkout']['comment'])) { ?>
+<h2><?php echo __('Bestellkommentar', 'wpsg') ?></h2>
+<p><?php echo $this->view['basket']['checkout']['comment'] ?></p>
+<?php } ?>

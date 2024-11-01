@@ -1,0 +1,36 @@
+<?php 
+
+	global $template_name, $template_betreff, $absender_name, $absender_email;
+
+	include(WPSG_PATH_VIEW . 'mailtemplates/html/logo.phtml');
+
+	/**
+	 * Betreff des Templates
+	 */
+	$template_betreff = __('wpShopGermany: Zahlungserinnerung', 'wpsg');
+	 	
+	/*
+	 * $this->view['basket'] enthält Angaben über den Warenlorb
+	 * $this->view['kunde'] Enthält den Kundendatensatz aus der Datenbank
+	 * $this->view['order'] Enthält den Bestelldatensatz aus der Datenbank
+	 * $this->view['datum'] Enthält das aktuelle Datum (Timestemp)
+	 */
+ 
+?><p><?php echo __("Hallo", "wpsg"); ?> <?php echo $this->view['kunde']['vname']; ?> <?php echo $this->view['kunde']['name']; ?>,</p>
+ 
+<p><?php echo __('Sie haben am', 'wpsg') ?> <?php echo date("d.m.Y | H:i", strtotime($this->view['data']['cdate'])); ?> <?php echo __('eine Bestellung über', 'wpsg') ?> <?php echo wpsg_ff($this->view['basket']['sum']['preis_gesamt_brutto'], $this->get_option('wpsg_currency')); ?> <?php echo __('aufgegeben. Leider ist bis heute kein Zahlungsausgleich erfolgt. Gab es Probleme mit der Zahlung? Gerne helfen wir Ihnen weiter! Oder dürfen wir die Bestellung für Sie stornieren?', 'wpsg') ?></p>
+
+<h2><?php echo __('Bestelldaten', 'wpsg'); ?></h2>
+
+%basket_html%
+
+<br />
+
+<p>
+	<?php echo __('Nutzen Sie bitte folgenden Link um den Zahlvorgang abschließen zu können', 'wpsg'); ?>:
+	<a href="<?php echo $this->getDoneURL($this->view['order']['id']); ?>"><?php echo __('Bestellabschlussseite', 'wpsg'); ?></a>
+</p>
+
+<p><?php echo __("Mit freundlichen Grüßen", "wpsg"); ?></p>
+ 
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p>

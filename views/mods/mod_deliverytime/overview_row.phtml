@@ -1,0 +1,23 @@
+<?php
+
+	/**
+	 * Template für die Integration der Lieferzeit in die Bestellübersichtsseite
+	 */
+
+?>
+<div class="product_info">
+	<div 
+	<?php if ($this->view['$bPicture'] == true) { ?>class="titlep"><?php } else { ?>class="title"><?php } ?>
+		<span class="fa fa-truck"></span>
+		<?php echo __("Lieferzeit", "wpsg"); ?>:
+		<strong><?php echo __($this->view['wpsg_mod_deliverytime']['deliverytime'], 'wpsg'); ?></strong>
+	</div>
+	
+</div>
+<?php /* Hinweistext für Verzögerung in der Lieferzeit */ ?>
+<div class="product_info">
+	<div class="fulll">
+		<?php echo __($this->view['wpsg_mod_deliverytime']['delaytime'], 'wpsg'); ?>
+
+	</div>
+</div>

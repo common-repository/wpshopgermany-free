@@ -1,0 +1,15 @@
+<?php
+
+	/**
+	 * Template für die Anzeige der TopSeller im Frontend
+	 */
+
+?>
+<?php if (wpsg_isSizedArray($this->view['topseller'])) { ?>
+<div class="wpsg_mod_topseller">
+	<?php foreach ($this->view['topseller'] as $p) { ?>
+		<?php echo $this->renderProdukt($p['id'], $this->view['template']); ?>
+	<?php } ?>
+</div>
+<div class="wpsg_clear"></div>
+<?php } ?>

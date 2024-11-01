@@ -1,0 +1,19 @@
+<?php
+
+	/**
+	 * Template für die Integration der Füllmenge in die Bestellzusammenfassung
+	 */
+
+?>
+<div class="product_info">
+
+    <div>
+
+        <span class="fa  fa-balance-scale"></span>
+
+        <?php echo wpsg_translate(__('Füllmenge:', 'wpsg')); ?>
+        <?php echo $this->callMod('wpsg_mod_fuellmenge', 'renderPriceInfo', [$this->view['p']['preis'], $this->view['p']['fmenge'], $this->view['p']['id'], 1]); ?>
+
+    </div>
+
+</div>

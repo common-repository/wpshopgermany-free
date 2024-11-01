@@ -1,0 +1,27 @@
+<?php 
+
+	/**
+	 * Template des Rechtstext Moduls, welches das ProtectedsShops-Formular oder den Hinweistext anzeigt
+	 */
+
+?>
+ 
+<?php if ($this->view['wpsg_mod_legaltexts']['form'] == false) { ?>
+	
+	<p><?php echo __('wpShopGermany bietet eine Schnittstelle zu <a href="http://www.protectedshops.de/" target="_blank">Protected Shops</a> an.', 'wpsg'); ?></p>
+	<p><?php echo __('Protected Shops bietet Schutzpakete im Abo ("AGB-Rechtstext-Flatrate") für Onlineshop Betreiber an. Mit dem wpShopGermany-ProtectedShops Plugin (ab Version 1.8), werden die angebotenen Rechtstexte auf die zugeordneten Blog-Seiten mittels Mausklick automatisch übernommen und aktualisiert.', 'wpsg'); ?></p>
+	<p><?php echo __('Erhalten Sie <strong>5% Rabatt</strong> auf das erste Protected Shops Jahresabo mit folgendem <strong>Gutscheincode</strong>: <span style="color:red;">WP-SHOP</span> (unbedingt bei der Erstregistrierung angeben!)', 'wpsg'); ?></p>				
+				
+	<?php if (file_exists(WP_PLUGIN_DIR."/wpshopgermany-protectedshops/wpshopgermany-protectedshops.php")) { ?>
+		<p style="color:red;"><?php echo __('Das Plugin wurde bereits gefunden aber noch nicht aktiviert. Bitte aktivieren sie das Plugin in der <a href="plugins.php">Pluginverwaltung</a>.', 'wpsg'); ?></p>
+	<?php } ?>
+	
+<?php } else { ?>
+	
+	<table class="wpsg_mod_legaltexts_protectedshops_table">
+		<?php echo $this->view['wpsg_mod_legaltexts']['form']; ?>
+	</table>
+	
+	<input type="hidden" name="wpsg_mod_legaltexts_submitform" value="1" />
+	
+<?php } ?>

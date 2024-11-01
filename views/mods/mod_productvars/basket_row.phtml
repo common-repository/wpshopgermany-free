@@ -1,0 +1,35 @@
+<?php
+
+	/**
+	 * Template für die Integration der Produktvariablen innerhalb des Warenkorbs
+	 */
+
+?>
+
+<?php foreach ($this->view['wpsg_mod_productvars']['data'] as $pv) { ?>
+<div class="product_info">
+	<div 
+	<?php if ($this->view['$bPicture'] == true) { ?>class="titlep"><?php } else { ?>class="title"><?php } ?>
+		<?php echo __($pv['name'], 'wpsg'); ?><?php if ($pv['pflicht'] == '1') { ?><span class="wpsg_required">*</span><?php } ?>
+	</div>
+	<div class="valuel">
+		<?php if ($pv['typ'] == '1') { // Auswahlfeld ?>		
+		<select class="<?php echo ((in_array("wpsg_mod_productvars_".$pv['id']."_".$this->view['wpsg_mod_productvars']['p']['product_index'], (array)$this->view['error']))?'wpsg_error':''); ?>" name="wpsg_mod_productvars[<?php echo $pv['id']; ?>][<?php echo $this->view['wpsg_mod_productvars']['p']['product_index']; ?>]">
+			<option value="not_set"><?php echo __('Bitte wählen', 'wpsg'); ?></option>
+			<?php foreach ((array)$pv['auswahl'] as $option) { ?>
+			<option <?php echo ((@wpsg_hspc($this->view['wpsg_mod_productvars']['p']['wpsg_mod_productvars'][$pv['id']]) == wpsg_hspc($option))?'selected="selected"':''); ?> value="<?php echo wpsg_hspc($option); ?>"><?php echo wpsg_hspc($option); ?></option>
+			<?php } ?>
+		</select>
+		<?php } else if ($pv['typ'] == '2') { // Textfeld ?>
+		<input class="<?php echo ((in_array("wpsg_mod_productvars_".$pv['id']."_".$this->view['wpsg_mod_productvars']['p']['product_index'], (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg_mod_productvars[<?php echo $pv['id']; ?>][<?php echo $this->view['wpsg_mod_productvars']['p']['product_index']; ?>]" value="<?php echo @wpsg_hspc($this->view['wpsg_mod_productvars']['p']['wpsg_mod_productvars'][$pv['id']]); ?>" />
+		<?php } else if ($pv['typ'] == '3') { // Checkbox ?>
+		<input type="hidden" value="0" name="wpsg_mod_productvars[<?php echo $pv['id']; ?>][<?php echo $this->view['wpsg_mod_productvars']['p']['product_index']; ?>]" />
+		<input <?php echo ((@wpsg_hspc($this->view['wpsg_mod_productvars']['p']['wpsg_mod_productvars'][$pv['id']]) == '1')?'checked="checked"':''); ?> class="<?php echo ((in_array("wpsg_mod_productvars_".$pv['id']."_".$this->view['wpsg_mod_productvars']['p']['product_index'], (array)$this->view['error']))?'wpsg_error':''); ?>" type="checkbox" value="1" name="wpsg_mod_productvars[<?php echo $pv['id']; ?>][<?php echo $this->view['wpsg_mod_productvars']['p']['product_index']; ?>]" />
+		<?php } ?>
+	</div>
+	<div class="dummyr">
+		<?php echo __('&nbsp;'); ?>
+	</div>
+	
+</div>
+<?php } ?>

@@ -1,0 +1,30 @@
+<?php
+
+	/**
+	 * Diese Mail wird an den Kunden geschickt, wenn er die Registrierung erfolgreich beendet hat
+	 */
+
+    $arPflicht = $this->loadPflichtFeldDaten();
+    $arTitle = explode('|', $arPflicht['anrede_auswahl']);
+
+?><?php echo wpsg_translate(__('Hallo #1# #2# #3#,', 'wpsg'), @$arTitle[$this->view['basket']['checkout']['title']], $this->view['basket']['checkout']['vname'], $this->view['basket']['checkout']['name']); ?>
+ 
+ 
+<?php echo __('Sie haben sich mit folgenden Daten bei uns registriert.', 'wpsg'); ?> 
+<?php echo '--------------------------------------------------------------------' ?> 
+<?php echo wpsg_translate(__('Firma: #1#', 'wpsg'), $this->view['kunde']['firma']); ?> 
+<?php echo wpsg_translate(__('Vorname: #1#', 'wpsg'), $this->view['kunde']['vname']); ?> 
+<?php echo wpsg_translate(__('Name: #1#', 'wpsg'), $this->view['kunde']['name']); ?> 
+<?php echo wpsg_translate(__('E-Mail: #1#', 'wpsg'), $this->view['kunde']['email']); ?> 
+<?php echo wpsg_translate(__('Telefon: #1#', 'wpsg'), $this->view['kunde']['tel']); ?> 
+<?php echo wpsg_translate(__('Fax: #1#', 'wpsg'), $this->view['kunde']['fax']); ?>  
+<?php echo wpsg_translate(__('Straße: #1#', 'wpsg'), $this->view['kunde']['strasse'].rtrim(' '.$this->view['kunde']['nr'])); ?> 
+<?php echo wpsg_translate(__('PLZ: #1#', 'wpsg'), $this->view['kunde']['plz']); ?> 
+<?php echo wpsg_translate(__('Ort: #1#', 'wpsg'), $this->view['kunde']['ort']); ?>  
+<?php echo wpsg_translate(__('Land: #1#', 'wpsg'), $this->view['kunde']['land']); ?> 
+<?php echo wpsg_translate(__('UStIdNr.: #1#', 'wpsg'), $this->view['kunde']['ustidnr']); ?>   
+<?php echo '--------------------------------------------------------------------' ?> 
+ 
+<?php echo __('Viele Grüße', 'wpsg'); ?> 
+ 
+<?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?>

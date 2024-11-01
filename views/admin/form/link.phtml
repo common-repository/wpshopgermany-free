@@ -1,0 +1,41 @@
+<div class="form-group form-group-sm <?php echo ((wpsg_isSizedString($this->view['field_config']['help']))?'has-feedback':''); ?>">
+
+	<label class="col-sm-6 control-label" for="<?php echo $this->view['field_id']; ?>"><?php echo $this->view['field_label']; ?></label>
+	
+	<div class="col-sm-6">
+	
+		<div class="wpsg_field_wrap" style="padding-top:3px;">
+			<a href="#"
+				class="<?php echo wpsg_getStr($this->view['field_config']['class'])  ?>"
+				name="<?php echo $this->view['field_name']; ?>"				
+				tabindex="<?php
+
+					if (!isset($GLOBALS['wpsg']['tabindex']))
+					{
+
+						$GLOBALS['wpsg']['tabindex'] = 10;
+
+					}
+					else
+					{
+
+						$GLOBALS['wpsg']['tabindex'] += 10;
+
+					}
+
+					echo $GLOBALS['wpsg']['tabindex'];
+
+				?>"
+				id="<?php echo $this->view['field_id']; ?>"
+				><?php echo $this->view['field_link']; ?></a>
+
+			<?php if (wpsg_isSizedString($this->view['field_config']['help'])) { ?>
+				<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>" class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+			<?php } ?>
+		</div>
+				
+	</div>
+
+	<div class="clearfix wpsg_clear"></div>
+	
+</div>

@@ -1,0 +1,235 @@
+<?php
+
+    /**
+     * Template für den Reiter "Produktbilder" in der Produktverwaltung
+     */
+
+?>
+
+<!-- Modal für Löschabfrage -->
+<div class="modal fade" tabindex="-1" role="dialog" id="wpsg_produktbilder_remove">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><?php echo __('Produktbild löschen', 'wpsg'); ?></h4>
+            </div>
+            <div class="modal-body">
+
+                <?php echo wpsg_drawForm_Checkbox('dialog_produktbilder_delmt', __('Auch in der Mediathek löschen', 'wpsg'), false, array()); ?>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo __('Abbrechen', 'wpsg'); ?></button>
+                <button type="button" class="btn btn-primary" onclick="return wpsg_remove_bild_MT_OK();"><?php echo __('Löschen', 'wpsg'); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+	<div class="panel-heading clearfix">
+    	<h3 class="panel-title"><?php echo __('Produktbilder', 'wpsg'); ?></h3>
+	</div>
+	<div class="panel-body">
+		
+		<?php if ($this->view['data']['id'] > 0) { ?>
+		
+			<!--  Mediathek -->
+
+			<div class="ui-sortable" id="produktbilder_target_MT"><?php echo $this->view['strProductList']; ?></div>
+
+			<div class="wpsg_clear"></div>
+			<div><?php echo __("Bitte klicken Sie auf Mediathek um ein Bild hochzuladen. Um ein Bild zu löschen klicken Sie einfach auf das Bild.", "wpsg"); ?></div>
+			<div><?php echo __("Die Reihenfolge kann mittels Drag&Drop verändert werden.", "wpsg"); ?></div>
+			<div class="wpsg_clear"></div><br />
+		
+			<input value="Mediathek" class="button" type="text" style="text-align:center;" size="10" id="btnAddImgLink" />
+
+			<script type="text/javascript">/* <![CDATA[ */
+								
+				var post_id;
+				
+				/**
+				 * Wird beim löschen eines Bilds (anklicken) aufgerufen
+				 */
+				function wpsg_remove_bild_MT(pid) {
+
+					post_id = pid;
+					//jQuery('#wpsg_produktbilder_remove').show();
+					jQuery('#wpsg_produktbilder_remove').modal( { } );
+					//jQuery('#wpsg_produktbilder_remove').modal('hide');
+					
+				}
+				
+				function wpsg_remove_bild_MT_OK() {
+
+					delmt = jQuery('#dialog_produktbilder_delmt').is(':checked');
+					del = jQuery('#dialog_produktbilder_del').is(':checked');
+					
+					jQuery('#wpsg_produktbilder_remove').modal('hide');
+
+					jQuery('#produktbilder_target_MT').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+					
+					jQuery.ajax( {
+						url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&cmd=removeImage&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>',
+						async: true,
+						data: {
+							del: del,
+							delmt: delmt,
+							pid: post_id
+						},
+						success: function(data) {
+							
+							jQuery('#produktbilder_target_MT').html(data);
+
+							//if (typeof wpsg_vp_refresh == "function") wpsg_vp_refresh();
+							
+						}
+					} );
+
+					return false;
+					
+				}
+
+				/**
+				 * Wird beim löschen eines Bilds (anklicken) aufgerufen
+				 */
+				function wpsg_remove_bild(strBild)
+				{
+
+					if (!confirm('<?php echo __('Sind Sie sicher, das Sie dieses Bild löschen möchten?', 'wpsg'); ?>')) return false;
+
+					jQuery('#produktbilder_target').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+					
+					jQuery.ajax( {
+						url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_produktbilder&cmd=remove&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>',
+						async: true,
+						data: {
+							file: strBild
+						},
+						success: function(data) {
+							
+							jQuery('#produktbilder_target').html(data);
+
+							if (typeof wpsg_vp_refresh == "function") wpsg_vp_refresh();
+							
+						}
+					} );
+
+					return false;
+					
+				}
+                
+				jQuery(document).ready(function() {
+
+                    jQuery('#produktbilder_target_MT').sortable( {
+                        items: 'a',
+                        helper : 'clone',
+                        update: function(event, ui) {
+     
+                            var wpsg_reorder = jQuery(this).sortable('toArray');
+    
+                            jQuery.ajax( {
+                                url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&cmd=setImageOrder&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>',
+                                async: false,
+                                data: {
+                                    'p_id': <?php echo '1'; ?>,
+                                    'wpsg_reorder': wpsg_reorder
+                                },
+                                success: function(data) {
+    
+                                    data = data.replace(/\n|\r/g, '');
+                                    if (data != '1') alert(data);
+                                    //wpsg_vp_ajaxloading_hide(); 
+    
+                                }
+                            } );
+                                                                         
+                        }			
+                    } ).disableSelection();
+                    
+					// Set all variables to be used in scope
+					var wpframe,
+					    metaBox = jQuery('#meta-box-id.postbox'), // Your meta box id here
+					    addImgLink = metaBox.find('.upload-custom-img'),
+					    delImgLink = metaBox.find( '.delete-custom-img'),
+					    imgContainer = metaBox.find( '.custom-img-container'),
+					    imgIdInput = metaBox.find( '.custom-img-id' );
+					  
+					// ADD IMAGE LINK
+					jQuery("#btnAddImgLink").click(function (event) {
+						  
+					    event.preventDefault();
+					    
+					    // If the media frame already exists, reopen it.
+					    if ( wpframe ) {
+					      	wpframe.open();
+					      	return;
+					    }
+					    
+					    // Create a new media frame
+					    wpframe = wp.media.frames.file_frame = wp.media({
+					        title: "<?php echo __('Auswählen oder Hochladen von Medien', 'wpsg'); ?>",
+					        button: { text: "<?php echo __('Medien benutzen', 'wpsg'); ?>" },
+					        multiple: true  // Set to true to allow multiple files to be selected
+					    });
+
+					    // When an image is selected in the media frame...
+					    wpframe.on( 'select', function() {
+
+				            var attachments = wpframe.state().get('selection').map( 
+				                function( attachment ) {
+
+				                    attachment.toJSON();
+				                    return attachment;
+				            });
+
+				            //loop through the array and do things with each attachment
+				            var i, attachment;
+				            
+				            var arPostID = [];
+				            
+				            for (i = 0; i < attachments.length; ++i) {
+
+				            	attachment = attachments[i];
+							    imgContainer.append( '<img src="'+attachment.url+'" alt="" style="max-width:100%;"/>' );
+
+				            	attachment = attachment.toJSON();
+				            	
+				            	arPostID.push(attachment.id);
+				            	
+				            }
+
+                            jQuery.ajax( {
+                                url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&cmd=upload&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>',
+                                async: true,
+                                data: {
+                                    post_id: arPostID
+                                },
+                                success: function(data) {
+
+                                    jQuery('#produktbilder_target_MT').html(data);
+
+                                }
+                            } );
+
+					    });		
+
+					    // Finally, open the modal on click
+					    wpframe.open();
+                        
+					});	// jQuery("#btnAddImgLink").click(function (event))
+					  
+				}); // jQuery(document).ready(function())
+							
+			/* ]]> */</script>
+			
+		<?php } else { ?>
+		<p><?php echo __('Das Hochladen von Produktbildern ist erst nach erstmaligem speichern möglich.', 'wpsg'); ?></p>
+		<?php } ?>
+	
+		<div class="wpsg_clear"></div>
+	</div>
+</div>

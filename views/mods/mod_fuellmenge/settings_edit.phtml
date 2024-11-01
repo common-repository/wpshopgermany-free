@@ -1,0 +1,33 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Füllmengenmoduls
+	 * Sollte nicht verändert werden
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_fuellmenge_einheit', __('Mögliche Einheiten (Kommagetrennt)', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_einheit'), array('help' => 'wpsg_mod_fuellmenge_einheit')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_fuellmenge_bezug', __('Bezugsgröße', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_bezug'), array('help' => 'wpsg_mod_fuellmenge_bezug')); ?>
+
+<br />
+
+<?php if ($this->hasMod('wpsg_mod_productindex')) { ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_fuellmenge_showProductindex_fmenge', __('Füllmenge auf Produktübersichtsseiten (Frontend)', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_showProductindex_fmenge'), array('help' => 'wpsg_mod_fuellmenge_showProductindex_fmenge')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_fuellmenge_showProductindex_grundpreis', __('Grundpreis auf Produktübersichtsseiten (Frontend)', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_showProductindex_grundpreis'), array('help' => 'wpsg_mod_fuellmenge_showProductindex_grundpreis')); ?>
+<?php } ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_fuellmenge_showProductindexBackend_fmenge', __('Füllmenge auf Produktübersichtsseiten (Backend)', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_showProductindexBackend_fmenge'), array('help' => 'wpsg_mod_fuellmenge_showProductindexBackend_fmenge')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_fuellmenge_showAjaxDialog', __('In der Warenkorb-Lightbox anzeigen', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_showAjaxDialog'), array('help' => 'wpsg_mod_fuellmenge_showAjaxDialog')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_fuellmenge_showBasketProduct', __('Im Warenkorb im Produkt anzeigen', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_showBasketProduct'), array('help' => 'wpsg_mod_fuellmenge_showBasketProduct')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_fuellmenge_showOverviewProduct', __('In Zusammenfassung im Produkt anzeigen', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_showOverviewProduct'), array('help' => 'wpsg_mod_fuellmenge_showOverviewProduct')); ?>
+
+<br />
+
+<?php if ($this->hasMod('wpsg_mod_request')) { ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_fuellmenge_showRequestPageProduct', __('Auf Anfrageseite im Produkt anzeigen', 'wpsg'), $this->get_option('wpsg_mod_fuellmenge_showRequestPageProduct'), array('help' => 'wpsg_mod_fuellmenge_showRequestPageProduct')); ?>
+<?php } ?>

@@ -1,0 +1,11 @@
+<?php
+
+	/**
+	 * Template für die Anzeige der Produktvariablen in den Mails
+	 */
+
+?><?php if (is_array($this->view['wpsg_mod_productvars']['data']) && sizeof($this->view['wpsg_mod_productvars']['data']) > 0) { ?>
+<?php foreach ($this->view['wpsg_mod_productvars']['data'] as $pv_id => $pv) { ?>
+     <?php echo wpsg_hspc($pv['name']); ?>: <?php echo wpsg_hspc($pv['value']); ?> 
+<?php } ?>
+<?php } ?>

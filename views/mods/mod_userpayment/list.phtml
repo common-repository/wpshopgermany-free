@@ -1,0 +1,127 @@
+<?php
+
+	/**
+	 * Template für die Liste von Zahlungsarten 
+	 */
+
+?>
+<?php if (!is_array($this->view['wpsg_mod_userpayment']['data']) || sizeof($this->view['wpsg_mod_userpayment']['data']) <= 0) { ?>
+<?php echo __('Bisher keine Zahlvarianten angelegt.', 'wpsg'); ?>
+<?php } else { ?>
+
+<?php $i = 0; foreach ($this->view['wpsg_mod_userpayment']['data'] as $zv) { $i ++; ?>
+
+    <hr />
+	<div id="wpsg_mod_userpayment_row_<?php echo $zv['id']; ?>">
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <?php echo $zv['id']; ?><a data-id="<?php echo $zv['id']; ?>" onclick="return wpsg_removeZV(<?php echo $zv['id']; ?>); return false;" class="wpsg_oc_removeLink" href="#"><span class="wpsg_glyphicon_right glyphicon glyphicon-trash form-control-feedback"></span></a>
+        <?php echo wpsg_drawForm_TextEnd(__('ID', 'wpsg')); ?>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="zv_name_<?php echo $zv['id']; ?>"><?php echo wpsg_hspc($zv['name']); ?></span>
+        <a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign form-control-feedback" data-wpsg-tip="wpsg_shippay_name"
+         rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_name" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_name"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Bezeichnung', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#zv_name_<?php echo $zv['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'name',
+                    zv_id: '<?php echo $zv['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+		<input type="checkbox" value="1" <?php echo (($zv['aktiv'] == '1')?'checked="checked"':''); ?> id="zv_<?php echo $zv['id']; ?>_aktiv" />
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign form-control-feedback" data-wpsg-tip="wpsg_shippay_activ" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_activ" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_activ"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Aktiv', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+			jQuery('#zv_<?php echo $zv['id']; ?>_aktiv').bind('change', function() {
+
+				var value = 0;
+				if (jQuery(this).attr("checked") == "checked") value = 1;
+
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&do=inlinedit&noheader=1',
+					data: {
+						field: 'aktiv',
+						zv_id: '<?php echo $zv['id']; ?>',
+						value: value
+					}	
+				} );
+			} );
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="zv_hint_<?php echo $zv['id']; ?>"><?php echo wpsg_hspc($zv['hint']); ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign form-control-feedback" data-wpsg-tip="wpsg_shippay_hint" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_hint" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_hint"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Hinweistext', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#zv_hint_<?php echo $zv['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'hint',
+                    zv_id: '<?php echo $zv['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="zv_rabgeb_<?php echo $zv['id']; ?>"><?php echo wpsg_hspc($zv['rabgeb']); ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign form-control-feedback" data-wpsg-tip="wpsg_shippay_gebuehr" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_gebuehr" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_gebuehr"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Gebühr/Rabatt', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#zv_rabgeb_<?php echo $zv['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'rabgeb',
+                    zv_id: '<?php echo $zv['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="zv_mwst_key_<?php echo $zv['id']; ?>"><?php
+        	$tax_groups = wpsg_tax_groups();
+        	echo wpsg_hspc(@$tax_groups[$zv['mwst_key']]);
+        ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign form-control-feedback" data-wpsg-tip="wpsg_shippay_mwst" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwst" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwst"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Steuersatz', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#zv_mwst_key_<?php echo $zv['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&do=inlinedit&noheader=1', {
+                type: 'select',
+				data: <?php echo wpsg_prepare_for_inlineEdit(wpsg_tax_groups()); ?>,
+	                submitdata: {
+                    field: 'mwst_key',
+                    zv_id: '<?php echo $zv['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+		<input type="checkbox" value="1" <?php echo (($zv['mwst_laender'] == '1')?'checked="checked"':''); ?> id="zv_mwst_laender_<?php echo $zv['id']; ?>" />
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign form-control-feedback" data-wpsg-tip="wpsg_shippay_mwstland" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwstland" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwstland"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Keine MwSt. wenn Land steuerfrei', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+			jQuery('#zv_mwst_laender_<?php echo $zv['id']; ?>').bind('change', function() {
+
+				var value = 0;
+				if (jQuery(this).attr("checked") == "checked") value = 1;
+
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&do=inlinedit&noheader=1',
+					data: {
+						field: 'mwst_laender',
+						zv_id: '<?php echo $zv['id']; ?>',
+						value: value
+					}	
+				} );
+			} );
+        /* ]]> */</script>
+
+	</div>
+
+	<?php if ($i == sizeof($this->view['wpsg_mod_userpayment']['data'])) { ?><hr /><?php } ?>
+	<?php } ?>
+	
+
+<?php } ?> 

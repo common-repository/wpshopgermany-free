@@ -1,0 +1,12 @@
+<?php
+
+	/**
+	 * Template für die Abfrage ob der Kunde an der Bewertung teilnehmen möchte im Checkout
+	 */
+
+?>
+<div class="wpsg_checkoutblock">
+	<label for="wpsg_mod_trustedshops_set">
+		<input class="wpsg_checkout" type="checkbox" id="wpsg_mod_trustedshops_set" name="wpsg[checkout][wpsg_mod_trustedshops_set]" value="1" <?php echo ((wpsg_isSizedInt($this->view['basket']['checkout']['wpsg_mod_trustedshops_set']) || ($this->get_option('wpsg_mod_trustedshops_customerset_preset') == '1' && !isset($this->view['basket']['checkout']['wpsg_mod_trustedshops_set'])))?'checked="checked"':''); ?> /><?php echo __('Ich bin damit einverstanden, eine separate und unverbindliche Bewertungsaufforderung (<a href="https://www.trustedshops.com/" target="_blank">Trusted Shops</a>) per Mail zu erhalten.', 'wpsg'); ?>						
+	</label>
+</div>

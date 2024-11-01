@@ -1,0 +1,16 @@
+<?php 
+
+	/**
+	 * Template für die Integration des Logout Buttons in den Checkout
+	 * wird von checkout.phtml eingebunden
+	 */
+
+?>
+<div class="wpsg_checkout wpsg_logout_box">
+		<?php echo __('Hallo','wpsg');?>
+		<?php echo wpsg_hspc(($this->view['basket']['checkout']['title'] != '' && $this->view['basket']['checkout']['title'] != '-1')?$this->view['arAnrede'][$this->view['basket']['checkout']['title']]:''); ?> <?php echo wpsg_hspc($this->view['basket']['checkout']['vname']); ?> <?php echo wpsg_hspc($this->view['basket']['checkout']['name']); ?>	
+		<a href="<?php echo $this->getUrl(wpsg_ShopController::URL_LOGOUT); ?>"><?php echo __('Abmelden', 'wpsg'); ?></a>
+	
+	<div class="wpsg_clearer"></div><br />
+		
+</div>

@@ -1,0 +1,34 @@
+<?php
+
+	/**
+	 * Template für die Integration der PayPal Zahlungsart in die Bestellverwaltung
+	 */
+	
+	$wpsg_mod_paypal_paymentid = $this->view['oOrder']->getMeta('wpsg_mod_paypal_paymentid');
+	$wpsg_mod_paypal_saleid = $this->view['oOrder']->getMeta('wpsg_mod_paypal_saleid');
+	
+?>
+
+<?php if (wpsg_isSizedString($wpsg_mod_paypal_paymentid)) { ?>
+	
+	<div class="wpsg_form_field ">
+		<div class="wpsg_form_left">
+			<label for=""><?php echo __('PaymentID', 'wpsg'); ?>: [<a href="<?php 
+				
+				echo wpsg_admin_url('Order', 'view', ['action' => 'ajax', 'mod' => 'wpsg_mod_paypal', 'do' => 'refresh', 'edit_id' => $this->view['oOrder']->getId()], ['noheader' => '1']);
+					
+			?>"><?php echo __('Status Aktualisieren', 'wpsg'); ?></a>]</label>
+		</div>
+		<div class="wpsg_form_right">
+			<p class="" id=""><?php echo wpsg_translate(__('#1# (#2#)', 'wpsg'), $this->view['oOrder']->getMeta('wpsg_mod_paypal_paymentid'), $this->view['oOrder']->getMeta('wpsg_mod_paypal_paymentstate')); ?></p>
+		</div>
+		<div class="wpsg_clear"></div>
+	</div>
+		
+<?php } ?>
+
+<?php if (wpsg_isSizedString($wpsg_mod_paypal_saleid)) { ?>
+
+	<?php echo wpsg_drawForm_Input('', __('SaleID', 'wpsg'), $this->view['oOrder']->getMeta('wpsg_mod_paypal_saleid'), array('text' => true)); ?>
+		
+<?php } ?>

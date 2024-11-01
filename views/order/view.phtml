@@ -1,0 +1,180 @@
+<?php
+
+	/**
+	 * Template für die Ansicht einer Bestellung im Backend
+	 */
+
+?>
+<div class="wpsg_order_view" id="wpsg-bs">
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="<?php echo ((!isset($_REQUEST['action']))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order"><?php echo __("Bestellübersicht", "wpsg"); ?></a></li>
+					<li role="presentation" class="wpsg_showhide_filter active"><a onclick="return false;"><?php echo __("Bestellansicht (Detail)", "wpsg"); ?></a></li>
+					<li role="presentation" class="wpsg_top_extend" id="wpsg_be_orderdata">
+
+						<?php echo $this->view['oOrder']->getInvoiceFirstName().' '.$this->view['oOrder']->getInvoiceName().' / '.wpsg_ff($this->view['oOrder']->getAmount($this->getBackendTaxview()), $this->get_option('wpsg_currency')); ?>
+
+						<?php if (trim($this->view['oOrder']->admincomment) != "") { ?>
+							<a title="<?php echo __("Kommentar (Admin): ", "wpsg").htmlspecialchars($this->view['oOrder']->admincomment); ?>" onclick="return false;" class="glyphicon glyphicon-question-sign commenticon admincomment" href="#"></a>
+						<?php } ?>
+
+						<?php if (trim($this->view['oOrder']->comment) != "") { ?>
+							<a title="<?php echo __("Kommentar (Kunde): ", "wpsg").htmlspecialchars($this->view['oOrder']->comment); ?>" onclick="return false;" class="glyphicon glyphicon-question-sign commenticon customercomment" href="#"></a>
+						<?php } ?>
+
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+
+				</ul>
+			</div>
+		</div>
+
+    </nav>
+	
+	<div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+
+    <div class="wpsg_admin_submenu">
+
+        <div class="list-group" id="wpsg_order_view_tabs">
+            <span class="list-group-head list-group-item"><?php echo wpsg_translate(__('Bestellung ID:#1#', 'wpsg'), $this->view['data']['id']); ?></span>
+
+            <?php $i = 0; foreach ($this->view['arSubAction'] as $k => $v) { $i ++; ?>
+
+            	<a class="list-group-item <?php echo ((wpsg_getStr($_COOKIE['wpsg_order_view_tab'], 'general') == $k)?'active':''); ?>" wpsg-data-target="<?php echo $k; ?>" href="#"><?php echo $v['title']; ?></a>
+            
+            <?php } ?>
+			
+        </div>
+
+		<div class="tag_actions orderdata_action">
+        
+			<a href="" id="LinkProduktNeu" onclick="return WPSG_BE_Product.addProduct();"><span class="glyphicon glyphicon-plus"></span>
+			
+				<?php echo __("Neues Produkt", "wpsg"); ?>
+				
+			</a><div class="wpsg_clear"></div>
+			
+			<a href="" id="LinkPaymantNeu" onclick="return WPSG_BE_Pay_Ship.changeShippingPayment();"><span class="glyphicon glyphicon-credit-card"></span>
+			
+				<?php echo __("Versand- und Zahlungsart bearbeiten", "wpsg"); ?>
+				
+			</a><div class="wpsg_clear"></div>
+		 
+			<?php if ($this->hasMod('wpsg_mod_gutschein')) { ?>        	
+											
+				<a href="" id="LinkGutscheinNeu" onclick="return WPSG_BE_Voucher.editVoucher(-1);"><span class="glyphicon glyphicon-plus"></span>
+				
+					<?php echo __("Gutschein bearbeiten", "wpsg"); ?>
+					
+				</a><div class="wpsg_clear"></div>
+				
+			<?php } ?>
+	
+			<div class="wpsg_clear"></div>
+			
+			<?php if ($this->hasMod('wpsg_mod_discount')) { ?>
+				<a href="" id="LinkRabattNeu" onclick="return WPSG_BE_Discount.editDiscount(<?php echo $_REQUEST['edit_id']; ?>);"><span class="glyphicon glyphicon-euro"></span>
+				
+					<?php echo __("Rabatt bearbeiten", "wpsg"); ?>
+					
+				</a><div class="wpsg_clear"></div>
+				
+			<?php } ?>
+						
+        	<a href="" id="LinkSendMail" onclick="return WPSG_BE_Mail.sendCustomerMail(<?php echo $_REQUEST['edit_id']; ?>);"><span class="glyphicon glyphicon-envelope"></span>
+        	
+	 			<?php echo __("Bestellbestätigung", "wpsg"); ?><br /><?php echo __("erneut versenden", "wpsg"); ?>
+	 			
+	 		</a><br />
+
+		</div>
+
+		<div id='wpsg_kv_list'>
+		</div>
+		
+    </div>
+
+    <div class="wpsg_admin_content form-horizontal">
+
+		<?php if ($this->view['oCalculation']->restored) { ?>
+
+			<div id="restored_notice">
+				<strong>Die Berechnung dieser Bestellung wurde rekonstruiert, da zum Bestellzeitpunkt nicht alle Shop Einstellungen erfasst wurden. Bitte überprüfen sie die Berechnung und vergleichen diese ggf. mit dem Bestellprotokoll. </strong>
+			</div>
+			
+		<?php } ?>
+		
+        <?php $i = 0; foreach ($this->view['arSubAction'] as $k => $v) { $i ++; ?>
+        <div id="tab<?php echo $k; ?>" style="display:<?php echo ((wpsg_getStr($_COOKIE['wpsg_order_view_tab'], 'general') == $k)?'block':'none'); ?>;" class="wpsg_order_view_tab_content">
+
+            <?php echo $v['content']; ?>
+
+        </div>
+        <?php } ?>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+	
+	/**
+	 * Sendet eine eMail
+	 */
+	function wpsg_sendMail(oid)
+	{
+		
+		jQuery('#wpsg_produkte_table').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=sendMail&do=send&edit_id=' + oid + '&noheader=1',
+			success: function(data) {
+				jQuery('#wpsg_produkte_table').replaceWith(data);
+				location.href = location.href;
+			}
+		} );
+
+		return false;
+
+	} // function wpsg_sendMail()
+
+    jQuery(document).ready(function() {
+
+        jQuery('#wpsg_order_view_tabs a.list-group-item').bind('click', function() {
+
+            jQuery('#wpsg_order_view_tabs a').removeClass('active');
+            jQuery('.wpsg_order_view_tab_content').hide();
+
+			jQuery('.tag_actions').hide(); //ordertab_action
+			jQuery('.' + jQuery(this).attr('wpsg-data-target') + '_action').show();
+			
+			jQuery(this).addClass('active');
+            jQuery('#tab' + jQuery(this).attr('wpsg-data-target')).show();
+
+            jQuery.cookie('wpsg_order_view_tab', jQuery(this).attr('wpsg-data-target'));
+            jQuery(this).blur();
+
+        } );
+
+        var co = jQuery.cookie('wpsg_order_view_tab');
+        
+        if (co === undefined) {
+        	
+			jQuery("[wpsg-data-target='general']").trigger("click");
+			
+        } else {
+        	
+        	jQuery("[wpsg-data-target='" + co + "']").trigger("click");
+        	
+        }
+		
+    } );
+
+</script>

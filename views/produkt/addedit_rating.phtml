@@ -1,0 +1,104 @@
+<?php
+
+	/**
+	 * Template für die Integration der Produktbewertung in die Produktverwaltung
+	 */
+
+?>
+
+<div id="wpsg_be_rating">
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktbewertung', 'wpsg')); ?>
+
+
+	<div class="row">
+		<div class="col-sm-12">
+
+		<?php if (wpsg_isSizedArray($this->view['arCom'])) { ?>
+
+			<div class="row">
+				<div class="wpsg_comment_form col-sm-12">
+			
+
+				    <?php foreach ($this->view['arCom'] as $com) { ?>
+				     
+				     	<div class="row" id ="wpsg_rating_<?php echo __($com['comment_ID'], 'wpsg'); ?>">
+				     	
+					        <div class="comment col-sm-11">
+					            
+					            <div class="wpsg_bewertung_comment_name">
+					           	 	
+					           	 	<?php echo __($com['comment_author'], 'wpsg'); ?>
+					            
+					            </div>
+					            <div class="wpsg_star_wrap" style="display:inline-block;">
+						            <?php
+						            $cnt = $com['meta_value'];
+						            for ($i = 0; $i < $cnt; $i++)
+						            	echo '<i class="fa fa-star"></i>';
+						            ?>
+					            </div>
+					            <br />
+
+								<?php //setlocale(LC_TIME, "de_DE.UTF-8"); ?>					            
+					            <?php //date_default_timezone_set('Europe/Berlin'); ?>					            
+					            <div class="wpsg_bewertung_comment_date">
+					            
+					            	<?php echo '<div>'.date_i18n('d.F Y', strtotime($com['comment_date'])); ?>
+									<?php /* echo strftime('%d.%B %Y', strtotime($oWP_Comment->comment_date)); */ ?>
+					            
+					          	</div>	
+					          
+					          	<div class="wpsg_bewertung_comment_text">
+					          		
+						            <?php echo '</div><br />'; ?>
+						            <?php echo __($com['comment_content'], 'sto'); ?>
+						            <?php echo '<br />'; ?>
+					          	
+					          	</div>
+					        </div>
+							<div class="wpsg_comment_form col-sm-1">
+								<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Bewertung löschen', 'wpsg'); ?>" onclick="return wpsg_removeRating(<?php echo $com['comment_ID']; ?>);"><span class="glyphicon glyphicon-trash"></span></a>
+								  
+							</div>
+					        
+				     	</div> 
+				        
+				    <?php } ?>
+
+				</div>
+			</div>
+
+		<?php } else { ?>
+			<?php echo __('Keine Bewertungen vorhanden'); ?>
+		<?php } ?>
+		</div>
+	</div>
+
+	
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+/**
+ * Wird aufgerufen wenn eine Bewertung gelöscht werden soll
+ */
+function wpsg_removeRating(c_id)
+{
+
+	if (!confirm('<?php echo __('Sind Sie sich sicher, dass Sie diese Bewertung löschen möchten?', 'wpsg'); ?>')) return false;
+
+	//jQuery('#wpsg_be_rating').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+	jQuery('#wpsg_rating_'+c_id).html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+	jQuery.ajax( {
+		url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&cmd=ratingDel&noheader=1&c_id=' + c_id,
+		success: function(data) {
+			//jQuery('#wpsg_be_rating').replaceWith(data);
+			jQuery('#wpsg_rating_'+c_id).hide();
+		}
+	} );
+
+	return false;
+}
+/* ]]> */</script>

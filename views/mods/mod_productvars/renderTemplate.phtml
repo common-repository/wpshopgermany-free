@@ -1,0 +1,32 @@
+<?php
+
+	/**
+	 * Template für die Integration der Produktvariablen in das Template
+	 */
+
+?>
+ 
+<div class="wpsg_mod_productvars">
+	<?php foreach ($this->view['wpsg_mod_productvars']['data'] as $pv) { ?>
+	<div class="wpsg_mod_productvars_row">
+		<div class="wpsg_mod_productvars_label">
+			<?php echo __($pv['name'], 'wpsg'); ?> <?php if ($pv['pflicht'] == '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+		</div>
+		<div class="wpsg_mod_productvars_input">	
+			<?php if ($pv['typ'] == '1') { // Auswahlfeld ?>		
+			<select name="wpsg_mod_productvars[<?php echo $pv['id']; ?>]">
+				<option value="not_set"><?php echo __('Bitte wählen', 'wpsg'); ?></option>
+				<?php foreach ((array)$pv['auswahl'] as $option) { ?>
+				<option <?php echo ((wpsg_isSizedString($pv['value'], wpsg_hspc($option)))?'selected="selected"':''); ?> value="<?php echo wpsg_hspc($option); ?>"><?php echo wpsg_hspc($option); ?></option>
+				<?php } ?>
+			</select>
+			<?php } else if ($pv['typ'] == '2') { // Textfeld ?>
+			<input type="text" name="wpsg_mod_productvars[<?php echo $pv['id']; ?>]" value="<?php echo wpsg_hspc(wpsg_getStr($pv['value'])); ?>" />
+			<?php } else if ($pv['typ'] == '3') { // Checkbox ?>
+			<input type="hidden" value="0" name="wpsg_mod_productvars[<?php echo $pv['id']; ?>]" />
+			<input <?php echo ((wpsg_isSizedString($pv['value'], '1'))?'checked="checked"':''); ?> type="checkbox" value="1" name="wpsg_mod_productvars[<?php echo $pv['id']; ?>]" />
+			<?php } ?>
+		</div>
+	</div>
+	<?php } ?>
+</div>

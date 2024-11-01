@@ -1,0 +1,456 @@
+<?php
+
+	/**
+	 * Template für die Produktübersicht im Backend
+	 */
+
+?>
+
+<div class="wpsg_products" id="wpsg-bs">
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+                
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+                <a class="glyphicon glyphicon-menu-hamburger wpsg-bs-toggle-nav visible-xs-block" data-toggle="collapse" data-target="#wpsg-bs-headermenu" href="#"></a>
+                
+			</div>
+			<div class="collapse navbar-collapse" id="wpsg-bs-headermenu">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="<?php echo ((!isset($_REQUEST['action']))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt'; ?>"><?php echo wpsg_translate(__("Produktübersicht (#1# Produkte)", "wpsg"), $this->view['countAll']); ?></a></li>
+					<li role="presentation" class="wpsg_showhide_filter <?php echo (($this->view['submit'] === true)?'active':''); ?>"><a href="#" onclick="return false;"><span class="glyphicon glyphicon-search"></span><?php echo __("Suche", "wpsg"); ?></a></li>
+			 		<li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'add'))?'active':''); ?>"><a href="<?php
+							
+						echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=add', 'wpsg-product-add');
+							
+					?>"><span class="glyphicon glyphicon-plus"></span><?php echo __("Hinzufügen", "wpsg"); ?></a></li>                    
+                    <?php /* Integration Exportprofile */ ?>
+                    <?php if ($this->hasMod('wpsg_mod_export')) { $arProfile = $this->callMod('wpsg_mod_export', 'getProfile', array(wpsg_mod_export::TYPE_PRODUCT)); ?>
+                    <?php if (wpsg_isSizedArray($arProfile)) { ?>
+                    <li role="presentation" class="wpsg_showhide_export"><a href="#" onclick="return false;"><span class="glyphicon glyphicon-export"></span><?php echo __('Produktexport (Exportprofile)', 'wpsg'); ?></a></li>
+                    <?php } ?>
+                    <?php } ?>
+                    
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'import'))?'active':''); ?>"><a href="<?php 
+							 
+						echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=import', 'wpsg-product-import');
+							
+					?>"><span class="glyphicon glyphicon-import"></span><?php echo __("Daten-Import", "wpsg"); ?></a></li>
+					<?php if (wpsg_isSizedArray($this->view['arData'])) { ?>
+					<li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'export'))?'active':''); ?>"><a href="<?php 
+							
+						echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=export&noheader=1', 'wpsg-product-export'); 
+							
+					?>"><span class="glyphicon glyphicon-export"></span><?php echo __("Daten-Export", "wpsg"); ?></a></li>
+                    <li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'export'))?'active':''); ?>"><a href="<?php 
+							
+						echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=exportMedia&noheader=1', 'wpsg-product-exportMedia');
+						
+					?>"><span class="glyphicon glyphicon-export"></span><?php echo __("Daten-Export mit Medien", "wpsg"); ?></a></li>
+                    <?php } ?>
+			 	</ul>
+			</div>
+		</div>
+                        
+		<div class="wpsg-filter container-fluid form-horizontal" style="display:<?php echo (($this->view['submit'] === true)?'block':'none'); ?>;">
+			<div class="row">
+				<div class="col-lg-4">
+					<form method="post" id="filter_form">
+						
+						<?php echo wp_nonce_field('wpsg-product-search'); ?>
+
+						<input id="wpsg_seite" type="hidden" name="seite" value="<?php echo @$this->view['arFilter']['page']; ?>" class="current-page" />
+						<input id="wpsg_order" type="hidden" name="filter[order]" value="<?php echo @$this->view['arFilter']['order']; ?>" />
+						<input id="wpsg_ascdesc" type="hidden" name="filter[ascdesc]" value="<?php echo @$this->view['arFilter']['ascdesc']; ?>" /> 
+                        
+						<?php echo wpsg_drawForm_Input('filter[s]', __('Suchfeld', 'wpsg'), wpsg_getStr($this->view['arFilter']['s'])); ?>
+
+                        <?php $filterAll = $this->view['arFilter'];
+                        	unset($filterAll['productgroup_ids']);
+                        	unset($filterAll['productcategory_ids']);
+                        ?>
+
+                        <?php if ($this->hasMod('wpsg_mod_productgroups')) { ?>
+                        <?php echo wpsg_drawForm_Select('filter[productgroup_ids]', __('Produktgruppe', 'wpsg'), wpsg_array_merge(array('-1' => wpsg_translate(__('Alle Produktgruppen (#1#)', 'wpsg'), wpsg_product::count($filterAll))), wpsg_productgroup::getProductgroupSelect($this->view['arFilter'])), @$this->view['arFilter']['productgroup_ids']); ?>
+                        <?php } ?>
+
+                        <?php if ($this->hasMod('wpsg_mod_produktartikel')) { ?>
+                        <?php
+                        $temp = $this->callMod('wpsg_mod_produktartikel', 'getProductcategorySelect', array($this->view['arFilter']));
+                        $arr = array();
+                        foreach ($temp as $vv) $arr[$vv['term_taxonomy_id']] = $vv['label'];
+                        echo wpsg_drawForm_Select('filter[productcategory_ids]', __('Produktkategorie', 'wpsg'),
+                        		wpsg_array_merge(array('-1' => wpsg_translate(__('Alle Produktkategorien (#1#)', 'wpsg'), wpsg_product::count($filterAll))),
+                        		$arr), @$this->view['arFilter']['productcategory_ids']); ?>
+                        <?php } ?>
+
+                        <?php if (wpsg_istrue($this->view['submit'])) { ?>
+                        <input type="hidden" name="submit-button" value="1" />
+                        <?php } ?>
+
+						<?php echo wpsg_drawForm_SubmitButton(__('Produkte suchen')); ?><br />
+
+					</form>
+				</div>
+			</div>
+		</div>
+        
+        <?php echo $this->callMod('wpsg_mod_export', 'product_index_tab'); ?>
+        
+	</nav>
+    
+    <div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+    
+    <div class="flex flex-100">
+            
+        <?php if ($this->hasMod('wpsg_mod_productgroups')) { $arProductgroupSelect = wpsg_productgroup::getProductgroupSelect($this->view['arFilter']); ?>
+            <?php if (wpsg_isSizedArray($arProductgroupSelect)) { ?>
+                <div class="pagination_wrap wpsg_productgroup_link_wrap">
+    
+                    <?php $filterAll = $this->view['arFilter'];
+                        unset($filterAll['productgroup_ids']);
+                        unset($filterAll['productcategory_ids']);
+                    ?>
+    
+                    <ul class="pagination">
+                        <li class="<?php echo ((wpsg_getStr($this->view['arFilter']['productgroup_ids']) == '-1' || !isset($this->view['arFilter']['productgroup_ids']))?'active':''); ?>"><a href="#" onclick="jQuery('#filterproductgroup_ids').val('-1'); jQuery('#filter_form').submit(); return false;"><?php echo wpsg_translate(__('Alle (#1#)', 'wpsg'), wpsg_product::count($filterAll)); ?></a></li>
+                        <?php foreach ($arProductgroupSelect as $pg_id => $pg_name) { ?>
+                        <li class="<?php echo ((wpsg_getStr($this->view['arFilter']['productgroup_ids']) == $pg_id)?'active':''); ?>"><a href="#" onclick="jQuery('#filterproductgroup_ids').val('<?php echo $pg_id; ?>'); jQuery('#wpsg_seite').val('1'); jQuery('#filter_form').submit(); return false;"><?php echo $pg_name; ?></a></li>
+                        <?php } ?>
+                    </ul>
+    
+                </div>
+                <div class="wpsg_clear"></div>
+            <?php } ?>
+        <?php } ?>
+    
+        <?php if ($this->hasMod('wpsg_mod_produktartikel')) { $arProductcategorySelect = $this->callMod('wpsg_mod_produktartikel', 'getProductcategorySelect', array($this->view['arFilter'])); ?>
+            <?php if (wpsg_isSizedArray($arProductcategorySelect)) { ?>
+                <div class="pagination_wrap wpsg_productgroup_link_wrap">
+    
+                    <?php $filterAll = $this->view['arFilter'];
+                        unset($filterAll['productgroup_ids']);
+                        unset($filterAll['productcategory_ids']);
+                    ?>
+    
+                    <ul class="pagination">
+                        <li class="<?php echo ((wpsg_getStr($this->view['arFilter']['productcategory_ids']) == '-1' || !isset($this->view['arFilter']['productcategory_ids']))?'active':''); ?>"><a href="#" onclick="jQuery('#filterproductcategory_ids').val('-1'); jQuery('#filter_form').submit(); return false;"><?php echo wpsg_translate(__('Alle (#1#)', 'wpsg'), wpsg_product::count($filterAll)); ?></a></li>
+                        <?php foreach ($arProductcategorySelect as $pk_id => $pk) { ?>
+                        <li class="<?php echo ((wpsg_getInt($this->view['arFilter']['productcategory_ids'], -2) == $pk['term_taxonomy_id'])?'active':''); ?>"><a href="#" onclick="jQuery('#filterproductcategory_ids').val('<?php echo $pk['term_taxonomy_id']; ?>'); jQuery('#wpsg_seite').val('1'); jQuery('#filter_form').submit(); return false;"><?php echo $pk['label']; ?></a></li>
+                        <?php } ?>
+                    </ul>
+    
+                </div>
+            <?php } ?>
+        <?php } ?>
+    
+        <?php $this->render(WPSG_PATH_VIEW.'/admin/pager.phtml'); ?>
+        
+    </div>
+
+	<div class="content">
+		<?php if (is_array($this->view['arData']) && sizeof($this->view['arData']) > 0) { ?>
+            <table class="table table-bordered table-hover table-striped wpsg-table-order">
+                <thead>
+                    <tr>
+                        <th class="manage-column column-title wpsg_pic_col"></th>
+                        <th class="wpsg_order" data-order="name"><?php echo __("Name", 'wpsg'); ?></th>
+						<?php if ($this->hasMod('wpsg_mod_produktartikel')) { ?>
+						<th class="wpsg_order" data-order="pos"><?php echo __('Pos.', 'wpsg'); ?></th>
+						<?php } ?>
+                        <th class="wpsg_order" data-order="anr"><?php echo __("Artikelnummer", 'wpsg'); ?></th>
+    					                
+                        <?php /* if ($this->hasMod('wpsg_mod_produktartikel') && $this->get_option('wpsg_mod_produktartikel_positionnumber') == '1') { ?>
+							<th class="wpsg_order" data-order="pos-nr"><?php echo __("Positionsnummer", "wpsg"); ?></th>
+						<?php } */ ?>
+	
+						<?php if ($this->hasMod('wpsg_mod_produktartikel') && $this->get_option('wpsg_mod_produktartikel_gtin') == '1') { ?>
+						<th class="wpsg_order" data-order="gtin-nr"><?php echo __("GTIN", "wpsg"); ?></th>						
+						<?php } ?>
+	
+						<?php if ($this->hasMod('wpsg_mod_produktartikel') && $this->get_option('wpsg_mod_produktartikel_ean') == '1') { ?>
+						<th class="wpsg_order" data-order="ean-nr"><?php echo __("EAN", "wpsg"); ?></th>
+						<?php } ?>
+	
+						<?php if ($this->hasMod('wpsg_mod_deliverytime') && $this->get_option('wpsg_mod_deliverytime_productindex') == '1') { ?>
+						<th class="wpsg_order" data-order="deliverytime"><?php echo __("Lieferzeit", 'wpsg'); ?></th>
+						<?php } ?>
+							
+						<?php if ($this->hasMod('wpsg_mod_weight') && $this->get_option('wpsg_mod_weight_showProductindexBackend') == '1') { ?>
+						<th class="wpsg_order" data-order="weight"><?php echo __("Gewicht", 'wpsg'); ?></th>                        
+						<?php } ?>
+	
+						<?php if ($this->hasMod('wpsg_mod_fuellmenge') && $this->get_option('wpsg_mod_fuellmenge_showProductindexBackend_fmenge') == '1') { ?>
+                        <th class="wpsg_order" data-order="fuellmenge"><?php echo __("Füllmenge", 'wpsg'); ?></th>
+						<?php } ?>
+	
+						<?php if ($this->hasMod('wpsg_mod_productgroups') && $this->get_option('wpsg_mod_productgroups_productindex') == '1') { ?>
+                        <th class="wpsg_order" data-order="pgruppe"><?php echo __("Produktgruppe", 'wpsg'); ?></th><th class="wpsg_order" data-order="stock"><?php echo __("Lagerbestand", 'wpsg'); ?></th>
+						<?php } ?>
+	
+						<?php if ($this->hasMod('wpsg_mod_stock') && $this->get_option('wpsg_mod_stock_showBackendStock') == '1') { ?>
+						<th class="wpsg_order" data-order="stock"><?php echo __("Lagerbestand", 'wpsg'); ?></th>
+						<?php } ?>
+						
+                        <th class="wpsg_order" data-order="mwst"><?php echo __("MwSt.", 'wpsg'); ?></th>
+
+                        <th class="wpsg_order" data-order="price"><?php echo __("Preis", 'wpsg'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->view['arData'] as $oProduct) { $d = $oProduct->data; ?>
+                    <tr>
+                        <td class="post-title wpsg_pic_col">
+                            
+                            <?php $attachment_id = $this->imagehandler->getAttachmentID($oProduct->getProductKey()); ?>
+                             
+                            <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id=<?php echo $d['id']; ?>" title="<?php echo wpsg_translate(__('Produkt für Sprache #1# bearbeiten.', 'wpsg'), $d['name']) ?>">
+                                <div class="box_img_wrap wpsg_be_productindex_image">
+                                    <?php echo wp_get_attachment_image($attachment_id, 'medium'); ?>
+                                </div>
+                            </a>
+                            
+                        </td>
+                        <td class="post-title column-title">
+                            <strong>
+                                <?php if ($this->isMultiLingual()) { ?>
+                                <?php foreach ($this->getStoreLanguages() as $l) { ?>
+                                    <?php if ($l['locale'] != $this->getDefaultLanguageLocale()) { ?>
+                                    <a href="<?php
+	
+										echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id='.$d['id'].'&wpsg_lang='.$l['lang'], 'wpsg-product-edit-'.$d['id']);
+										
+									?>" title="<?php echo wpsg_translate(__('Produkt für Sprache #1# bearbeiten.', 'wpsg'), $l['name']); ?>">
+                                        <img src="<?php echo $this->getFlagURL().$l['flag']; ?>" alt="<?php echo wpsg_translate(__('Produkt für Sprache #1# bearbeiten.', 'wpsg'), $l['name']); ?>" />
+                                    </a>
+                                    <?php } ?>
+                                <?php } ?>
+                                <?php } ?>
+                                <a title="<?php echo __("Dieses Produkt bearbeiten", "wpsg"); ?>" href="<?php 
+									
+									echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id='.$d['id'], 'wpsg-product-edit-'.$d['id']);									
+									
+								?>" class="row-title"><?php echo (($d['name'] == "")?__("---- ", "wpsg"):$d['name']); ?></a>
+                            </strong>
+                            <div class="row-actions">
+                                <span class="edit"><a title="<?php echo __("Dieses Produkt bearbeiten", "wpsg"); ?>" href="<?php
+		
+									echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id='.$d['id'], 'wpsg-product-edit-'.$d['id']);
+	
+								?>"><?php echo __("Bearbeiten", "wpsg"); ?></a></span>
+                                |
+                                <span class="del"><a onclick="if (!confirm('<?php echo __("Sind Sie sicher, dass Sie das Produkt löschen wollen?", "wpsg"); ?>')) return false;" title="<?php echo __("Dieses Produkt löschen", "wpsg"); ?>" href="<?php
+										
+									echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=del&edit_id='.$d['id'].'&noheader=1', 'wpsg-product-del-'.$d['id']);
+
+								?>"><?php echo __("Löschen", "wpsg"); ?></a></span>
+                                |
+                                <span class="copy"><a onclick="if (!confirm('<?php echo __("Sind Sie sicher, dass Sie das Produkt kopieren wollen?", "wpsg"); ?>')) return false;" title="<?php echo __("Dieses Produkt kopieren", "wpsg"); ?>" href="<?php
+		
+									echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=copy&edit_id='.$d['id'].'&noheader=1', 'wpsg-product-copy-'.$d['id']);
+										
+								?>"><?php echo __("Kopieren", "wpsg"); ?></a></span>
+                                |
+                                <span class="view"><a target="_blank" title="<?php echo __("Dieses Produkt im Frontend ansehen", "wpsg"); ?>" href="<?php echo $this->getProduktLink(array('id' => $d['id'])); ?>"><?php echo __("Ansehen", "wpsg"); ?></a></span>
+                                <?php $this->callMods('produkt_index_editmenu', array(&$d)); ?>
+                            </div>
+                        </td>
+						<?php if ($this->hasMod('wpsg_mod_produktartikel')) { ?>
+						<td class="wpsg_pos" data-order="pos">
+							<?php echo $oProduct->getMenuOrder(); ?>
+						</td>
+						<?php } ?>
+						<th class="wpsg_order" data-order="anr"><?php echo $oProduct->getNr(); ?></th>
+						<?php if ($this->hasMod('wpsg_mod_produktartikel') && $this->get_option('wpsg_mod_produktartikel_gtin') == '1') { ?>
+							<td><?php echo wpsg_hspc($d['gtin']); ?></td>
+						<?php } ?>
+						<?php if ($this->hasMod('wpsg_mod_produktartikel') && $this->get_option('wpsg_mod_produktartikel_ean') == '1') { ?>
+							<td><?php echo wpsg_hspc($d['ean']); ?></td>
+						<?php } ?>
+						<?php if ($this->hasMod('wpsg_mod_deliverytime') && $this->get_option('wpsg_mod_deliverytime_productindex') == '1') { ?>
+                        <td>
+                        	<?php if ($this->callMod('wpsg_mod_deliverytime', 'isStoreProduct', array($oProduct->getProductKey()))) { ?>
+						
+								<div class="wpsg_product_only_store">
+									<?php echo __($this->callMod('wpsg_mod_deliverytime', 'displayStoreText', array($oProduct->getProductKey()))); ?>
+								</div>									
+								<?php $stl = 0; $stl = $this->callMod('wpsg_mod_deliverytime', 'displayStoreLink', array($oProduct->getProductKey())) ?>
+								<?php if (wpsg_isSizedInt($stl)) { ?>
+									&nbsp;<a href="<?php echo get_permalink($stl); ?>"><?php echo __('So erreichen Sie uns.'); ?></a>
+								<?php } ?>
+								
+							<?php } else { ?>
+																										
+							<?php $strDelayNote = $this->callMod('wpsg_mod_deliverytime', 'displayDelayTime', array($oProduct->getProductKey())); ?>
+							<?php if (wpsg_isSizedString($strDelayNote)) { ?>
+								<div class="wpsg_mod_deliverytime_offline">
+								    <div class="wpsg_mod_deliverytime_delay"><?php echo wpsg_hspc($strDelayNote); ?></div>
+								</div>										
+							<?php } else { ?>			
+                            	<?php if ($d['wpsg_mod_deliverytime_deliverytime'] == '' ) { ?>
+	                            	<?php echo $this->callMod('wpsg_mod_deliverytime', 'displayDeliveryTime', array($oProduct->getProductKey())); ?>
+                           		<?php } else { ?>
+                            		<?php echo $this->callMod('wpsg_mod_deliverytime', 'displayDeliveryTime', array($oProduct->getProductKey())); ?>										
+                            	<?php } ?>
+                            <?php } ?>
+                        	<?php } ?>
+                        </td>
+                        <?php } ?>
+						<?php if ($this->hasMod('wpsg_mod_weight') && $this->get_option('wpsg_mod_weight_showProductindexBackend') == '1') { ?>
+                        <td>
+                             <?php if (($oProduct->weight) > '0') { ?>
+    							<?php echo wpsg_translate(__('#1# #2#', 'wpsg'), '<span class="wpsg_weight" id="weight_'.$oProduct->id.'">'.wpsg_ff($oProduct->weight).'</span>', $this->get_option('wpsg_mod_weight_unit')); ?>
+    						<?php } else { ?>
+    							<label><?php wpsg_translate(__('', 'wpsg'))?></label>
+    						<?php } ?>
+                        </td>
+                        <?php } ?>
+						<?php if ($this->hasMod('wpsg_mod_fuellmenge') && $this->get_option('wpsg_mod_fuellmenge_showProductindexBackend_fmenge') == '1') { ?>
+                        <td>
+                        	<?php if (($oProduct->fmenge) > '0') { ?>										
+								<?php echo wpsg_translate(__('#1#', 'wpsg'), '<span class="wpsg_fmenge">'.wpsg_ff($oProduct->fmenge, '', true).'</span> '.$this->callMod('wpsg_mod_fuellmenge', 'getUnit', [$oProduct->feinheit])); ?>										
+							<?php } else { ?>					
+								<label><?php echo wpsg_translate(__('', 'wpsg')); ?></label>						
+							<?php } ?>	 
+                        </td>
+                        <?php } ?>
+						<?php if ($this->hasMod('wpsg_mod_productgroups') && $this->get_option('wpsg_mod_productgroups_productindex') == '1') { ?>
+                        <td>
+                            <?php if ($d['pgruppe'] <= 0) { ?>
+                            <?php echo __('Nicht zugewiesen', 'wpsg'); ?>
+                            <?php } else { ?>
+                            <?php echo $oProduct->getProductgroupName(); ?>
+                            <?php } ?>
+                        </td>
+                        <?php } ?>
+						<?php if ($this->hasMod('wpsg_mod_stock') && $this->get_option('wpsg_mod_stock_showBackendStock') == '1') { ?>
+                        <td>
+                            <div style="line-height:inherit; margin-bottom:0.2em;">
+                            	<?php if ($d['stock'] == '0' ) {?>
+	                            	<div class="wpsg_productview_backend-sold-out"><?php echo __('Ausverkauft', 'wpsg');?></div>
+                           		<?php } else {  ?>
+                           			<div class="wpsg_productview_backend-available"><?php echo __('Vorrätig', 'wpsg');?></div>
+                           			<?php 
+                           			if ($this->get_option('wpsg_mod_stock_minstockproduct') == 1) {
+                           				$cnts = '('.$d['stock'].'/'.$d['minstockproduct_count'].')';
+                           			} else {
+                           				$cnts = '('.$d['stock'].')';
+                           			}
+									if ($d['stock'] <= wpsg_getInt($d['minstockproduct_count'])) {
+										echo '<div style="color:red;">'.$cnts.'</div>';
+									} else {
+										echo '<div>'.$cnts.'</div>';
+									}
+                           			?>
+                           		<?php }?>
+                            </div>
+                            <?php if ($this->hasMod('wpsg_mod_productvariants')) $arVarianten = $this->callMod('wpsg_mod_productvariants', 'getVariants', array($d['id'], true, true, true)); if (wpsg_isSizedArray($arVarianten)) { ?>
+                            <div style="line-height:inherit; padding:2px 0px 0px;">
+                                <a class="clueTip" rel="#" href="#" onclick="return wpsg_mod_productvariations_show(<?php echo $d['id']; ?>)" ><?php echo __('Variantenbestand', 'wpsg'); ?></a>
+                            </div>
+                            <?php } ?>
+                        </td>
+                        <?php } ?>
+                        <td class="wpsg_mwst_col">
+                            <?php if (wpsg_isSizedInt($d['euleistungsortregel'])) { ?>
+                                <img src="<?php echo WPSG_URL; ?>views/gfx/eu.png" alt="<?php echo __('Produkt unterliegt der EU-Leistungsortregel', 'wpsg'); ?>" />
+                            <?php } ?>
+                            <?php echo strtoupper($d['mwst_key']).' ('.wpsg_ff($oProduct->getDefaultTaxValue(), '%').' '.$this->getDefaultCountry()->kuerzel.')'; ?>
+                        </td>
+                        <td>
+                            <?php echo wpsg_ff($d['preis'], $this->get_option('wpsg_currency')); ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+            <div style="margin-right:-15px;">
+                <?php $this->render(WPSG_PATH_VIEW.'/admin/pager.phtml'); ?>
+            </div>
+
+            <div class="clearer"></div>
+
+		<?php } else { ?>
+
+            <?php echo wpsg_drawForm_AdminboxStart(); ?>
+    		<?php echo __('Keine Produkte in der Datenbank.', 'wpsg'); ?>
+            <?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+		<?php } ?>
+
+	</div>
+
+</div>
+
+<?php if ($this->hasMod('wpsg_mod_productvariants') && $this->hasMod('wpsg_mod_stock')) { ?>
+<div id="wpsg_mod_productvariations_dialog" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title"><?php echo __('Produktvariationen Lagerbestand anzeigen', 'wpsg'); ?></h4>
+			</div>
+			<div class="modal-body">
+
+			</div>
+			<div class="modal-footer">
+
+				<button type="button" class="btn-sm wpsg_mod_productvariants_variants_close wpsg_mod_productvariants_variants_vari btn btn-default" style="display:none;" onclick="return wpsg_mod_productvariants_back();"><span class="glyphicon glyphicon-remove"></span>&nbsp;<?php echo __('Schließen', 'wpsg'); ?></button>
+
+			</div>
+		</div>
+	</div>
+</div>
+<?php } ?>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	<?php if (wpsg_isSizedString($this->view['arFilter']['order']) && wpsg_isSizedString($this->view['arFilter']['ascdesc'])) { ?>
+    jQuery('th[data-order="<?php echo @$this->view['arFilter']['order']; ?>"]').addClass('wpsg_order_<?php echo strtolower(@$this->view['arFilter']['ascdesc']); ?>');
+    <?php } ?>
+
+	function wpsg_mod_productvariations_show(product_id)
+	{
+
+		jQuery('#wpsg_mod_productvariations_dialog button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariations_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		//	wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+		jQuery('#wpsg_mod_productvariations_dialog').modal();
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_stock&edit_id=<?php echo $d['id']; ?>&noheader=1&wpsg_cmd=getVariInfo',
+			data: {
+				'subaction': 'admin_show',
+				'product_id': product_id
+			},
+			success: function(data) {
+
+				jQuery('.wpsg_mod_productvariants_variants').show();
+				jQuery('.wpsg_mod_productvariants_variants_vari').hide();
+
+				jQuery('#wpsg_mod_productvariations_dialog .modal-body').html(data);
+				jQuery('#wpsg_mod_productvariations_dialog button').prop('disabled', false);
+
+			}
+    	} );
+
+		return false;
+
+	} // function wpsg_mod_productvariations_show()
+
+	function goPage(page)
+	{
+
+		jQuery('#wpsg_seite').val(page);
+		jQuery('#filter_form').submit();
+
+		return false;
+
+	} // function goPage(page)
+
+/* ]]> */</script>

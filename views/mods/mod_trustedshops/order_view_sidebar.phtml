@@ -1,0 +1,17 @@
+<?php
+
+	/**
+	 * Template für die Trusted Shops Integration in die Bestellverwaltung
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Trusted Shps', 'wpsg')); ?>
+
+	<?php echo wpsg_drawForm_Input('wpsg_mod_trustedshops_set', __('Einwilligung', 'wpsg'), (($this->view['data']['wpsg_mod_trustedshops_set'] == '1')?__('Ja', 'wpsg'):__('Nein', 'wpsg')), array('text' => true, 'help' => 'wpsg_mod_trustedshops_set')); ?>
+
+	<br />
+
+	<a onclick="if (!confirm('<?php echo __('Der Kunde erhält eine Mail mit einem Link zur Bewertung der Bestellung. Sind Sie sich sicher?', 'wpsg'); ?>')) return false;" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&noheader=1&action=ajax&mod=wpsg_mod_trustedshops&edit_id=<?php echo $this->view['data']['id']; ?>&do=mail"><?php echo __('E-Mail mit Bewertungslink senden', 'wpsg'); ?></a>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

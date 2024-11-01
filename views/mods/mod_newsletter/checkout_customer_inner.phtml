@@ -1,0 +1,13 @@
+<?php
+
+	/**
+	 * Template für die Integration der optionalen Newsletteranmeldung in den Checkout
+	 * Wird von der checkout.phtml aufgerufen
+	 */
+
+?>
+<div class="wpsg_checkoutblock">
+	<label for="wpsg_mod_newsletter">
+		<input class="wpsg_checkout" type="checkbox" id="wpsg_mod_newsletter" name="wpsg[checkout][wpsg_mod_newsletter]" value="1" <?php echo (($this->view['basket']['checkout']['wpsg_mod_newsletter'] == '1')?'checked="checked"':''); ?> /><?php echo __("Melden Sie sich hier für unseren Newsletter an.", "wpsg"); ?>						
+	</label>
+</div>

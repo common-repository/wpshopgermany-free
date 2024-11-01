@@ -1,0 +1,148 @@
+<?php
+
+	/**
+	 * Template für die Varianten wird vom Produkttemplate z.B. standard.phtml geladen
+	 */
+  
+?>
+
+<div class="wpsg_mod_productvariants_product_wrap" id="wpsg_mod_productvariants_product_wrap_<?php echo $GLOBALS['wpsg_produkt_index']; ?>" wpsg-productindex="<?php echo $GLOBALS['wpsg_produkt_index']; ?>"> 
+	<?php $vAktiv = false; if (is_array($this->view['vp_data']) && sizeof($this->view['vp_data']) > 0) { ?>
+	
+		<?php $kk = -1; foreach ($this->view['vp_data'] as $k => $var) { $kk ++; ?>
+			
+				<div class="wpsg_vp_field wpsg_vp_field_<?php echo $this->getProduktId($this->view['data']['id']); ?>">
+					 
+					<?php if ($var['type'] != wpsg_mod_productvariants::TYPE_RADIO) { ?>
+						<label class="wpsg_vp_field_label" for="wpsg_vpfield_<?php echo $this->getProduktId($this->view['data']['id']); ?>_<?php echo $k; ?>">
+							<?php echo $var['name']; ?>
+						</label>
+					<?php } else { ?>
+						<span class="wpsg_vp_field"><?php echo $var['name']; ?></span>
+					<?php } ?>
+					
+					<div class="wpsg_vp_field_typ_<?php echo $var['type']; ?>">
+					
+						<?php /* SELECT-Box START */ ?>
+						<?php if ($var['type'] == wpsg_mod_productvariants::TYPE_SELECT) { ?>
+							<label>			 			
+								<select name="wpsg_vp[<?php echo $k; ?>]" class="wpsg_vp_update" id="wpsg_vpfield_<?php echo $this->getProduktId($this->view['data']['id']); ?>_<?php echo $k; ?>">
+								<?php foreach ($var['arVariation'] as $kv => $vari) { $j = -1;
+									if ($vari['active'] == "1") { $j++; ?>
+										<?php if (!$this->hasMod('wpsg_mod_stock') || $vari['stock'] > 0 || $this->get_option('wpsg_mod_vp_showProduct') === '1') { ?>
+												
+											<?php /* Lagerbestand > 0 */ ?>
+											<?php if (!$this->hasMod('wpsg_mod_stock') || $vari['stock'] > 0) { ?>
+											
+												<option value="<?php echo $kv; ?>" <?php echo ((wpsg_getStr($this->view['vp_info'][$k]['vari_id']) == $kv)?'selected="selected"':''); ?>>						
+												<?php echo $vari['name']; ?>
+													
+													<?php /* Abfrage Preisanzeige nur für eingeloggte Benutzer START */?>
+													<?php if ($this->canDisplayPrice()) { ?>			
+														<?php if ($this->callMod('wpsg_mod_productvariants', 'showVariPrice', array($vari['price']))) { ?>
+															(<?php echo wpsg_ff($vari['price'], $this->get_option('wpsg_currency')); ?>)
+														<?php } ?>
+													<?php }else{?>
+														<?php echo wpsg_translate(__('(Preise nur für eingeloggte Benutzer)', 'wpsg')); ?>
+													<?php } ?>
+													<?php /* Abfrage ENDE */ ?>
+												</option>
+												
+											<?php /* Lagerbestand der Variante=0 - wird angezeigt, ist aber nicht auswählbar */ ?>
+											<?php } else { ?>
+												<option disabled="disabled" value="<?php echo $kv; ?>" <?php echo (($this->view['wpsg_mod_productvariants']['set'][$k] == $kv)?'selected="selected"':''); ?>>						
+													<?php echo $vari['name']; ?>
+													<?php if ($this->callMod('wpsg_mod_productvariants', 'showVariPrice', array($vari['price']))) { ?>
+														(<?php echo wpsg_ff($vari['price'], $this->get_option('wpsg_currency')); ?>)
+													<?php } ?>
+												</option>
+											<?php } /* Lagerbestandsabfrage ENDE */ ?>
+												
+										<?php } ?>
+									<?php } ?>
+								<?php } ?>	
+								</select>
+							</label>
+						<?php } /* SELECT-Box ENDE */ ?>
+						
+						<?php /* IMAGE START */ ?>
+						<?php if ($var['type'] == wpsg_mod_productvariants::TYPE_IMAGE) { ?>
+							<div class="wpsg_mod_productvariants_imageselect wpsg_mod_productvariants_imageselect_<?php echo $k; ?>">
+							<span>
+								<input type="hidden" name="wpsg_vp[<?php echo $k; ?>]" id="wpsg_vp_<?php echo $k; ?>" value="<?php echo wpsg_getStr($this->view['vp_info'][$k]['vari_id']); ?>" />
+								<?php $kkv = -1; foreach ($var['arVariation'] as $kv => $vari) { $kkv++;
+									if ($vari['active'] == '1' && (!$this->hasMod('wpsg_mod_stock') || $vari['stock'] > 0)) { ?>
+
+										<?php $simulated_product_key = $this->callMod('wpsg_mod_productvariants', 'getSimulatedVariKey', array($this->view['data']['product_key'], $var['id'], $vari['id'])); ?>
+										<?php $attachmentID = $this->imagehandler->getAttachmentID($simulated_product_key); ?>
+										
+										<a data-wpsg-id="<?php echo $kv; ?>" class="wpsg_vp_update_image image <?php echo ((wpsg_getStr($this->view['vp_info'][$k]['vari_id']) == $vari['id'])?'akt':''); ?>" href="#">
+											<?php echo wp_get_attachment_image($attachmentID, 'thumbnail'); ?>
+										</a>
+											 
+										
+									<?php } ?>
+								<?php } ?>
+							</span>	
+							</div>
+						<?php } /* IMAGE ENDE */ ?>
+						
+						<?php /* Radio-Buttons START */ ?>
+						<?php if ($var['type'] == wpsg_mod_productvariants::TYPE_RADIO) { ?>			
+							<?php $j = 0; foreach ($var['arVariation'] as $kv => $vari) { if ($vari['active'] == "1") { $j ++; ?>
+								<?php if (!$this->hasMod('wpsg_mod_stock') || $vari['stock'] > 0 || $this->get_option('wpsg_mod_vp_showProduct') === '1') { ?>					
+									<label>
+									
+										<?php if (!$this->hasMod('wpsg_mod_stock') || $vari['stock'] > 0) { ?>
+											<input <?php echo ((wpsg_getStr($this->view['vp_info'][$k]['vari_id']) == $kv)?'checked="checked"':''); ?> 
+											id="wpsg_vpfield_<?php echo $this->getProduktId($this->view['data']['id']); ?>_<?php echo $k; ?>_<?php echo $j; ?>" 
+											type="radio" name="wpsg_vp[<?php echo $k; ?>]" value="<?php echo $kv; ?>" class="wpsg_vp_update" />&nbsp;<?php echo $vari['name']; ?>
+										<?php /* Lagerbestand der Variante=0 - wird angezeigt, ist aber nicht auswählbar */ ?>
+										<?php } else { ?>
+											<input disabled="disabled" <?php echo (($this->view['wpsg_mod_productvariants']['set'][$k] == $kv)?'checked="checked"':''); ?> id="wpsg_vpfield_<?php echo $this->getProduktId($this->view['data']['id']); ?>_<?php echo $k; ?>_<?php echo $j; ?>" type="radio" name="wpsg_vp[<?php echo $k; ?>]" value="<?php echo $kv; ?>" />&nbsp;<?php echo $vari['name']; ?>
+										<?php } ?>
+										
+										<?php /* Abfrage Preisanzeige nur für eingeloggte Benutzer START */?>
+										<?php if ($this->canDisplayPrice()) { ?>			
+								
+											<?php if ($this->callMod('wpsg_mod_productvariants', 'showVariPrice', array($vari['price']))) { ?>
+												<span class="wpsg_vp_vari_preisinfo">(<?php echo wpsg_ff($vari['price'], $this->get_option('wpsg_currency')); ?>)</span>
+											<?php } ?>
+											
+										<?php }else{?>
+												<?php echo wpsg_translate(__('(Preise nur für eingeloggte Benutzer)', 'wpsg')); ?>
+										<?php } ?>
+										<?php /* Abfrage ENDE */ ?>
+											
+									</label>
+								<?php } /* If aktiv && stock */ ?>
+							<?php } } /* Foreach/Aktiv Radio ENDE */ ?>
+						<?php } /* Radio ENDE */ ?>
+	 
+						<div style="clear:both;"></div>
+	
+					</div>
+				</div>
+	
+		<?php } /* foreach ($this->view['vp_data'] as $k => $var) */ ?>
+	<?php } /* $vAktiv = false; ENDE */ ?>
+	
+	<script type="text/javascript">/* <![CDATA[ */
+		
+		jQuery(document).ready(function() {
+		
+			jQuery('.wpsg_vp_update').off('change').on('change', wpsg_mod_productvariants_reload); 
+
+			jQuery('.wpsg_vp_update_image').on('click', function(event) {
+
+				jQuery(this).closest('span').find('input').val(jQuery(this).data('wpsg-id'));
+				wpsg_mod_productvariants_reload(event);
+				
+				return false;
+				
+			} ); 
+			
+		} );
+	
+	/* ]]> */</script>
+</div>

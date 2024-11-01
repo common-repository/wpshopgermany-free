@@ -1,0 +1,57 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen in einem Blognetzwerk
+	 */
+
+?>
+
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div>
+			
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $_REQUEST['subaction']; ?>&amp;noheader=1">
+		
+		
+		<div class="panel panel-default">		
+			
+			<div class="panel-heading clearfix">
+      	<h3 class="panel-title"><?php echo __('Blognetzwerk-Einstellungen', 'wpsg'); ?></h3>
+      </div>
+				 
+			<div class="panel-body">	  		
+				<div class="info">
+					<br />
+						<?php echo __('Sie befinden sich in einer Multiblog Umgebung.', 'wpsg'); ?>
+					<br />
+				</div>
+				
+				<div class="wpsg_form_field">
+
+						<?php echo wpsg_drawForm_Checkbox('wpsg_multiblog_standalone', __('Jeden Blog getrennt behandeln', 'wpsg'), $this->get_option('wpsg_multiblog_standalone', true), array('help' => 'wpsg_multiblog_standalone')); ?>
+						<?php echo wpsg_drawForm_Checkbox('wpsg_multiblog_sessionPath', __('Session auf Verzeichnis einschränken', 'wpsg'), $this->get_option('wpsg_multiblog_sessionPath', true), array('help' => 'wpsg_multiblog_sessionPath')); ?>
+						
+						<input type="hidden" name="subaction" value="blognetzwerk" />
+
+				</div>			
+				<div class="info">
+					<br />
+						<?php echo __('Nach der Umstellung dieser Option sollte in den Blogs in denen der Shop noch verwendet wird die Shop Datenbank aktualisiert werden. (Einstellungen -> Allgemein)', 'wpsg'); ?>
+					<br />
+				</div>
+					
+				<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+			
+			</div>	
+		
+		</div>
+	</form>
+</div>

@@ -1,0 +1,107 @@
+<div class="form-group form-group-sm form-select <?php echo ((wpsg_isSizedString($this->view['field_config']['help']) || wpsg_isSizedString($this->view['field_config']['icon']))?'has-feedback':''); ?>">
+
+	<label class="col-sm-6 control-label" for="<?php echo $this->view['field_id']; ?>"><?php echo $this->view['field_label']; ?></label>
+	
+	<div class="col-sm-6">
+		
+		<div class="wpsg_field_wrap">
+		
+			<select
+				id="<?php echo $this->view['field_id']; ?>"
+				name="<?php echo $this->view['field_name']; ?>"
+				tabindex="<?php
+
+				if (!isset($GLOBALS['wpsg']['tabindex']))
+				{
+
+					$GLOBALS['wpsg']['tabindex'] = 10;
+
+				}
+				else
+				{
+
+					$GLOBALS['wpsg']['tabindex'] += 10;
+
+				}
+
+				echo $GLOBALS['wpsg']['tabindex'];
+
+				?>"
+				class="form-control input-sm <?php echo wpsg_getStr($this->view['field_config']['field_class']); ?>" <?php echo $this->view['atts_select']; ?>>
+				
+				<?php 
+				
+					if (wpsg_isTrue($this->view['field_config']['optgroup'])) 
+					{ 
+				
+						$arGroup = array();
+						
+						foreach ($this->view['field_values'] as $k_group => $v_group)
+						{
+							
+							$arGroup[$k_group] = $v_group[0];
+							$arValues[$k_group] = $v_group[1];
+							
+						}
+				
+					}
+					else
+					{
+						
+						$arValues = array($this->view['field_values']);
+						$arGroup = null;
+						
+					}
+				
+				?>
+				
+				<?php foreach ($arValues as $k_group => $v_group) { ?>
+				
+					<?php if (!is_null($arGroup)) { ?><optgroup label="<?php echo $arGroup[$k_group]; ?>"><?php } ?>
+				
+					<?php foreach ($v_group as $k => $v) { ?>
+					<option <?php 
+					
+						if (wpsg_isSizedArray($this->view['field_value']))
+						{
+							
+							echo ((in_array($k, $this->view['field_value']))?'selected="selected"':'');
+							
+						}
+						else
+						{
+					
+							if (wpsg_isTrue($this->view['field_config']['noKeys']) && wpsg_isSizedString($v, $this->view['field_value'])) echo ' selected="selected" ';						
+							else echo (($k == $this->view['field_value'])?'selected="selected"':'');
+					
+						}
+						
+					?> value="<?php 
+					
+						if (wpsg_isTrue($this->view['field_config']['noKeys'])) echo wpsg_hspc($v);
+						else echo wpsg_hspc($k); 
+						
+					?>"><?php echo wpsg_hspc($v); ?></option>
+					<?php } ?>
+					
+					<?php if (!is_null($arGroup)) { ?></optgroup><?php } ?>
+					
+				<?php } ?>
+				
+			</select>
+			
+			<?php if (wpsg_isSizedString($this->view['field_config']['help'])) { ?>
+				<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>" class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+			<?php } ?>
+			
+			<?php if (wpsg_isSizedString($this->view['field_config']['icon'])) { ?>
+				<a href="#" class="<?php echo $this->view['field_config']['icon']; ?> form-control-feedback" aria-hidden="true"></a>
+			<?php } ?>
+			
+		</div>
+	
+	</div>
+	
+	<div class="clearfix wpsg_clear"></div>
+	
+</div>

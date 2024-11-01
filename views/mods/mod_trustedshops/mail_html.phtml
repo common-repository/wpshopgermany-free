@@ -1,0 +1,17 @@
+<?php
+
+	/**
+	 * Template für die Mail an den Kunden, die manuell aus der Bestellansicht versendet werden kann (HTML)
+	 */
+
+?><p><?php echo wpsg_translate(__('Hallo #1# #2#,', 'wpsg'), $this->view['customer']['vname'], $this->view['customer']['name']); ?></p> 
+ 
+<p><?php echo __('wir hoffen Sie waren mit dem Bestellablauf zufrieden, um unseren Service und unsere Dienstleistung zu verbessern können Sie uns über Trusted Shops bewerten. Dies können Sie kostenlos unter folgendem Link durchführen: ', 'wpsg')?></p> 
+ 
+<p>
+	<a href="https://www.trustedshops.de/bewertung/bewerten_<?php echo $this->get_option('wpsg_mod_trustedshops_shopid'); ?>.html&buyerEmail=<?php echo urlencode(base64_encode($this->view['customer']['email'])); ?>&shopOrderID=<?php echo urlencode(base64_encode($this->view['order']['onr'])); ?>"><?php echo __('Bewertung durchführen', 'wpsg'); ?></a>
+</p> 
+
+<p><?php echo __("Mit freundlichen Grüßen", "wpsg"); ?></p>
+
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p>

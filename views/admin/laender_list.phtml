@@ -1,0 +1,86 @@
+<?php
+
+    /**  Liste der Länder im Backend */
+
+    echo $this->writeBackendMessage();
+    
+?>
+
+<?php if (wpsg_isSizedArray($this->view['data'])) { ?>
+    <table class="table wpsg_table_country">
+
+        <thead>
+            <tr>
+                <th class="col_check"><input type="checkbox" onclick="return wpsg_country_check_all();" style="margin-top:-2px;" /></th>
+                <th class="col_name"><?php echo __('Ländername', 'wpsg'); ?></th>
+                <th class="col_vz"><?php echo __('Versandzone', 'wpsg'); ?></th>
+                <th class="col_mwstsetting"><?php echo __('MwSt.', 'wpsg'); ?></th>
+                <th class="col_mwst"><?php echo __('MwSt. A', 'wpsg'); ?></th>
+                <th class="col_mwst"><?php echo __('MwSt. B', 'wpsg'); ?></th>
+                <th class="col_mwst"><?php echo __('MwSt. C', 'wpsg'); ?></th>
+                <th class="col_mwst"><?php echo __('MwSt. D', 'wpsg'); ?></th>
+                <th class="col_action"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php foreach ($this->view['data'] as $l) { ?>
+                <tr id="wpsg_laenderrow_<?php echo $l['id']; ?>" class="<?php echo (($this->get_option('wpsg_defaultland') == $l['id'])?'bg-info':''); ?>">
+                    <td class="col_check"><input type="checkbox" value="1" name="arDelete[<?php echo $l['id']; ?>]" /></td>
+                    <td class="col_name"><?php echo wpsg_hspc($l['name'].((wpsg_isSizedString($l['kuerzel']))?' ('.$l['kuerzel'].')':'')); ?></td>
+                    <td class="col_vz">
+                        <?php if (wpsg_isSizedInt($l['vz']) && wpsg_isSizedString($this->view['vz'][$l['vz']])) { ?>
+                            <?php echo wpsg_hspc($this->view['vz'][$l['vz']]); ?>
+                        <?php } ?>
+                    </td>
+                    <td class="col_mwstsetting">
+                        <?php if ($l['mwst'] == '2') { ?>
+                            <?php echo __('keine MwSt. bei USt.IdNr.', 'wpsg'); ?>
+                        <?php } else if ($l['mwst'] == '1') { ?>
+                            <?php echo __('keine MwSt.', 'wpsg'); ?>
+                        <?php } else { ?>
+                            <?php echo __('mit MwSt.', 'wpsg'); ?>
+                        <?php } ?>
+                    </td>
+                    <td class="col_mwst"><?php if (wpsg_tf($l['mwst_a']) != NULL) { ?>
+                            <?php echo wpsg_ff(wpsg_tf($l['mwst_a']), '%'); ?>
+                        <?php } ?></td>
+                    <td class="col_mwst"><?php if (wpsg_tf($l['mwst_b']) != NULL) { ?>
+                            <?php echo wpsg_ff(wpsg_tf($l['mwst_b']), '%'); ?>
+                        <?php } ?></td>
+                    <td class="col_mwst"><?php if (wpsg_tf($l['mwst_c']) != NULL) { ?>
+                            <?php echo wpsg_ff(wpsg_tf($l['mwst_c']), '%'); ?>
+                        <?php } ?></td>
+                    <td class="col_mwst"><?php if (wpsg_tf($l['mwst_d']) != NULL) { ?>
+                            <?php echo wpsg_ff(wpsg_tf($l['mwst_d']), '%'); ?>
+                        <?php } ?></td>
+                    <td class="col_action">
+
+                        <a href="#" onclick="return wpsg_country_edit('<?php echo $l['id']; ?>');" class="glyphicon glyphicon-pencil"></a>
+                        <a href="#" onclick="return wpsg_country_remove('<?php echo $l['id']; ?>');" class="glyphicon glyphicon-trash"></a>
+
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+        <tfoot>
+            <tr>
+
+                <td class="col_check"><!-- <span class="glyphicon glyphicon-trash"></span> --></td>
+                <td colspan="8">
+
+                    <input type="submit" name="submit" onclick="return confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>');" class="button btn-xs" value="<?php echo __('Markierte Länder löschen', 'wpsg'); ?>" />
+
+                </td>
+
+            </tr>
+        </tfoot>
+    </table>
+
+    <br />
+
+    <div class="info"><?php echo __('Das Standardland ist <span class="bg-info">blau</span> markiert und wird für die MwSt. Berechnung im Backend verwendet.', 'wpsg'); ?></div>
+
+<?php } else { ?>
+    <p><?php echo __('Noch keine Länder angelegt.', 'wpsg'); ?></p>
+<?php } ?>

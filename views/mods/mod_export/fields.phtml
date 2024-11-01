@@ -1,0 +1,151 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@daschmi.de)
+     * Date: 03.11.2016
+     * Time: 14:12
+     */
+
+    $inlineEdit_url = WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=inlinedit&noheader=1&profil_id='.$this->view['profil']['id'];
+
+?>
+<table class="table table-body-striped" id="wpsg_mod_export_fieldtable">
+    <thead>
+        <tr>
+            <th class="wpsg_mod_export_col_name"><?php echo __('Spaltenname', 'wpsg'); ?></th>
+            <th class="wpsg_mod_export_col_value"><?php echo __('Wert', 'wpsg'); ?></th>
+            <th class="wpsg_mod_export_col_format"><?php echo __('Format', 'wpsg'); ?></th>
+            
+            <th style="display:<?php echo (($this->view['profil']['format'] == wpsg_mod_export::FORMAT_XML)?'table-cell':'none'); ?>;" title="<?php echo __('Feld im XML als Attribut exportieren', 'wpsg'); ?>" class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_XML; ?> wpsg_mod_export_col_att"><?php echo __('Att'); ?></th>            
+            <th style="display:<?php echo (($this->view['profil']['format'] != wpsg_mod_export::FORMAT_XML)?'table-cell; padding:0px':'none'); ?>;" class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_CSV; ?>">&nbsp;</th>
+            
+            <th class="wpsg_mod_export_col_remove">
+                
+                <a style="float:right;" onclick="return wpsg_mod_export_addField(<?php echo $this->view['profil']['id']; ?>);" title="<?php echo __('Neues Feld einfügen', 'wpsg'); ?>" href="#" class="glyphicon glyphicon-plus"></a>
+                
+            </th>
+        </tr>
+    </thead>
+
+    <?php $i = 0; foreach ((array)$this->view['profil']['fields'] as $f_id => $f) { $i ++; ?>
+    <tbody id="field_<?php echo $f_id; ?>">
+        <tr class="wpsg_tablerow wpsg_mod_export_row1 wpsg_mod_export_fieldrow_<?php echo $f_id; ?> <?php echo (($i % 2 == 0)?'odd':'even'); ?>">
+            
+            <td class="wpsg_mod_export_col">
+                <div class="name wpsg_editable" id="field_name_<?php echo $f_id; ?>"><?php echo $f['name']; ?></div>
+            </td>
+            <td class="wpsg_mod_export_col_field"><div class="wpsg_editable" id="field_typ_<?php echo $f_id; ?>"><?php
+    
+                foreach ($this->view['fields'] as $fieldgroup)
+                {
+    
+                    foreach ($fieldgroup['fields'] as $field_key => $field)
+                    {
+    
+                        if ($field_key == $f['value_key'])
+                        {
+                            
+                            echo $field;
+                            
+                        }
+    
+                    }
+    
+                }
+    
+            ?></div></td>
+            <td class="wpsg_mod_export_col_format">
+                
+                <div class="wpsg_editable" id="field_format_<?php echo $f_id; ?>"><?php echo $this->view['arFieldFormats'][$f['format']]; ?></div>
+            
+            </td> 
+            
+            <td style="display:<?php echo (($this->view['profil']['format'] == wpsg_mod_export::FORMAT_XML)?'table-cell':'none'); ?>;" class="wpsg_mod_export_col_att wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_XML; ?>">
+                
+                <input type="checkbox" onchange="wpsg_mod_export_setAtt(this, <?php echo $f['id']; ?>);" value="1" <?php echo ((wpsg_isSizedInt($f['xml_att']))?'checked="checked"':''); ?> />
+                                
+            </td>
+            <td style="display:<?php echo (($this->view['profil']['format'] != wpsg_mod_export::FORMAT_XML)?'table-cell; padding:0px':'none'); ?>;" class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_CSV; ?>">&nbsp;</td>
+                        
+            <td>
+                
+                <a style="float:right;" onclick="return wpsg_mod_export_removeField(<?php echo $f_id; ?>);" title="<?php echo __('Feld löschen', 'wpsg'); ?>" href="#" class="glyphicon glyphicon-trash"></a>
+                               
+            </td>
+            
+        </tr>
+        <tr id="userformatrow_<?php echo $f_id; ?>" style="<?php echo (($f['format'] != 700)?'display:none;':''); ?>" class="wpsg_mod_export_row2 wpsg_tablerow wpsg_mod_export_fieldrow_<?php echo $f_id; ?> <?php echo (($i % 2 == 0)?'odd':'even'); ?>">
+            <td class="wpsg_mod_export_col_format_user" colspan="4">
+            
+                <?php echo __('Format', 'wpsg'); ?>:
+                
+                <div class="wpsg_editable" id="field_userformat_<?php echo $f_id; ?>"><?php echo wpsg_hspc(wpsg_getStr($f['userformat'])); ?></div>
+            
+            </td>
+            <td style="position:relative;">
+                
+                <a rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=mod_export_userformat" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=mod_export_userformat" data-wpsg-tip="mod_export_userformat" class="glyphicon glyphicon-question-sign" style="float:right;"></a>
+               
+                <script type="text/javascript">/* <![CDATA[ */
+                
+                    jQuery(document).ready(function() {
+                        
+                        jQuery('#field_name_<?php echo $f_id; ?>').wpsg_editable('<?php echo $inlineEdit_url; ?>', { } );
+                        
+                        jQuery('#field_typ_<?php echo $f_id; ?>').wpsg_editable('<?php echo $inlineEdit_url; ?>', { 
+                            'type': 'multiarray',
+                            'data': '<?php echo addslashes(json_encode($this->view['fields'], JSON_UNESCAPED_SLASHES)); ?>'                            
+                        } );
+                        
+                        jQuery('#field_format_<?php echo $f_id; ?>').wpsg_editable('<?php echo $inlineEdit_url; ?>', {
+                            'type': 'select',
+                            'data': <?php echo wpsg_prepare_for_inlineEdit($this->view['arFieldFormats']); ?>,
+                            'callback': function(response, newValue) {
+                                
+                                if (newValue === "700") jQuery('#userformatrow_<?php echo $f_id; ?>').show();
+                                else jQuery('#userformatrow_<?php echo $f_id; ?>').hide();
+                                
+                            }
+                        } );
+                        
+                        jQuery('#field_userformat_<?php echo $f_id; ?>').wpsg_editable('<?php echo $inlineEdit_url; ?>', { } );
+                        
+                    } );
+                
+                /* ]]> */</script>
+                
+            </td>
+        </tr>
+    </tbody>
+    <?php } ?>
+
+</table>
+
+<script type="text/javascript">/* <![CDATA[ */
+    
+    wpsg_ajaxBind();
+
+    jQuery("#wpsg_mod_export_fieldtable").sortable( { 
+        helper: wpsg_Tablefix,
+        items: 'tbody',
+        handler: '.wpsg_id',
+        update: function(event, ui) {
+
+            var wpsg_reorder = jQuery(this).sortable('serialize');
+            
+            jQuery.ajax( {
+                url: '<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=wpsg_mod_export_reorder&noheader=1&profil_id='.$this->view['profil']['id']; ?>',
+                data: { 
+                    wpsg_reorder: wpsg_reorder
+                },
+                success: function(data) {
+
+                    if (data !== "1") alert(data);
+                    
+                }
+            } );
+            
+        }} 
+    ).disableSelection();
+    
+/* ]]> */</script>

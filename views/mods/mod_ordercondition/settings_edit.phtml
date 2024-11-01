@@ -1,0 +1,158 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Bestellbedingungsmoduls
+	 */
+
+?>
+<script type="text/javascript">/* <![CDATA[ */
+
+	/**
+	 * Wird beim Anlegen einer neuen Bestellbedingung aufgerufen
+	 */
+	function wpsg_addOC() 
+	{
+	
+		jQuery('#wpsg_oc_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&noheader=1&do=add',
+			success: function(data) {
+				jQuery('#wpsg_oc_list').html(data);
+			}
+		} );
+	
+		return false;
+		
+	} // function wpsg_addZV()
+	
+	/**
+	 * Speichert den Text einer Bestellbedingung
+	 */
+	function wpsg_saveOCText(oc_id)
+	{
+
+		var OCText = jQuery('#oc_' + oc_id).val(); 
+
+	    window.setTimeout(function() {
+
+	    	jQuery.ajax( {
+				url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1',
+				type: 'POST',
+				data: {
+					field: 'text',
+					value: OCText,
+					oc_id: oc_id
+				},
+				success: function(data) {
+
+					if (data != "1")
+					{
+
+						alert(data);
+							
+					}
+					else
+					{
+
+						alert('<?php echo __('Text wurde erfolgreich gespeichert.', 'wpsg'); ?>');
+						
+					}
+					  
+				}		
+			} );
+		    
+        	
+        	
+    	}, 10);		
+		
+		return false;
+		
+	} // function wpsg_saveOCText(oc_id)
+
+	function wpsg_saveOCErrorText(oc_id)
+	{
+
+		var OCErrorText = jQuery('#oc_errortext_' + oc_id).val(); 
+
+	    window.setTimeout(function() {
+
+	    	jQuery.ajax( {
+				url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1',
+				type: 'POST',
+				data: {
+					field: 'errortext',
+					value: OCErrorText,
+					oc_id: oc_id
+				},
+				success: function(data) {
+
+					if (data != "1")
+					{
+
+						alert(data);
+							
+					}
+					  
+				}		
+			} );
+		     
+    	}, 10);		
+		
+		return false;
+		
+	} // function wpsg_saveOCErrorText(oc_id)
+	
+	/**
+	 * Blendet den Editor einer Bestellbedingung ein und die anderen aus
+	 */
+	function wpsg_showOCText(oc_id)
+	{
+
+		jQuery('.wpsg_mod_ordercondition_editor').hide(500);
+
+		if (!jQuery('.wpsg_mod_ordercondition_editor_' + oc_id).is(':visible'))
+		{
+			
+			jQuery('.wpsg_mod_ordercondition_editor_' + oc_id).show(500);
+
+		}
+
+		return false;
+		
+	} // function wpsg_showOCText(oc_id)
+
+
+	/**
+	 * Blendet den Editor einer Bestellbedingung ein und die anderen aus
+	 */
+	function wpsg_showOCErrorText(oc_id)
+	{
+
+		jQuery('.wpsg_mod_ordercondition_editor').hide(500);
+
+		if (!jQuery('.wpsg_mod_ordercondition_editor_errortext_' + oc_id).is(':visible'))
+		{
+			
+			jQuery('.wpsg_mod_ordercondition_editor_errortext_' + oc_id).show(500);
+
+		}
+
+		return false;
+		
+	} // function wpsg_showOCErrorText(oc_id)
+		
+/* ]]> */</script>
+
+<?php if ($this->hasMod('wpsg_mod_crefopay')) { ?>
+<p>
+	<span class="wpsg_error"><?php echo __('Aufgrund des für CrefoPay angepassten Bestellablaufs ist dieses Modul unwirksam.', 'wpsg'); ?></span>
+</p>
+<?php } ?>
+
+<div id="wpsg_oc_list">
+	<?php echo $this->callMod('wpsg_mod_ordercondition', 'oc_list'); ?>
+</div>
+
+<br />
+<a href="#" onclick="return wpsg_addOC();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neue Bestellbedingung anlegen', 'wpsg'); ?></a>

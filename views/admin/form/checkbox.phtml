@@ -1,0 +1,78 @@
+<div class="form-group form-group-sm form-checkbox <?php echo ((wpsg_isSizedString($this->view['field_config']['help']))?'has-feedback':''); ?>">
+
+    <?php if (wpsg_isSizedString($this->view['field_config']['label'])) { $value_class = 'col-sm-6'; ?>
+    <label class="col-sm-6 control-label">
+        <?php echo wpsg_hspc($this->view['field_config']['label']); ?>
+    </label>
+    <?php } else {
+
+        if (wpsg_isTrue($this->view['field_config']['fullWidth'])) $value_class = 'col-sm-12';
+		else $value_class = 'col-sm-offset-6 col-sm-6';
+
+    } ?>
+
+	<div class="<?php echo $value_class; ?>">
+		
+		<div class="checkbox">
+			<label>
+
+				<div class="wpsg_field_wrap">
+					
+					<?php if (!isset($this->view['field_config']['noHidden'])) { ?>
+					<input type="hidden" name="<?php echo $this->view['field_name']; ?>" value="0" />
+					<?php } ?>
+					
+					<input type="checkbox" id="<?php echo $this->view['field_id']; ?>" name="<?php echo $this->view['field_name']; ?>" value="<?php echo wpsg_getStr($this->view['field_config']['value'], '1'); ?>" <?php echo (($this->view['field_checked'] > 0)?'checked="checked"':''); ?> />
+				
+					<?php echo $this->view['field_label']; ?>
+					
+					<?php if (wpsg_isSizedString($this->view['field_config']['help'])) { ?>
+						<?php if (wpsg_isTrue($this->view['field_config']['rAlign'])) { ?>
+							<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>"
+							class="glyphicon glyphicon wpsg_glyphicon_right glyphicon-question-sign form-control-feedback" aria-hidden="true" style="float:right;"></a>
+						<?php } else { ?>
+							<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>"
+							class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+						<?php } ?>
+					<?php } ?>
+					
+					<?php if (wpsg_isSizedString($this->view['field_config']['hint'])) { ?>
+						<div class="hint info"><?php echo $this->view['field_config']['hint']; ?></div>
+					<?php } ?>
+					
+				</div>
+				
+			</label>
+			
+		</div>
+		
+	</div>
+	
+	<?php if (wpsg_isTrue($this->view['field_config']['inlineEdit'])) { ?>
+    <script type="text/javascript">/* <![CDATA[ */
+
+        jQuery(document).ready(function() {
+
+			jQuery('#<?php echo $this->view['field_id']; ?>').on('change', function() {
+				
+				var value = '0';
+				if (jQuery(this).prop('checked')) value = '1';
+				
+				jQuery.ajax( {
+					url: '<?php echo $this->view['field_config']['inlineEdit_url']; ?>',
+					data: {
+						'name': '<?php echo $this->view['field_name']; ?>',
+						'value': value
+					}
+				} );
+				
+			} );
+			 
+        } );
+
+    /* ]]> */</script>
+    <?php } ?>
+		
+	<div class="clearfix wpsg_clear"></div>
+	
+</div>

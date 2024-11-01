@@ -1,0 +1,76 @@
+<?php 
+
+	/**
+	 * Templatedatei für die Einstellungen des PayPal Moduls
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_paypal_bezeichnung', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_paypal_bezeichnung'), array('help' => 'wpsg_shippay_name')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_paypal_aktiv', __('Aktiv', 'wpsg'), $this->get_option('wpsg_mod_paypal_aktiv'), array('help' => 'wpsg_shippay_activ')); ?>
+<?php echo wpsg_drawForm_Textarea('wpsg_mod_paypal_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_paypal_hint'), array('help' => 'wpsg_shippay_hint')); ?>
+
+<br />
+	
+<?php echo wpsg_drawForm_Input('wpsg_mod_paypal_clientid', __('Client ID', 'wpsg'), $this->get_option('wpsg_mod_paypal_clientid'), array('hint' => wpsg_translate('nohspc_'.__('Erhalten Sie im <a target="_blank" href="#1#">PayPal Developer Interface</a>.', 'wpsg'), 'https://developer.paypal.com/'), 'help' => 'wpsg_mod_paypal_clientid')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_paypal_secret', __('Secret', 'wpsg'), $this->get_option('wpsg_mod_paypal_secret'), array('hint' => wpsg_translate('nohspc_'.__('Erhalten Sie im <a target="_blank" href="#1#">PayPal Developer Interface</a>.', 'wpsg'), 'https://developer.paypal.com/'), 'help' => 'wpsg_mod_paypal_secret')); ?>
+		
+<div class="wpsg_form_field ">
+	<div class="wpsg_form_left">
+		<label for=""><?php echo __('Stornierung bei Statuswechsel', 'wpsg'); ?>:</label>
+	</div>
+	<div class="wpsg_form_right">
+		<a href="#" class="wpsg_mod_paypal_stornostate"><?php echo __('Bearbeiten', 'wpsg'); ?></a>
+	</div>
+	<div class="wpsg_clear"></div>
+</div>
+<div class="wpsg_mod_paypal_stornostate_layer" style="display:none;">
+	
+	<?php foreach ($this->arStatus as $status_id => $status_label) { $arStornoStatus = (array)$this->get_option('wpsg_mod_paypal_stornostate'); ?>
+	<?php echo wpsg_drawForm_Checkbox('wpsg_mod_paypal_stornostate['.$status_id.']', __($status_label, 'wpsg'), $arStornoStatus[$status_id], array('labelright' => true)); ?>	
+	<?php } ?> 
+	
+	<br />
+	
+</div>
+
+<?php echo wpsg_drawForm_Input('', __('WebHook URL', 'wpsg'), $this->getUrl(wpsg_ShopController::URL_BASKET, 'wpsg_mod_paypal', 'webHook', array(), true), array('readonly' => true, 'help' => 'wpsg_mod_paypal_webhook_url')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_paypal_createwebhook',  __('Beim speichern versuchen den WebHook anzumelden.', 'wpsg'), 0, array('labelright' => true, 'noDoubleDot' => true, 'help' => 'wpsg_mod_paypal_createwebhook')); ?>
+			
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+ 
+		jQuery('.wpsg_mod_paypal_stornostate').bind('click', function() {
+
+			jQuery('.wpsg_mod_paypal_stornostate_layer').toggle();
+
+			if (jQuery('.wpsg_mod_paypal_stornostate_layer').is(':visible')) jQuery(this).html('<?php echo __('Ausblenden', 'wpsg'); ?>');
+			else jQuery(this).html('<?php echo __('Bearbeiten', 'wpsg'); ?>');
+			
+			return false;
+			
+		} );
+		
+	} );
+
+/* ]]> */</script>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_paypal_sandbox', __('Sandbox Modus', 'wpsg'), $this->get_option('wpsg_mod_paypal_sandbox'), array('help' => 'wpsg_mod_paypal_sandbox')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_paypal_subject', __('Betreff der Überweisung', 'wpsg'), $this->get_option('wpsg_mod_paypal_subject'), array('help' => 'wpsg_mod_paypal_subject')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_paypal_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_paypal_gebuehr'), true), array('help' => 'wpsg_shippay_gebuehr', 'unit' => $this->get_option('wpsg_currency').' / %')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_paypal_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_paypal_mwst'), array('help' => 'wpsg_shippay_mwst')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_paypal_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_paypal_mwstland'), array('help' => 'wpsg_shippay_mwstland')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_paypal_currency', __('Währungscode (Standard: EUR)', 'wpsg'), $this->get_option('wpsg_mod_paypal_currency'), array('help' => 'wpsg_mod_paypal_currency')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_paypal_language', __('Sprache im PayPal Interface', 'wpsg'), array('DE' => __('Deutsch', 'wpsg'), 'US' => __('Englisch', 'wpsg'), 'FR' => __('Französisch', 'wpsg')), $this->get_option('wpsg_mod_paypal_language'), array('help' => 'wpsg_mod_paypal_language')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_paypal_autostart', __('Zahlung sofort starten', 'wpsg'), $this->get_option('wpsg_mod_paypal_autostart'), array('help' => 'wpsg_shippay_paystart')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_paypal_success', __('Erfolgsseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_paypal_success'), array('help' => 'wpsg_page_mod_paypal_success')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_page_mod_paypal_error', __('Fehlerseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_mod_paypal_error'), array('help' => 'wpsg_page_mod_paypal_error')); ?>

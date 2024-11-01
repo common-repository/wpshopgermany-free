@@ -1,0 +1,24 @@
+<?php 
+    /*
+     *  Mailtemplate für das DownloadProdukt 
+     */
+
+    $arPflicht = $this->loadPflichtFeldDaten();
+    $arTitle = explode('|', $arPflicht['anrede_auswahl']);
+
+?><?php echo wpsg_translate(__('Hallo #1# #2# #3#,', 'wpsg'), @$arTitle[$this->view['customer']['title']], $this->view['customer']['vname'], $this->view['customer']['name']); ?>
+
+<?php echo __("Ihre Bezahlung zu der Bestellung", "wpsg"); ?> <?php echo $this->view['order']['onr'] ?> <?php echo __("ist bei uns eingegangen.", "wpsg"); ?>
+
+<?php echo __("Die Produkte, die als Download vorliegen, wurden für Sie freigeschaltet.", "wpsg"); ?> 
+
+<?php echo $this->view['data']['strLinks']; ?> 
+<?php if ($this->get_option('wpsg_mod_downloadprodukte_zt') == '0') { ?>
+<?php echo __("Sie haben für", "wpsg"); ?> <?php echo $this->view['data']['tage']; ?> <?php echo __("Tage die Möglichkeit die Dateien herunterzuladen.", "wpsg"); ?>
+<?php } else { ?>
+<?php echo preg_replace('/%1%/', $this->get_option('wpsg_mod_downloadprodukte_days'), __('Sie können die Datei %1% mal herunterladen', 'wpsg')); ?>
+<?php } ?>
+
+ 
+<?php echo __("Viele Grüße", "wpsg"); ?> 
+<?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?>

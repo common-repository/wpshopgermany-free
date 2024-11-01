@@ -1,0 +1,31 @@
+<?php
+
+	/**
+	 * Templatedatei für die Hilfe im Backend
+	 * Normalerweise sollte hier nichts angepasst werden
+	 */
+
+?>
+<div class="wpsg_hilfe" style="padding:5px; width:790px;">
+
+	<?php echo wpsg_drawForm_AdminboxStart(__('Hilfe', 'wpsg')); ?>
+	<p><?php echo __("Hier ein kleiner Überblick, wo welche Information zu finden ist:", "wpsg"); ?></p>
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+	<?php echo wpsg_drawForm_AdminboxStart(__('Tutorials', 'wpsg')); ?>
+	<p><?php echo __("In den Tutorial haben wir praxisnahe Beispiele verwendet, um die einzelnen Funktionen näher zu erklären. Rechts im Menü können die Kategorien näher ausgewählt werden, ganz oben gibt es ein Suchfenster, was ganz sehr gut funktioniert ;)", "wpsg"); ?></p>
+	<a href="http://wpshopgermany.maennchen1.de/category/tutorials/">http://wpshopgermany.maennchen1.de/category/tutorials/</a>
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+	<?php echo wpsg_drawForm_AdminboxStart(__('Forum', 'wpsg')); ?>
+	<p><?php echo __("Alle Anfragen hinsichtlich Fehler, Inbetriebnahme und Administration beantworten wir zeitnah (während unserer Geschäftszeiten). Vielleicht ist deine Frage bereits im Forum gestellt und beantwortet worden? Das Suchformular dort ist auch sehr mächtig, probiere es doch mal aus!", "wpsg"); ?></p>
+	<p><?php echo __("Bitte nutze generell das Forum für eine Support-Anfrage, <u>nicht</u> unser Kontaktformular oder Telefon.", "wpsg"); ?></p>
+	<a href="http://forum.maennchen1.de/">http://forum.maennchen1.de/</a>
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+	<?php echo wpsg_drawForm_AdminboxStart(__('Feature Wunschliste', 'wpsg')); ?>
+	<p><?php echo __("Wir orientieren uns direkt am Markt. Insofern geben wir dir als User die Möglichkeit mitzuentscheiden, welches Feature wpShopGermany zukünftig haben wird. Du kannst selber einen Feature-Wunsch anlegen, oder für einen bestehenden Wunsch deine Stimme abgeben.", "wpsg"); ?></p>
+	<a href="https://wpshopgermany.uservoice.com/">https://wpshopgermany.uservoice.com/</a>
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+</div>

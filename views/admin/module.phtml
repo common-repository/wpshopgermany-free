@@ -1,0 +1,294 @@
+<?php
+	
+	/**
+	 * Templatedatei für die Modulseite des Backend
+	 * Sollte nicht angepasst werden
+	 */
+
+	$wpsg_update_data = wpsg_get_update_data();
+	if (wpsg_isSizedArray($wpsg_update_data['modulinfo'])) $modul_info = $wpsg_update_data['modulinfo'];
+	else $modul_info = array();
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="wpsg_modul_search_wrap">
+		<input id="wpsg_modul_search" type="text" class="wpsg_modul_search" value="<?php echo wpsg_getStr($_COOKIE['wpsg-modulfilter-search']); ?>" />	
+		<label title="<?php echo __('Wenn aktiviert, werden nur aktive Module angezeigt'); ?>">
+			<input type="checkbox" <?php echo ((wpsg_isSizedString($_COOKIE['wpsg-modulfilter-check'], 'true'))?'checked="checked"':''); ?> id="wpsg_modul_onlyactive" class="wpsg_modul_onlyactive" />
+			<span class="glyphicon glyphicon-ok wpsg_modul_onlyactive_glyphicon" aria-hidden="true"></span>
+		</label>
+	</div>
+	
+	<?php foreach ($this->view['groups'] as $group_name => $g) { ?>
+	<div class="list-group list-modul-group" style="display:none;" >
+		<span class="list-group-item list-group-head"><?php echo $group_name; ?></span>		
+		<?php foreach ($g as $mod_key => $m) { ?>
+		<a class="<?php echo (($this->get_option($mod_key, $this->view['global']) > 0)?'modul_akt':''); ?> list-group-modul list-group-item <?php echo (($mod_key == wpsg_getStr($_REQUEST['modul'])?'active':'')); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=module&amp;modul=<?php echo $mod_key; ?>">
+			<span class="wpsg_modul_name"><?php echo $m->name; ?></span>
+			<?php if (($this->get_option($mod_key, $this->view['global']) > 0)?'modul_akt':'') { ?>
+			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+			<?php } ?>
+		</a>
+		<?php } ?>
+	</div>
+	<?php } ?>
+	 
+</div>
+
+<?php if (isset($_REQUEST['modul'])) { ?>
+<div class="wpsg_admin_content form-horizontal">
+	<?php echo wpsg_drawForm_AdminboxStart($this->arAllModule[$_REQUEST['modul']]->name); ?>		
+	<form name="form1" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=module&amp;modul=<?php echo $_REQUEST['modul']; ?>&amp;noheader=1" method="post" enctype="multipart/form-data">
+		 
+		<?php echo \wp_nonce_field('wpsg-admin-submit-module-'.$_REQUEST['modul']); ?>
+		
+		<p>
+
+			<?php echo $this->arAllModule[$_REQUEST['modul']]->desc; ?>
+
+			<a class="modul_help_link" target="_blank" href="https://doc.maennchen1.de/?modul_key=<?php echo $_REQUEST['modul']; ?>" title="<?php echo __('Hilfe zum Modul', 'wpsg'); ?>"><?php echo __('Hilfe zum Modul', 'wpsg'); ?></a>
+
+		</p>
+
+		<br />
+		
+		<?php if (!isset($wpsg_update_data['modulinfo'][$_REQUEST['modul']]) || @$wpsg_update_data['modulinfo'][$_REQUEST['modul']]['demo_active'] === true || @$wpsg_update_data['modulinfo'][$_REQUEST['modul']]['active'] === true || $wpsg_update_data['modulinfo'][$_REQUEST['modul']]['free'] === true) { ?>
+										
+			<?php $modul_install = $this->get_option($_REQUEST['modul'], $this->view['global']); ?>		
+			<?php echo wpsg_drawForm_Select('aktiv', __('Modul aktiviert', 'wpsg'), array('0' => __('Nein', 'wpsg'), '1' => __('Ja', 'wpsg')), ((wpsg_isSizedInt($modul_install))?'1':'0')); ?>
+		
+		<?php } ?>
+		 		 
+		<?php if (isset($this->arAllModule[$_REQUEST['modul']]->version)) { ?>
+			
+		<?php echo wpsg_drawForm_TextStart(); ?>
+		
+			<?php 
+			 
+				echo $this->arAllModule[$_REQUEST['modul']]->version;
+			
+				if (wpsg_isSizedArray($modul_info[$_REQUEST['modul']]))
+				{
+			
+					$modul_info_modul = $modul_info[$_REQUEST['modul']];
+				 
+					if ($modul_info_modul['version'] === $this->arAllModule[$_REQUEST['modul']]->version)
+					{
+						
+						echo ' - <strong class="wpsg_message_ok">'.__('aktuell', 'wpsg').'</strong>';
+						
+					}
+					else if (version_compare($modul_info_modul['version'], WPSG_VERSION) > 0) 
+					{
+						
+						echo ' - <strong class="wpsg_error">'.__('neue Version verfügbar', 'wpsg').'</strong><br />'.wpsg_translate(__('<a href="#1#">wpShopGermany Update</a> notwendig', 'wpsg'), WPSG_URL_WP.'wp-admin/plugins.php');
+						
+					}
+					else if (version_compare($modul_info_modul['version'], $this->arAllModule[$_REQUEST['modul']]->version) > 0) 
+					{
+						
+						echo ' - <strong class="wpsg_error">'.__('neue Version verfügbar', 'wpsg').'</strong>';
+						
+						echo '<br />';
+						echo wpsg_translate(__('<a href="#1#">neue Version installieren</a>.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=installModul&modul='.$_REQUEST['modul']);
+						
+					}
+					
+				}
+			
+			?>
+			
+		<?php echo wpsg_drawForm_TextEnd(__('Version', 'wpsg')); ?>
+		
+		<?php echo wpsg_drawForm_TextStart(); ?>
+			
+			<?php if (array_key_exists($_REQUEST['modul'], $modul_info)) { ?>
+				
+				<?php if (wpsg_isTrue($modul_info[$_REQUEST['modul']]['free'])) { ?>
+					<span class="wpsg_message_ok"><?php echo __('Kostenfrei', 'wpsg'); ?></span>
+				<?php } else if (wpsg_isTrue($modul_info[$_REQUEST['modul']]['active'])) { ?>
+					<span class="wpsg_message_ok"><?php echo __('Aktiv', 'wpsg'); ?></span>
+				<?php } else { ?>
+					
+					<?php if (wpsg_isTrue($modul_info[$_REQUEST['modul']]['demo_active'])) { ?>
+						<span class="wpsg_message_demo"><?php echo __('Demo Modus', 'wpsg'); ?></span>
+					<?php } else { ?> 
+						<span class="wpsg_error"><?php echo __('Nicht aktiv', 'wpsg'); ?></span>
+					<?php } ?>
+					
+					<?php if ($this->bLicence === true) { ?>
+					<?php if (wpsg_isSizedString($modul_info[$_REQUEST['modul']]['shop_url'])) {  ?>
+					[ <a href="<?php echo $modul_info[$_REQUEST['modul']]['shop_url']; ?>"><?php echo __('Modulcode erwerben', 'wpsg'); ?></a> ]					
+					<?php } else { ?>
+					[ <a href="https://shop.maennchen1.de/"><?php echo __('Modulcode erwerben', 'wpsg'); ?></a> ]
+					<?php } ?>
+					[ <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&subaction=modulactivation"><?php echo __('Modulcode eingeben', 'wpsg'); ?></a> ]
+					
+					<?php if (!wpsg_isTrue($modul_info[$_REQUEST['modul']]['demo_active'])) { ?>
+					<br />
+					
+					[ <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=startDemo&modul=<?php echo $_REQUEST['modul']; ?>" onclick="return confirm('<?php echo __('Sind Sie sich sicher? Das Modul kann 14 Tage ab heute komplett in vollem Umfang getestet werden.', 'wpsg'); ?>');"><?php echo __('Demo Modus starten'); ?></a> ]
+					<?php } ?>
+					<?php } else { ?>
+					<br /><span class="wpsg_error"><?php echo __('Ohne Lizenz können Sie dieses Modul nicht verwenden.', 'wpsg'); ?></span>
+					<?php } ?>
+						
+				<?php } ?>
+					
+			<?php } else { ?>
+				<span class="wpsg_error"><?php echo __('Unbekannt', 'wpsg'); ?></span>	
+			<?php } ?>
+						
+		<?php echo wpsg_drawForm_TextEnd(__('Lizenz')); ?>
+					
+		<?php } ?>
+
+		<?php if (!isset($this->arAllModule[$_REQUEST['modul']]->version) || (@$wpsg_update_data['modulinfo'][$_REQUEST['modul']]['demo_active'] === true || @$wpsg_update_data['modulinfo'][$_REQUEST['modul']]['active'] === true || $wpsg_update_data['modulinfo'][$_REQUEST['modul']]['free'] === true)) { ?>
+
+			<hr />
+		
+			<?php if ($this->arAllModule[$_REQUEST['modul']]->inline === true) { ?>
+			<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit"></p>
+			<?php } ?> 
+			
+			<input type="hidden" name="subaction" value="module" />
+					
+			<?php if ($this->arAllModule[$_REQUEST['modul']]->inline == true) { ?>
+			</form>
+			<?php } ?>
+					
+			<?php if ($this->get_option($_REQUEST['modul'], $this->view['global']) > 0) { ?>
+			<?php echo $this->arModule[$_REQUEST['modul']]->settings_edit(); ?>
+			<?php } ?>
+			
+			<?php if ($this->arAllModule[$_REQUEST['modul']]->inline !== true) { ?>
+			<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit"></p>			
+			<?php } ?>
+	
+		<?php } else { ?>
+	
+			<?php if (@$wpsg_update_data['modulinfo'][$_REQUEST['modul']]['demo_active'] === true || @$wpsg_update_data['modulinfo'][$_REQUEST['modul']]['active'] === true || $wpsg_update_data['modulinfo'][$_REQUEST['modul']]['free'] === true) { ?>
+			<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit"></p>
+			<?php } ?>
+			
+		<?php } ?>
+						
+	<?php if ($this->arAllModule[$_REQUEST['modul']]->inline !== true) { ?>
+	</form>
+	<?php } ?>
+	
+	<?php if (array_key_exists($_REQUEST['modul'], @$this->arModule) && (!isset($this->arAllModule[$_REQUEST['modul']]->version) || ((@$this->arAllModule[$_REQUEST['modul']]->free === true || (is_array(@$this->arLizenz) && in_array($_REQUEST['modul'], (array)@$this->arLizenz['mods'])))))) { ?>
+	<?php echo $this->arModule[$_REQUEST['modul']]->settings_edit_afterform(); ?>
+	<?php } ?>	
+	
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+</div>
+<?php } else { ?>
+
+	<div class="wpsg_admin_content form-horizontal">
+		<div class="panel panel-default">
+			<div class="panel-heading clearfix">
+				<h3 class="panel-title"><?php echo __('Modulverwaltung', 'wpsg'); ?></h3>
+		 	</div>
+		 	<div class="panel-body">
+	 	
+				<?php if ($this->bLicence === true) { ?>
+				<form method="POST" action="<?php echo WPSG_URL_WP ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=activatemodul">
+					
+					<?php echo wp_nonce_field('wpsg-admin-licence-activatemodul'); ?>
+					
+					<fieldset>
+						<legend style="padding-top:0px;"><?php echo __('Modulcode aktivieren', 'wpsg'); ?></legend>
+										
+						<div class="row">
+							<div class="col-xs-10">
+								
+								<input required="required" type="text" class="form-control" name="modulcode" id="modulcode" />
+								
+							</div>
+							<div class="col-xs-2">
+								
+								<input class="btn btn-primary btn-block" type="submit" class="form-control" value="<?php echo __('Prüfen', 'wpsg'); ?>" />
+								
+							</div>
+						</div>
+					</fieldset>
+					
+				</form>
+				<?php } else { ?>
+					
+				<p><?php echo __('Modulcodes können erst verwendet werden, wenn ihre wpShopGermany Lizenz aktiviert ist.', 'wpsg'); ?>
+				
+				<?php } ?>			
+	
+				<hr />
+				
+				<?php include dirname(__FILE__).'/modulelist.phtml'; ?>
+				 		
+			</div>
+	 	</div>
+	</div>	
+	
+<?php } ?>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	function wpsg_ssh_module()
+	{
+
+		jQuery('.list-modul-group').show();
+		jQuery('.wpsg_admin_submenu .list-group-item').show();
+
+		var check = jQuery('#wpsg_modul_onlyactive').prop('checked');
+		var search = jQuery('#wpsg_modul_search').val();
+
+		jQuery.cookie('wpsg-modulfilter-check', check);
+		jQuery.cookie('wpsg-modulfilter-search', search);
+		
+		jQuery('.wpsg_modul_name').each(function() {
+
+			if (!jQuery(this).parent().hasClass('active'))
+			{
+			
+				if (check && !jQuery(this).parent().hasClass('modul_akt')) jQuery(this).parent().hide();
+				else if (jQuery.trim(search) != '')
+				{
+	
+					var re = new RegExp(search, 'i');
+
+					if (!jQuery(this).html().match(re)) jQuery(this).parent().hide();
+					else jQuery(this).parent().show();
+						
+				}
+
+			}
+				
+		} ); 
+
+		jQuery('.list-modul-group').each(function() {
+
+			if (jQuery(this).find('.list-group-modul:visible').length <= 0) jQuery(this).hide();
+			else jQuery(this).show();				
+			
+		} );
+		
+	}
+
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_modul_onlyactive').bind('change', function(event) {
+
+			wpsg_ssh_module();			
+			jQuery(this).blur();
+			
+		} );
+
+		jQuery('#wpsg_modul_search').focus().bind('blur', wpsg_ssh_module);
+		jQuery('#wpsg_modul_search').focus().bind('keyup', wpsg_ssh_module);
+		
+		wpsg_ssh_module();
+		
+	} );
+
+/* ]]> */</script>

@@ -1,0 +1,209 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@daschmi.de)
+     * Date: 07.08.2016
+     * Time: 10:40
+     */
+
+?>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="wpsg_customer_edit">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><?php echo __('Kundendaten bearbeiten', 'wpsg'); ?></h4>
+            </div>
+            <div class="modal-body">
+				<?php if ($this->view['pflicht']['firma'] != '2') { ?>	
+                	<?php echo wpsg_drawForm_Input('dialog_firma', __('Firma', 'wpsg'), $this->view['data']['firma']); ?>
+                <?php } ?>
+                <?php if ($this->view['pflicht']['ustidnr'] != '2') { ?>
+                	<?php echo wpsg_drawForm_Input('dialog_ustidnr', __('UStIdNr', 'wpsg'), $this->view['data']['ustidnr']); ?>
+               	<?php } ?>
+                <br />
+                <?php if ($this->view['pflicht']['anrede'] != '2') { ?>
+                	<?php echo wpsg_drawForm_Select('dialog_title', __('Anrede', 'wpsg'), $this->view['arTitles'], $this->view['data']['title'], array('noIndex' => true)); ?>
+                 <?php } ?>
+                <?php if ($this->view['pflicht']['vname'] != '2') { ?>
+                	<?php echo wpsg_drawForm_Input('dialog_vname', __('Vorname', 'wpsg'), $this->view['data']['vname']); ?>
+                <?php } ?>
+                <?php if ($this->view['pflicht']['name'] != '2') { ?> 
+                	<?php echo wpsg_drawForm_Input('dialog_name', __('Name', 'wpsg'), $this->view['data']['name']); ?>
+                <?php } ?>
+                <br />
+                <?php if ($this->view['pflicht']['geb'] != '2') { ?>
+ 					<?php echo wpsg_drawForm_Input('dialog_geb', __('Geburtsdatum', 'wpsg'), $this->view['data']['geb']); ?>
+                <?php } ?>
+                <br />
+                <?php if ($this->view['pflicht']['tel'] != '2') { ?>
+                	<?php echo wpsg_drawForm_Input('dialog_tel', __('Telefon', 'wpsg'), $this->view['data']['tel']); ?>
+                <?php } ?>
+                <?php if ($this->view['pflicht']['fax'] != '2') { ?>
+                	<?php echo wpsg_drawForm_Input('dialog_fax', __('Fax', 'wpsg'), $this->view['data']['fax']); ?>
+                <?php } ?>
+                <?php if ($this->view['pflicht']['email'] != '2') { ?>
+	                <?php if ($this->hasMod('wpsg_mod_kundenverwaltung')) { ?>
+		            	<?php echo wpsg_drawForm_Text(__('E-Mail', 'wpsg'),'<a href="'.
+							
+							wpsg_admin_url('Customer', 'edit', ['edit_id' => $this->view['data']['k_id']]).
+		            	
+		            	'">'.$this->view['data']['email'].'</a>'); ?>
+					<?php } ?>
+				<?php } ?>
+                <br />
+                <?php if ($this->view['pflicht']['strasse'] != '2') { ?>
+                	
+					<?php echo wpsg_drawForm_Input('dialog_strasse', __('Straße', 'wpsg'), $this->view['data']['strasse']); ?>
+	
+					<?php if (wpsg_getStr($this->view['pflicht']['wpsg_showNr']) === '1') { ?>
+		
+						<?php echo wpsg_drawForm_Input('dialog_nr', __('Hausnummer', 'wpsg'), $this->view['data']['nr']); ?>
+						
+					<?php } ?>
+					
+                <?php } ?>
+                <?php if ($this->view['pflicht']['plz'] != '2') { ?>     
+                	<?php echo wpsg_drawForm_Input('dialog_plz', __('Postleitzahl', 'wpsg'), $this->view['data']['plz']); ?>
+                <?php } ?>	
+                <?php if ($this->view['pflicht']['ort'] != '2') { ?>
+                	<?php echo wpsg_drawForm_Input('dialog_ort', __('Ort', 'wpsg'), $this->view['data']['ort']); ?>
+                <?php } ?>
+                <?php if ($this->view['pflicht']['land'] != '2') { ?>
+                	<?php echo wpsg_drawForm_Select('dialog_land', __('Land', 'wpsg'), $this->view['arCountry'], $this->view['data']['land']); ?>	
+				<?php } ?>
+                <br />
+
+                <?php echo wpsg_drawForm_Checkbox('dialog_customer', __('Auch Kundendaten anpassen', 'wpsg'), false, array('help' => 'dialog_customer')); ?>
+                <?php echo wpsg_drawForm_Checkbox('dialog_all', __('Alle Bestellungen des Kunden ändern', 'wpsg'), false, array('help' => 'dialog_all')); ?>
+                
+                <?php if ($this->hasMod('wpsg_mod_shippingadress')) {?>
+                <?php echo wpsg_drawForm_Checkbox('dialog_shipping', __('Auch Lieferanschrift anpassen', 'wpsg'), false, array('help' => 'dialog_shipping')); ?>
+                <?php } ?>
+				<input type="hidden" id="dialog_change_land" name="dialog_change_land" />
+				
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo __('Schließen', 'wpsg'); ?></button>
+                <button type="button" class="btn btn-primary" onclick="return wpsg_saveInvoiceAdress();"><?php echo __('Speichern', 'wpsg'); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Kundendaten', 'wpsg')); ?>
+
+    <?php echo wpsg_drawForm_TextStart(); ?>
+    <?php echo $this->view['oOrder']->getCustomer()->getNr(); ?>
+    <?php if ($this->hasMod('wpsg_mod_kundenverwaltung')) { ?>
+	[&nbsp; <a href="<?php 
+			
+		echo wpsg_admin_url('Customer', 'edit', ['edit_id' => $this->view['data']['k_id']]);
+		//echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Customer&action=edit&edit_id='.$this->view['data']['k_id']; 
+		
+	?>"><?php echo __('Zum Kunden', 'wpsg'); ?></a>&nbsp;]
+	<?php } ?>
+    <?php echo wpsg_drawForm_TextEnd(__('Kundennummer', 'wpsg')); ?>
+
+    <?php echo wpsg_drawForm_TextStart(); ?>
+	<?php if ($this->view['pflicht']['firma'] != '2') { ?>
+    	<?php if (trim($this->view['data']['firma']) != '') { ?>
+    		<?php echo wpsg_hspc($this->view['data']['firma']); ?><br />
+    	<?php } ?>
+    <?php } ?>                    
+ 	<?php if ($this->view['pflicht']['anrede'] != '2') { ?>
+    	<?php echo (($this->view['data']['title'] != '' && $this->view['data']['title'] != '-1')?wpsg_hspc($this->view['arTitles'][$this->view['data']['title']]).' ':''); ?>
+    <?php } ?>                    
+    <?php if ($this->view['pflicht']['vname'] != '2') { ?>
+    	<?php echo wpsg_hspc($this->view['data']['vname']); ?>
+    <?php } ?>                    
+    <?php if ($this->view['pflicht']['name'] != '2') { ?>
+    	<?php echo wpsg_hspc($this->view['data']['name']); ?><br />
+    <?php } ?>                    
+    <?php if ($this->view['pflicht']['strasse'] != '2') { ?>
+	
+		<?php echo wpsg_hspc($this->view['data']['strasse']); ?> <?php echo wpsg_hspc(wpsg_getStr($this->view['data']['nr'])); ?><br />
+		 
+    <?php } ?>                    
+   	<?php if ($this->view['pflicht']['plz'] != '2') { ?>
+    	<?php echo wpsg_hspc($this->view['data']['plz']); ?>
+    <?php } ?>                    
+   	<?php if ($this->view['pflicht']['ort'] != '2') { ?>
+    	<?php echo wpsg_hspc($this->view['data']['ort']); ?> 
+    <?php } ?>                    
+    <?php if ($this->view['pflicht']['land'] != '2') { ?>
+    	<?php echo wpsg_hspc($this->view['country']['kuerzel']); ?><br />
+	<?php } ?>
+    <a style="position: absolute; right:25px; top:10px; display:inline-block;" data-toggle="modal" data-target="#wpsg_customer_edit" href="#" title="<?php echo __('Anschrift ändern', 'wpsg'); ?>">
+        <span class="glyphicon glyphicon-pencil"></span>
+    </a>
+
+    <?php echo wpsg_drawForm_TextEnd(__('Anschrift', 'wpsg')); ?>
+	    
+    <?php if ($this->view['pflicht']['geb'] != '2') { ?>
+    	<?php if (strtotime($this->view['data']['geb']) > 0) { ?>
+    		<?php echo wpsg_drawForm_Text(__('Geburtsdatum', 'wpsg'), wpsg_fromDate($this->view['data']['geb']), array('text' => true)); ?>
+    	<?php } ?>
+	<?php } ?>                    
+    <?php if ($this->view['pflicht']['fax'] != '2') { ?>
+	    <?php if (strlen($this->view['data']['fax']) > 0) { ?>
+	    	<?php echo wpsg_drawForm_Text(__('Fax', 'wpsg'), $this->view['data']['fax'], array('text' => true)); ?>
+	    <?php } ?>
+	<?php } ?>                    
+    <?php if ($this->view['pflicht']['tel'] != '2') { ?>
+	    <?php if (strlen($this->view['data']['tel']) > 0) { ?>
+	    	<?php echo wpsg_drawForm_Text(__('Telefon', 'wpsg'), $this->view['data']['tel'], array('text' => true)); ?>
+	    <?php } ?>
+	<?php } ?>                    
+    
+	    
+	<?php echo wpsg_drawForm_Text(__('UStIdNr.', 'wpsg'), $this->view['data']['ustidnr'], array('text' => true)); ?>
+	<br />
+	                    
+    <?php $this->callMods('wpsg_order_view_customerdata', array(&$this->view['data']['id'])); ?>
+
+    <?php echo wpsg_drawForm_TextStart(); ?>
+     <?php if ($this->view['pflicht']['email'] != '2') { ?>
+    	<a href="mailto:<?php echo $this->view['data']['email']; ?>"><?php echo $this->view['data']['email']; ?></a>
+    <?php } ?>
+    <?php echo wpsg_drawForm_TextEnd(__('E-Mail', 'wpsg')); ?>
+	
+    <script type="text/javascript">/* <![CDATA[ */
+
+        function wpsg_saveInvoiceAdress()
+        {
+
+            jQuery('#wpsg_backend_loading').show();
+            
+            jQuery.ajax( {
+                url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&wpsg_action=saveInvoiceAdress&edit_id=<?php echo $this->view['data']['id']; ?>&noheader=1',
+                data: {
+                    form_data: jQuery('#wpsg_customer_edit input, #wpsg_customer_edit select').serialize()
+                },
+                success: function(data) {
+
+                    //location.href = location.href;
+                    location.reload();
+
+                }
+            } );
+
+            return false;
+
+        }
+
+        jQuery(document).ready(function() {
+
+            jQuery('#dialog_land').bind('change', function() {
+
+				jQuery('#dialog_change_land').val('1');
+				
+            } );
+        	
+        } );
+            
+
+    /* ]]> */</script>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

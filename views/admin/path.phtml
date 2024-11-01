@@ -1,0 +1,44 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen der Pfade im Backend
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div>
+			
+</div>
+		
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=konfiguration&noheader=1'); ?>">
+  
+  	<div class="panel panel-default">		
+			
+			<div class="panel-heading clearfix">
+      	<h3 class="panel-title"><?php echo __('Pfadeinstellungen', 'wpsg'); ?></h3>
+      </div>
+      
+  		<div class="panel-body">	  		
+				<div class="info">  		
+  				<br />
+  					<?php echo __('Hier können die Pfade definiert werden, in denen der Shop seine Daten ablegt.', 'wpsg'); ?></p>
+  				<br />
+  			</div>
+				
+				<?php echo wpsg_drawForm_Input('wpsg_path_upload_multiblog', __('Multiblog Upload Path (relativ zu wp-content)', 'wpsg'), $this->get_option('wpsg_path_upload_multiblog', true), array('hint' => __('Sollte den Platzhalter %blog_id% enthalten, dieser zeigt auf die ID des jeweiligen Blockes sonst kann es bei dem Betrieb von mehreren Shops zu Überschreibungen kommen.', 'wpsg'))); ?>
+
+				<input type="hidden" name="subaction" value="path" />
+			
+				<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+				
+			</div>	
+		</div>			
+	</form>
+</div>

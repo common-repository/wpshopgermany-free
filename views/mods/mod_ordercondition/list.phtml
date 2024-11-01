@@ -1,0 +1,189 @@
+<?php
+
+	/**
+	 * Template für die Liste der Bestellbedingungen im Backend
+	 */
+
+?>
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+	/*
+		jQuery('.wpsg_mod_ordercondition_edit_name').each(function() {
+	
+			var oc_id = jQuery(this).attr("id").replace(/wpsg_mod_ordercondition_name_/, '');
+			
+			jQuery(this).wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1', {
+				submitdata: { 
+		    		field: 'name',
+		    		oc_id: oc_id
+				}, 					
+				submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+				placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+				indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+		    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+			} );
+	
+		} );
+	
+		jQuery('.wpsg_mod_ordercondition_edit_typ').bind('change', function() {
+	
+			var oc_id = jQuery(this).attr("id").replace(/wpsg_mod_ordercondition_typ_/, '');
+			var value = jQuery(this).val();
+			
+			jQuery.ajax( {
+				url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1',
+				data: {
+					field: 'typ',
+					value: value,
+					oc_id: oc_id
+				}				
+			} );
+			
+		} );
+	*/
+
+		jQuery('.wpsg_oc_removeLink').bind('click', function() {
+	
+			if (!confirm('<?php echo __('Sind Sie sich sicher, dass sie diese Bestellbedingung entfernen möchten?', 'wpsg'); ?>')) return false;
+
+			jQuery('#wpsg_oc_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+			
+			jQuery.ajax( {
+				url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=remove&noheader=1',
+				data: {
+					oc_id: jQuery(this).attr("data-id")
+				},
+				success: function(data)
+				{
+
+					jQuery('#wpsg_oc_list').html(data);
+					
+				}				
+			} );
+			
+		} );
+		
+	} );
+
+/* ]]> */</script>
+<?php if (!is_array($this->view['wpsg_mod_ordercondition']['data']) || sizeof($this->view['wpsg_mod_ordercondition']['data']) <= 0) { ?>
+<?php echo __('Bisher keine Bestellbedingungen angelegt.', 'wpsg'); ?>
+<?php } else { ?>
+<?php $i = 0; foreach ($this->view['wpsg_mod_ordercondition']['data'] as $oc) { $i ++; ?>
+
+    <hr />
+
+	<div id="wpsg_mod_ordercondition_row_<?php echo $oc['id']; ?>">
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <?php echo $oc['id']; ?><a data-id="<?php echo $oc['id']; ?>" class="wpsg_oc_removeLink" href="#"><span class="wpsg-glyphicon glyphicon glyphicon-trash"></span></a>
+        <?php echo wpsg_drawForm_TextEnd(__('ID', 'wpsg')); ?>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="oc_name_<?php echo $oc['id']; ?>"><?php echo $oc['name']; ?></span>
+        <?php echo wpsg_drawForm_TextEnd(__('Bezeichnung', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+
+            jQuery('#oc_name_<?php echo $oc['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'name',
+                    oc_id: '<?php echo $oc['id']; ?>'
+                }
+            });
+
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="oc_typ_<?php echo $oc['id']; ?>"><?php
+
+            if ($oc['typ'] == '1') echo __('Jede Bestellung', 'wpsg');
+            else if ($oc['typ'] == '2') echo __('Bestimmte Produkte', 'wpsg');
+            else if ($oc['typ'] == '3') echo __('Bestimmte Versandarten', 'wpsg');
+            else echo __('Inaktiv', 'wpsg');
+
+        ?></span>
+        <?php echo wpsg_drawForm_TextEnd(__('Wirkungsbereich', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+
+            jQuery('#oc_typ_<?php echo $oc['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1', {
+                type: 'select',
+                data: <?php echo wpsg_prepare_for_inlineEdit(array('0' => __('Inaktiv', 'wpsg'), '1' => __('Jede Bestellung', 'wpsg'), '2' => __('Bestimmte Produkte', 'wpsg'), '3' => __('Bestimmte Versandarten'))); ?>,
+                submitdata: {
+                    field: 'typ',
+                    oc_id: '<?php echo $oc['id']; ?>'
+                },
+                callback: function(e, params) {
+                    
+                    if (params == 3) jQuery('.wpsg_mod_ordercondition_shipping_<?php echo $oc['id']; ?>').show();
+                    else jQuery('.wpsg_mod_ordercondition_shipping_<?php echo $oc['id']; ?>').hide();
+                    
+                }
+            });
+
+        /* ]]> */</script>
+    
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span class="wpsg_editable" id="oc_text_<?php echo $oc['id']; ?>"><?php echo wpsg_hspc($oc['text']); ?></span>
+        <?php echo wpsg_drawForm_TextEnd(__('Bedingungstext', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+
+            jQuery('#oc_text_<?php echo $oc['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'text',
+                    oc_id: '<?php echo $oc['id']; ?>'
+                },
+                type: 'textarea'
+            });
+
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span class="wpsg_editable" id="oc_errortext_<?php echo $oc['id']; ?>"><?php echo wpsg_hspc($oc['errortext']); ?></span>
+        <?php echo wpsg_drawForm_TextEnd(__('Fehlertext', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+
+            jQuery('#oc_errortext_<?php echo $oc['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'errortext',
+                    oc_id: '<?php echo $oc['id']; ?>'
+                },
+                type: 'textarea'
+            });
+
+        /* ]]> */</script>
+        
+        <div class="wpsg_mod_ordercondition_shipping_<?php echo $oc['id']; ?>" style="display:<?php echo (($oc['typ'] === '3')?'block':'none'); ?>;">
+            <?php echo wpsg_drawForm_TextStart(); ?>
+            <span class="wpsg_editable" id="oc_shipping_<?php echo $oc['id']; ?>"><?php 
+            
+                foreach (wpsg_trim(explode(',', $oc['shipping'])) as $shipping_id) 
+                {  
+                    
+                    if (array_key_exists($shipping_id, $this->view['arShipping'])) echo $this->view['arShipping'][$shipping_id].'<br />';
+                    
+                } 
+                
+            ?></span>
+            <?php echo wpsg_drawForm_TextEnd(__('Versandartenauswahl', 'wpsg')); ?>
+            <script type="text/javascript">/* <![CDATA[ */
+    
+                jQuery('#oc_shipping_<?php echo $oc['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordercondition&do=inlinedit&noheader=1', {
+                    submitdata: {
+                        field: 'shipping',
+                        oc_id: '<?php echo $oc['id']; ?>'
+                    },
+                    data: <?php echo json_encode($this->view['arShipping']); ?>,
+                    value: <?php echo json_encode(wpsg_trim(explode(',', $oc['shipping']))); ?>,
+                    type: 'checklist'
+                });
+    
+            /* ]]> */</script>
+        </div>
+            
+		<?php if ($i == sizeof($this->view['wpsg_mod_ordercondition']['data'])) { ?><hr /><?php } ?>
+	
+	</div>
+
+<?php } ?>
+<?php } ?>

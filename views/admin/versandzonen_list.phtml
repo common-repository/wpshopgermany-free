@@ -1,0 +1,100 @@
+<?php
+
+	/**
+	 * Template für die Liste der Versandzonen
+	 */
+
+?>
+<?php if (!is_array($this->view['data']) || sizeof($this->view['data']) <= 0) { ?>
+<?php echo __('Bisher keine Versandzonen hinterlegt.', 'wpsg'); ?>
+<?php } else { ?>
+<table class="table wpsg_table_vz">
+	<thead>
+	<tr>
+		<th class="col_name"><?php echo __('Bezeichnung', 'wpsg'); ?></th>
+		<th class="col_innereu"><?php echo __('Inner- gemeinschaftlich', 'wpsg'); ?></th>
+		<th class="col_aktion"></th>
+	</tr>
+	</thead>
+	<tbody>
+	<?php foreach ($this->view['data'] as $vz) { ?>
+	<tr>
+		<td class="wpsg_editable col_name">
+			<span  id="vz_<?php echo $vz['id']; ?>_name" ><?php echo wpsg_hspc($vz['name']); ?></span> 
+			<br />
+			<div id="vz_<?php echo $vz['id']; ?>_plz" style="display:none" class="wpsg_plz_div">
+				<textarea><?php echo wpsg_hspc($vz['param']); ?></textarea>
+				<input type="submit" class="button" name="wpsg_mod_vz_submitsave" value="<?php echo __('Speichern', 'wpsg'); ?>" onclick="return wpsg_savePLZ(<?php echo $vz['id']; ?>);" />
+			</div>
+		</td>
+		<td class="col_innereu">		 
+			<input class="wpsg_innereu" <?php echo (($vz['innereu'] == '1')?'checked="checked"':''); ?> type="checkbox" value="1" name="innereu_<?php echo $vz['id']; ?>" id="innereu_<?php echo $vz['id']; ?>" />								
+		</td>
+		<td class="col_aktion">
+						
+			<a class="wpsg_icon_plzedit" href="#" title="<?php echo __('Versandzonen PLZ bearbeiten', 'wpsg'); ?>" onclick="return wpsg_editPLZ(<?php echo $vz['id']; ?>);">[ PLZ ]</a>
+			<a class="glyphicon glyphicon-trash" href="#" title="<?php echo __('Versandzone löschen', 'wpsg'); ?>" onclick="return wpsg_removeVZ(<?php echo $vz['id']; ?>);"></a>
+			
+			<script>
+
+				jQuery('#vz_<?php echo $vz['id']; ?>_name').wpsg_editable('<?php
+					
+						echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=vz&do=inlinedit&noheader=1', 'wpsg-admin-versandzonen-inline_edit-'.$vz['id']));
+					
+					?>', {
+					submitdata: { 
+			    		field: 'name',
+			    		vz_id: '<?php echo $vz['id']; ?>'
+					}, 					
+					submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+					placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+					indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+			    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+				});
+			
+				jQuery('#vz_<?php echo $vz['id']; ?>_value').wpsg_editable('<?php 
+					
+						echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=vz&do=inlinedit&noheader=1', 'wpsg-admin-versandzonen-inline_edit-'.$vz['id'])); 
+										
+					?>', {
+					submitdata: { 
+			    		field: 'value',
+			    		vz_id: '<?php echo $vz['id']; ?>'
+					}, 					
+					submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+					placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+					indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+			    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+				});
+
+				</script>		
+		</td>
+	</tr>
+	<?php } ?>
+	</tbody>
+</table>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('.wpsg_innereu').bind('click', function() {
+
+			var checked = "0"; if (jQuery(this).prop("checked")) checked = "1";
+
+			jQuery.ajax( {
+				url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=vz&do=inlinedit&noheader=1',
+				data: {
+					field: 'innereu',
+					vz_id: jQuery(this).attr("id").substr(8),
+					value: checked					
+				}
+			} ); 
+			
+		} );
+		
+	} );
+
+/* ]]> */</script>
+
+<?php } ?>

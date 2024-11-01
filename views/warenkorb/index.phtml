@@ -1,0 +1,123 @@
+<?php
+
+	/**
+	 * Template für das Warenkorb Widget
+	 */
+ 
+?>
+<aside id="wpsg-widget" class="widget wpsg_basket_widget"> 
+	<h2 class="widget-title widgettitle"><?php echo __("Warenkorb", "wpsg"); ?></h2>
+	<br />
+ 
+	<?php if ($this->view['countArtikel'] > 0) { ?> 
+		<?php echo $this->view['countArtikel']; ?> <?php echo __("Artikel für", "wpsg"); ?> <?php echo wpsg_ff($this->view['basket']['sum']['preis'], $this->get_option('wpsg_currency')); ?> <?php echo __("im Warenkorb", "wpsg"); ?>
+		<br /><br />
+		<form method="post" action="<?php echo $this->getURL(wpsg_ShopController::URL_BASKET); ?>">
+		
+			<input type="hidden" name="subaction" value="index" />
+		
+			<table>		
+				<?php foreach ($this->view['basket']['produkte'] as $p) { ?>
+				<tr> 
+					<td class="wpsg_cell_name"><a href="<?php echo $this->getProduktLink($p); ?>">
+						<?php 
+						
+							echo $p['menge'].' x '.((strlen($p['name']) > 13)?mb_substr($p['name'], 0, 30).'..':$p['name']);
+							
+						?></a>
+					</td>
+					<td class="wpsg_cell_amount">
+						<?php
+						 
+							echo wpsg_ff(($p['preis'] * $p['menge']), $this->get_option('wpsg_currency'));
+							 
+						?>
+					</td>
+				</tr>
+				<?php } ?>
+				<?php if (isset($this->view['basket']['sum']['preis_rabatt']) && wpsg_tf($this->view['basket']['sum']['preis_rabatt']) > 0) { ?>
+				<tr>
+					<td class="wpsg_cell_name">
+						<?php echo __('Rabatt', 'wpsg'); ?>	
+					</td>
+					<td class="wpsg_cell_amount">
+						<?php echo '-'.wpsg_ff($this->view['basket']['sum']['preis_rabatt'], $this->get_option('wpsg_currency')); ?>
+					</td>
+				</tr>
+				<?php } ?>
+				<?php if (isset($this->view['basket']['gs'])) { // Gutschein vorhanden ?>
+				<tr>
+					<td class="wpsg_cell_name">
+						<?php echo __('Gutschein', 'wpsg'); ?>
+						<?php if ($this->view['basket']['gs']['calc'] == 'p') { ?>
+						(<?php echo $this->view['basket']['gs']['value']; ?>%)
+						<?php } ?>
+					</td>
+					<td class="wpsg_cell_amount">
+						<?php 
+							
+							echo '-'.wpsg_ff($this->view['basket']['sum']['gs'], $this->get_option('wpsg_currency'));
+							
+						?>
+					</td>
+				</tr>
+				<?php } ?>
+				<tr class="wpsg_row_summary">
+					<td class="wpsg_cell_name"><?php echo __("Gesamt", "wpsg"); ?>:</td>
+					<td class="wpsg_cell_amount"><?php echo wpsg_ff($this->view['basket']['sum']['preis'], $this->get_option('wpsg_currency')); ?></td>
+				</tr>
+			</table>
+		</form> 
+			
+		<span class="wpsg_tax_note">
+			<?php if (trim($this->view['wpsg_versandhinweis']) != '') { ?>
+				<i><?php echo $this->view['wpsg_versandhinweis']; ?></i><br />
+			<?php } else if ($this->get_option("wpsg_kleinunternehmer") == "1" || $this->getFrontendTaxview() == WPSG_NETTO) { ?>
+				<i><?php echo __("Alle Preise zzgl. ", "wpsg"); ?><a href="<?php echo $this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN); ?>"><?php echo __("Versandkosten", "wpsg"); ?></a>.</i>
+			<?php } else { ?>
+				<i><?php echo __("Alle Preise inklusive MwSt. und zzgl.", "wpsg"); ?> <a href="<?php echo $this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN); ?>"><?php echo __("Versandkosten", "wpsg"); ?></a></i><br />
+			<?php } ?>
+		</span>
+			
+		<input type="button" class="wpsg_button wpshopgermany_linktokasse" onclick="location.href='<?php echo $this->getURL(wpsg_ShopController:: URL_BASKET); ?>';" value="<?php echo __("Zum Warenkorb", "wpsg"); ?>" />
+	<?php } else { ?>
+		<?php echo __("Keine Artikel im Warenkorb", "wpsg"); ?><br />
+	<?php } ?>
+	
+	<div class="wpsg_clear"></div><br />
+	<?php if ($this->showEULayer) { ?>
+	<?php echo wpsg_translate(
+		__('Für Produkte nach EU Leistungsortregel wird der Steuersatz von #1# angewendet.', 'wpsg'),
+		$this->getFrontendCountry()->name	
+	); ?><br /><br />
+	<a href="#" onclick="return wpsg_customerquestion('<?php echo $this->getCurrentUrl(); ?>');"><?php echo __('Preiseinstellungen ändern', 'wpsg'); ?></a>
+	<?php } ?>
+	
+	<ul>
+		<?php if ($this->hasMod('wpsg_mod_request') == '1') { ?>
+			<?php if ($this->view['widget_settings']['wpsg_requestpage'] == 1) { ?>
+				<li class="page_item"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_REQUEST); ?>"><?php echo get_the_title($this->get_option('wpsg_page_request')); ?></a></li>
+			<?php } ?>
+		<?php } ?>
+		<?php if ($this->view['widget_settings']['wpsg_agbpage'] == 1) { ?>
+			<li class="page_item"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_AGB); ?>"><?php echo get_the_title($this->get_option('wpsg_page_agb')); ?></a></li>
+		<?php } ?>
+		<?php if ($this->view['widget_settings']['wpsg_wrpage'] == 1) { ?>
+			<li class="page_item"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_WIDERRUF); ?>"><?php echo get_the_title($this->get_option('wpsg_page_widerrufsbelehrung')); ?></a></li>
+		<?php } ?>
+		<?php if ($this->view['widget_settings']['wpsg_dspage'] == 1) { ?>
+			<li class="page_item"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_DATENSCHUTZ); ?>"><?php echo get_the_title($this->get_option('wpsg_page_datenschutz')); ?></a></li>
+		<?php } ?>
+		
+		<?php if ($this->view['widget_settings']['wpsg_vkpage'] == 1) { ?>
+			<li class="page_item"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN); ?>"><?php echo get_the_title($this->get_option('wpsg_page_versand')); ?></a></li>
+		<?php } ?>
+		<?php if ($this->view['widget_settings']['wpsg_odrpage'] == 1) { ?>
+			<li class="page_item"><a href="http://ec.europa.eu/consumers/odr/"><?php echo __('Online Streitbeilegung', 'wpsg'); ?></a></li>
+		<?php } ?>
+		<?php if ($this->view['widget_settings']['wpsg_imppage'] == 1) { ?>
+			<li class="page_item"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_IMPRESSUM); ?>"><?php echo get_the_title($this->get_option('wpsg_page_impressum')); ?></a></li>
+		<?php } ?>
+	</ul>
+
+</aside>

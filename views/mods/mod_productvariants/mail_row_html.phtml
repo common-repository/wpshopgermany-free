@@ -1,0 +1,16 @@
+<?php
+
+    /**
+    * Template für die Variantenintegration in die HTML Kunden- und Adminmail
+    */
+
+    $i = $this->view['i'];
+
+?>
+<tr class="productrow productrow2 <?php echo ((($i % 2) == 0)?'productrow_odd':'productrow_even'); ?>">
+    <td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos">&nbsp;</td>
+    <td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name"><?php echo __('Variante', 'wpsg'); ?>:</td>
+    <td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="<?php echo ((sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?'4':'3'); ?>">
+        <?php echo wpsg_hspc($this->view['variante']['key']); ?>
+    </td>
+</tr>

@@ -1,0 +1,160 @@
+<?php
+
+	/**
+	 * Template für die Verwaltung der Kundendaten
+	 */
+
+?>
+
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+	
+</div>
+
+<!-- Modal für Codeanzeige -->
+<div class="modal fade" id="wpsg_code_dialog" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><?php echo __('HTML Code Block', 'wpsg'); ?></h4>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo __('Schließen', 'wpsg'); ?></button> 
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wpsg_admin_content form-horizontal wpsg_customerfield">
+
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=<?php echo $_REQUEST['subaction']; ?>&noheader=1">
+	
+		<?php echo wp_nonce_field('wpsg-admin-kundendaten'); ?>
+		
+		<div class="panel panel-default">
+			<div class="panel-heading clearfix">
+	       		<h3 class="panel-title"><?php echo __('Kundendaten', 'wpsg'); ?></h3>
+	       	</div>
+			<div class="panel-body">
+	
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#tabcontent1" role="tab" aria-controls="tabcontent1" data-toggle="tab"><?php echo __('Pflichtfelder', 'wpsg'); ?></a></li>
+					<li role="presentation" class=""><a href="#tabcontent2" role="tab" aria-controls="tabcontent2" data-toggle="tab"><?php echo __('Weitere Kundendaten', 'wpsg'); ?></a></li>
+					<li role="presentation" class=""><a href="#tabcontent3" role="tab" aria-controls="tabcontent3" data-toggle="tab"><?php echo __('Kundenvoreinstellungen', 'wpsg'); ?></a></li>
+				</ul>
+						 
+				<div class="tab-content">
+					<div role="tabpanel" id="tabcontent1" class="tab-pane active">
+						<?php echo $this->render(WPSG_PATH_VIEW.'/admin/kundendaten_tab1.phtml'); ?>
+					</div>
+					<div role="tabpanel" id="tabcontent2" class="tab-pane">
+						
+						<div id="wpsg_kv_list">
+							<?php echo $this->render(WPSG_PATH_VIEW.'/admin/kundendaten_tab2.phtml'); ?>
+						</div>
+						
+						<div class="wpsg_clear"></div><br />
+						<a href="" onclick="return wpsg_addCustomField();"><span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo __('Neue Kundenvariable anlegen.', 'wpsg'); ?></a>
+						
+					</div>
+					<div role="tabpanel" id="tabcontent3" class="tab-pane">						
+						<?php echo $this->render(WPSG_PATH_VIEW.'/admin/kundendaten_tab3.phtml'); ?>
+					</div>
+				</div>
+	
+			</div>
+		</div>
+		
+		<p class="submit"><input name="submit" type="submit" value="<?php echo __('Einstellungen Speichern', 'wpsg'); ?>" class="button-primary" /></p>
+		
+	</form>
+	
+	<script>
+
+		/**
+		 * Fügt ein neues Feld in die Liste der Kundenvariablen ein und lädt die Liste neu
+		 */	                                            	
+		function wpsg_addCustomField()
+		{
+	
+			jQuery('#wpsg_kv_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+			
+			jQuery.ajax( {
+				url: '<?php echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten&do=add&noheader=1', 'wpsg-admin-kundendaten-add')); ?>',
+				success: function(data) {
+					jQuery('#wpsg_kv_list').html(data);
+				}
+			} );
+	
+			return false;
+			
+		} // function wpsg_addCustomField()
+
+		/**
+		 * Löscht eine Kundenvariable und entfernt die Zeile aus der Liste
+		 */
+		function wpsg_removeCustomField(kv_index)
+		{
+
+			if (!confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>')) return false;
+			
+			jQuery('.wpsg_customervar_row_' + kv_index).hide(250, function() { jQuery(this).remove(); } );
+
+			jQuery.ajax( {
+				url: '<?php echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten&do=remove&noheader=1', 'wpsg-admin-kundendaten-delete')); ?>',
+				data: {
+					'kv_index': kv_index
+				},
+				success: function(data) { 
+
+					if (data != "1") alert(data); 
+
+				}
+			} );
+
+			return false;
+			
+		} // function wpsg_removeCustomField(kv_index)
+		
+		/**
+		 * Zeigt den HTML Code, der die gewählte Kundenvariablen in die Templates einbaut
+		 */
+		function wpsg_genKVCode(kv_index)
+		{
+
+			jQuery('#wpsg_code_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+			
+			jQuery('#wpsg_code_dialog').modal( { } );
+			
+			jQuery.ajax( {
+    			url: '<?php echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten&noheader=1&show=code', 'wpsg-admin-kundendaten-code')); ?>',
+    			data: { 'kv_id': kv_index },
+    			success: function(data) { jQuery('#wpsg_code_dialog .modal-body').html(data); }
+        	} );
+			 
+			return false;
+			
+		} // function wpsg_genPACode(pa_id)
+
+		jQuery(document).ready(function() {
+
+			jQuery('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { localStorage.setItem('wpsg_admin_customer_lastTab', jQuery(this).attr('href')); } );
+
+			var lastTab = localStorage.getItem('wpsg_admin_customer_lastTab');
+			if (lastTab) jQuery('[href="' + lastTab + '"]').tab('show');
+			
+		} );
+	    
+	</script>
+
+</div>

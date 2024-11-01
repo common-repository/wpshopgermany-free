@@ -1,0 +1,304 @@
+<?php
+	
+	/**
+	 * Template für die Bearbeitung eines Kunden im Backend
+	 */
+
+?>
+<div class="wpsg_customer" id="wpsg-bs">
+
+	<nav class="navbar navbar-default">
+
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-customer-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="wpsg-customer-tab-a active"><a href="#" onclick="return false;"><?php echo __("Kundenverwaltung", "wpsg"); ?></a></li>
+					<li role="presentation" class="active"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Customer&action=add"><span class="glyphicon glyphicon-plus"></span><?php echo __("Kunde anlegen/bearbeiten", "wpsg"); ?></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'import'))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Customer&action=import&noheader=1"><span class="glyphicon glyphicon-import"></span><?php echo __("Import", "wpsg"); ?></a></li>
+					<?php if (wpsg_isSizedArray($this->view['data'])) { ?>
+						<li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'export'))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Customer&action=export&noheader=1"><span class="glyphicon glyphicon-export"></span><?php echo __("Export", "wpsg"); ?></a></li>
+					<?php } ?>
+				</ul>
+			</div>
+		</div>
+
+	</nav>
+	
+	<div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+	<div class="wpsg_clear"></div>
+
+	<div class="content form-horizontal">
+
+		<form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Customer&action=save&noheader=1" enctype="multipart/form-data">
+
+			<?php echo wpsg_formNounce('Customer', 'save'); ?>
+			
+			<div class="row">
+				<div class="col-md-8 col-lg-8">
+
+					<?php echo wpsg_drawForm_AdminboxStart(__('Allgemein', 'wpsg')); ?>
+                        <?php echo wpsg_drawForm_Input('knr', __('Kundennummer', 'wpsg'), @$this->view['data']['knr']); ?>
+
+                        <?php if ($this->hasMod('wpsg_mod_customergroup')) { ?>
+                            <?php echo wpsg_drawForm_Select('group_id', __('Kundengruppe', 'wpsg'), @$this->view['arCustomergroup'], @$this->view['data']['group_id']); ?>
+                        <?php } ?>
+						<?php if ($this->view['pflicht']['anrede'] != '2') { ?>
+                        	<?php echo wpsg_drawForm_Select('title', __('Anrede', 'wpsg'), $this->view['arTitles'], @$this->view['data']['title'], array('noIndex' => true)); ?>
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['name'] != '2') { ?>
+                        	<?php echo wpsg_drawForm_Input('name', __('Name', 'wpsg'), @$this->view['data']['name']); ?>
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['vname'] != '2') { ?>
+	                        <?php echo wpsg_drawForm_Input('vname', __('Vorname', 'wpsg'), @$this->view['data']['vname']); ?>
+						<?php } ?>
+						<?php if ($this->view['pflicht']['geb'] != '2') { ?>
+	                    	<?php echo wpsg_drawForm_Input('geb', __('Geburtsdatum', 'wpsg'), wpsg_formatTimestamp(strtotime(@$this->view['data']['geb']), true), array('autocomplete' => false, 'datepicker' => true, 'hint' => __('Format: TT.MM.JJJJ', 'wpsg'))); ?>
+                       	<?php } ?>
+                        <?php if ($this->view['pflicht']['email'] != '2') { ?>
+                        	<?php echo wpsg_drawForm_Input('email', __('E-Mail', 'wpsg'), @$this->view['data']['email']); ?>
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['firma'] != '2') { ?>
+                        	<?php echo wpsg_drawForm_Input('firma', __('Firma', 'wpsg'), @$this->view['data']['firma']); ?>
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['tel'] != '2') { ?>
+                        	<?php echo wpsg_drawForm_Input('tel', __('Telefon', 'wpsg'), @$this->view['data']['tel']); ?>
+    					<?php } ?>                    
+                        <?php if ($this->view['pflicht']['fax'] != '2') { ?>
+	                        <?php echo wpsg_drawForm_Input('fax', __('Fax', 'wpsg'), @$this->view['data']['fax']); ?>
+	                   	<?php }?>
+	                    <?php if ($this->view['pflicht']['strasse'] != '2') { ?>
+                    
+                        	<?php echo wpsg_drawForm_Input('strasse', __('Straße', 'wpsg'), @$this->view['data']['strasse']); ?>
+										
+							<?php if ($this->view['pflicht']['wpsg_showNr'] === '1') { ?>	
+								<?php echo wpsg_drawForm_Input('nr', __('Hausnummer', 'wpsg'), @$this->view['data']['nr']); ?>
+							<?php } ?>
+						
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['plz'] != '2') { ?>	
+                        	<?php echo wpsg_drawForm_Input('plz', __('PLZ', 'wpsg'), @$this->view['data']['plz']); ?>
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['ort'] != '2') { ?>	
+                        	<?php echo wpsg_drawForm_Input('ort', __('Ort', 'wpsg'), @$this->view['data']['ort']); ?>
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['land'] != '2') { ?>	
+                        	<?php echo wpsg_drawForm_Select('land', __('Land', 'wpsg'), @$this->view['arLand'], @$this->view['data']['land']); ?>
+                        <?php } ?>
+                        <?php if ($this->view['pflicht']['ustidnr'] != '2') { ?>
+                        	<?php echo wpsg_drawForm_Input('ustidnr', __('UStIdNr.', 'wpsg'), @$this->view['data']['ustidnr']); ?>
+                        <?php } ?>
+                        <?php echo wpsg_drawForm_Select('status', __('Status', 'wpsg'), ['1' => __('Aktiv', 'wpsg'), '0' => __('Inaktiv', 'wpsg'), '-1' => __('Anonymisiert')], @$this->view['data']['status'], array()); ?>
+                        <?php echo wpsg_drawForm_Checkbox('info-mail', __('Mail bei Statusänderung', 'wpsg'), '', array()); ?>
+                        <?php echo wpsg_drawForm_Textarea('comment', __('Kundenkommentar', 'wpsg'), @$this->view['data']['comment']); ?>
+					<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+                    <?php if (wpsg_isSizedArray($this->view['pflicht']['custom'])) { ?>
+                    <?php echo wpsg_drawForm_AdminboxStart(__('Benutzerdefinierte Felder', 'wpsg')); ?>
+                    <?php foreach ($this->view['pflicht']['custom'] as $c_id => $c) { ?>
+                        <?php if ($c['typ'] == '0') { // Textfeld ?>
+                            <?php echo wpsg_drawForm_Input('custom['.$c_id.']', __($c['name'], 'wpsg'), @$this->view['data']['custom'][$c_id]); ?>
+                        <?php } else if ($c['typ'] == '1') { // Auswahl ?>
+                            <?php echo wpsg_drawForm_Select('custom['.$c_id.']', __($c['name'], 'wpsg'), wpsg_array_merge(array('' => __('Keine Auswahl', 'wpsg')), explode('|', $c['auswahl'])), @$this->view['data']['custom'][$c_id], array('noIndex' => true)); ?>
+                        <?php } else if ($c['typ'] == '2') { // Checkbox?>
+                            <?php echo wpsg_drawForm_Checkbox('custom['.$c_id.']', __($c['name'], 'wpsg'), @$this->view['data']['custom'][$c_id]); ?>
+                        <?php } ?>
+                    <?php } ?>
+                    <?php echo wpsg_drawForm_AdminboxEnd(); ?>
+                    <?php } ?>
+
+				</div>
+				<div class="col-md-4 col-lg-4">
+
+					<?php echo wpsg_drawForm_AdminboxStart(__('Passwortänderung', 'wpsg')); ?>
+						<?php echo wpsg_drawForm_Input('password1', __('Passwort', 'wpsg'), '', array('type' => 'password')); ?>
+						<?php echo wpsg_drawForm_Input('password2', __('Wiederholung', 'wpsg'), '', array('type' => 'password')); ?>
+                        <div id="wpsg_pwd_info" style="display:none;">
+                            <h4><?php echo __('Passwort sollte folgende Regeln befolgen:','wpsg') ?></h4>
+                            <ul>
+                                <li id="wpsg_pwd_length" class="invalid"><?php echo __('Mindestens 8 Zeichen','wpsg')?></li>
+                                <li id="wpsg_pwd_letter" class="invalid"><?php echo __('Mindestens ein Kleinbuchstabe','wpsg') ?></li>
+                                <li id="wpsg_pwd_capital" class="invalid"><?php echo __('Mindestens ein Großbuchstabe','wpsg') ?></li>
+                                <li id="wpsg_pwd_number" class="invalid"><?php echo __('Mindestens eine Zahl','wpsg') ?></li>
+                                <li id="wpsg_pwd_speziell" class="invalid"><?php echo __('Mindestens ein Sonderzeichen','wpsg') ?></li>
+                            </ul>
+                        </div>
+					<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+                    
+					<?php if (wpsg_isSizedInt($this->view['data']['id'])) { ?>
+					<?php echo wpsg_drawForm_AdminboxStart(__('Information', 'wpsg')) ?>
+
+						<?php echo wpsg_drawForm_TextStart(); ?>
+						<p>
+							<?php echo $this->view['data']['countOrder']; ?>
+							<?php if ($this->view['data']['countOrder'] > 0) { ?>
+								[ <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&filter%5Bk_id%5D=<?php echo $this->view['data']['id']; ?>"><?php echo __('Bestellungen anzeigen', 'wpsg'); ?></a> ]
+							<?php } ?>
+						</p>
+						<?php echo wpsg_drawForm_TextEnd(__('Bestellungen', 'wpsg'), array('noP' => true)); ?>
+
+                        <?php if ($this->view['data']['status'] !== '-1') { ?>
+						
+                            <?php echo wpsg_drawForm_TextStart(); ?>
+                            <p>
+                                <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_kundenverwaltung&noheader=1&be_ajax=su&k_id=<?php echo $this->view['data']['id']; ?>"><?php echo __('Kundenlogin simulieren', 'wpsg'); ?></a>
+                            </p>
+                            <?php echo wpsg_drawForm_TextEnd(__('Kunden Login', 'wpsg'), array('noP' => true)); ?>
+                        
+                        <?php } ?>
+
+                        <?php if (wpsg_isSizedInt($this->view['data']['countOrder'])) { ?>
+						
+                            <?php echo wpsg_drawForm_TextStart(); ?>
+						    <p><?php echo wpsg_formatTimestamp(strtotime($this->view['data']['lastorder'])); ?></p>
+						    <?php echo wpsg_drawForm_TextEnd(__('Letzte Bestellung', 'wpsg'), array('noP' => true)); ?>
+                            
+                        <?php } ?>
+
+                        <?php if (strtotime($this->view['data']['anonymized']) > 0) { ?>
+
+                            <?php echo wpsg_drawForm_TextStart(); ?>
+                            <p><?php echo wpsg_formatTimestamp(strtotime($this->view['data']['anonymized'])); ?></p>
+                            <?php echo wpsg_drawForm_TextEnd(__('Anonymisiert am', 'wpsg'), array('noP' => true)); ?>
+                            
+                        <?php } ?>
+
+                        <?php if (strtotime($this->view['data']['last_login']) > 0) { ?>
+                        
+                            <?php echo wpsg_drawForm_TextStart(); ?>
+                            <p><?php echo wpsg_formatTimestamp(strtotime($this->view['data']['last_login'])); ?></p>
+                            <?php echo wpsg_drawForm_TextEnd(__('Letzte Anmeldung', 'wpsg'), array('noP' => true)); ?>
+                            
+                        <?php } ?>
+
+						<?php if ($this->hasMod('wpsg_mod_statistics')) { ?>
+						<?php echo wpsg_drawForm_TextStart(); ?>
+						<p>
+							<?php
+
+							echo wpsg_translate(__('<a href="#1#" title="Storniert" class="wpsg_storno">#2#</a> / <a href="#3#" title="Offen" class="wpsg_open">#4#</a> / <a href="#5#" title="Bezahlt" class="wpsg_payed">#6#</a>', 'wpsg'),
+								WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Order&filter[status]=500&filter[k_id]='.$this->view['data']['id'],
+								wpsg_ff($this->view['amountStorno']),
+								WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Order&filter[status]=0&filter[k_id]='.$this->view['data']['id'],
+								wpsg_ff($this->view['amountAll'] - $this->view['amountStorno'] - $this->view['amountPayed']),
+								WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Order&filter[status]=100,110&filter[k_id]='.$this->view['data']['id'],
+								wpsg_ff($this->view['amountPayed'])
+							);
+
+							?>
+						</p>
+						<?php echo wpsg_DrawForm_TextEnd(wpsg_translate(__('Umsatz in #1#', 'wpsg'), $this->get_option('wpsg_currency')), array('noP' => true)); ?>
+						<?php } ?>
+
+					<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+					<?php } ?>
+                    
+                    <?php $this->callMods('wpsg_mod_customer_sidebar', array(&$this->view['data'])); ?>
+
+				</div>
+			</div>
+
+            <?php if (@$_REQUEST['edit_id'] > 0) { ?>
+                <input type="hidden" name="edit_id" value="<?php echo $_REQUEST['edit_id']; ?>" />
+            <?php } ?>
+
+            <input type="submit" value="<?php echo __('Kunde speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" />
+            <input type="submit" value="<?php echo __('Kunde speichern und zur Übersicht', 'wpsg'); ?>" class="button-primary" id="submit_index" name="submit_index" />
+
+		</form>
+
+	</div>
+
+</div>
+
+<script>
+	
+	jQuery(document).ready(function() {
+		
+		// Visualisierung der Passwortstärke
+		jQuery('input[type=password]').keyup(function() {
+
+			var password = jQuery(this).val();
+
+			if (password.length < 6)
+			{
+
+				jQuery('#wpsg_pwd_length').removeClass('valid').addClass('invalid');
+
+			}
+			else
+			{
+
+				jQuery('#wpsg_pwd_length').removeClass('invalid').addClass('valid');
+
+			}
+
+			if (password.match(/([a-z])/))
+			{
+
+				jQuery('#wpsg_pwd_letter').removeClass('invalid').addClass('valid');
+
+			}
+			else
+			{
+
+				jQuery('#wpsg_pwd_letter').removeClass('valid').addClass('invalid');
+
+			}
+
+			if (password.match(/([A-Z])/))
+			{
+
+				jQuery('#wpsg_pwd_capital').removeClass('invalid').addClass('valid');
+
+			}
+			else
+			{
+
+				jQuery('#wpsg_pwd_capital').removeClass('valid').addClass('invalid');
+
+			}
+
+			if (password.match(/([0-9])/))
+			{
+
+				jQuery('#wpsg_pwd_number').removeClass('invalid').addClass('valid');
+
+			}
+			else
+			{
+
+				jQuery('#wpsg_pwd_number').removeClass('valid').addClass('invalid');
+
+			}
+
+			if (password.match(/([~,!,%,@,&,#,°,^,$,?,_,*,§])/))
+            {
+
+				jQuery('#wpsg_pwd_speziell').removeClass('invalid').addClass('valid');
+
+			}
+            else
+            {
+
+				jQuery('#wpsg_pwd_speziell').removeClass('valid').addClass('invalid');
+
+			}
+
+		} ).on('focus', function() {
+			
+			jQuery('#wpsg_pwd_info').show();
+			
+		}).on('blur', function() {
+
+			jQuery('#wpsg_pwd_info').hide();
+			
+		});
+		
+	} );
+
+</script>

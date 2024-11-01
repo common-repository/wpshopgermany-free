@@ -1,0 +1,18 @@
+<?php
+
+	/**
+	 * Template für die Integration des Produktgewichts in die Bestellzusammenfassung
+	 */
+
+?>
+<div class="overview_sum_row">
+	<div class="title">
+		<?php echo __('Gesamtgewicht', 'wpsg'); ?>:
+	</div>
+	<div class="value">
+		<?php echo wpsg_ff($this->view['wpsg_mod_weight']['weight'], $this->get_option('wpsg_mod_weight_unit')); ?>
+	</div>
+    <div class="value">
+        <?php echo __('&nbsp;'); ?>
+    </div>
+</div>

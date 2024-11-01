@@ -1,0 +1,53 @@
+<?php
+
+    /**
+     * Integration der Variantenauswahl in die Produktverwaltung
+     */
+  
+    die("VERALTETES TEMPLATE");
+
+?>
+
+<div class="wpsg_mod_productvariants_product_wrap" id="wpsg_mod_productvariants_product_wrap_<?php echo $GLOBALS['wpsg_produkt_index']; ?>" wpsg-productindex="<?php echo $GLOBALS['wpsg_produkt_index']; ?>">
+    <?php foreach ($this->view['wpsg_mod_productvariants']['arVariants'] as $var) { ?>
+    
+        <div class=wpsg_mod_productvariants_product wpsg_mod_productvariants_type_<?php echo $var['type']; ?>">
+                
+            <?php if ($var['type'] == wpsg_mod_productvariants::TYPE_SELECT) { ?>            
+            
+                <label class="wpsg_mod_productvariants_label" for="wpsg_mod_productvariants_<?php echo $this->view['wpsg_mod_productvariants']['product_id']; ?>_<?php echo $var['id']; ?>"><?php echo wpsg_hspc($var['name']); ?></label>
+                    
+                <select class="wpsg_mod_productvariants_change" id="wpsg_mod_productvariants_<?php echo $this->view['wpsg_mod_productvariants']['product_id']; ?>_<?php echo $var['id']; ?>" name="wpsg_mod_productvariants[<?php echo $var['id']; ?>]">
+                    <?php foreach ($var['arVariation'] as $vari) { ?>
+                    <option <?php echo (($this->view['wpsg_mod_productvariants']['product_variants'][$var['id']] == $vari['id'])?'selected="selected"':''); ?> value="<?php echo $vari['id']; ?>"><?php echo wpsg_hspc($vari['name']); ?></option>
+                    <?php } ?>
+                </select>
+            
+            <?php } else if ($var['type'] == wpsg_mod_productvariants::TYPE_RADIO) { ?>
+    
+                <label class="wpsg_mod_productvariants_label"><?php echo wpsg_hspc($var['name']); ?></label>
+                    
+                <?php foreach ($var['arVariation'] as $vari) { ?>
+                <label class="wpsg_mod_productvariants_variation_label">
+                    <input class="wpsg_mod_productvariants_change" <?php echo (($this->view['wpsg_mod_productvariants']['product_variants'][$var['id']] == $vari['id'])?'checked="checked"':''); ?> type="radio" name="wpsg_mod_productvariants[<?php echo $var['id']; ?>]" value="<?php echo $vari['id']; ?>" />
+                    <span><?php echo wpsg_hspc($vari['name']); ?></span>
+                </label>
+                <?php } ?>
+                    
+            <?php } ?>            
+            
+        </div>        
+        
+    <?php } ?>
+
+    <script type="text/javascript">/* <![CDATA[ */
+    
+        jQuery(document).ready(function() {
+        
+            jQuery('#wpsg_mod_productvariants_product_wrap_<?php echo $GLOBALS['wpsg_produkt_index']; ?>').bind('change', wpsg_mod_productvariants_reload); 
+                    
+        } );
+    
+    /* ]]> */</script>
+
+</div>

@@ -1,0 +1,62 @@
+<?php
+
+	/**
+	 * Template für die Darstellungsoptionen des Shops
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>
+			<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>
+		<?php } ?>
+	</div>
+
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=presentation&noheader=1'); ?>">
+		
+		<?php \wp_nonce_field('wpsg-save-admin-presentation'); ?>
+		
+		<div class="panel panel-default">
+			<div class="panel-heading clearfix">
+				<h3 class="panel-title"><?php echo __('Darstellung', 'wpsg'); ?></h3>
+			</div>
+			<div class="panel-body">
+
+				<?php echo wpsg_drawForm_Select('wpsg_form_validation', __('Formular Validierung', 'wpsg'), array(
+					'0' => __('Serverseitig', 'wpsg'),
+					'1' => __('Serverseitig + Javascript V1', 'wpsg'),
+					'2' => __('Serverseitig + Javascript V2', 'wpsg')
+				), $this->get_option('wpsg_form_validation')); ?>
+
+				<br />
+				
+				<?php echo wpsg_drawForm_Checkbox('wpsg_imagehandler_basketimage', __('Produktbild im Warenkorb anzeigen', 'wpsg'), $this->get_option('wpsg_imagehandler_basketimage'), array('help' => 'wpsg_imagehandler_basketimage')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_imagehandler_overviewimage', __('Produktbild in Bestellzusammenfassung anzeigen', 'wpsg'), $this->get_option('wpsg_imagehandler_overviewimage'), array('help' => 'wpsg_imagehandler_overviewimage')); ?>
+				
+				<br />
+				
+				<?php $this->callMods('admin_presentation'); ?>
+
+				<br />
+				
+				<?php echo wpsg_drawForm_Checkbox('wpsg_showMwstAlways', __('MwSt. Spalte auch bei einem Satz zeigen', 'wpsg'), $this->get_option('wpsg_showMwstAlways'), array('help' => 'wpsg_showMwstAlways')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_showArticelnumber', __('Artikelnummer im Produkttemplate anzeigen', 'wpsg'), $this->get_option('wpsg_showArticelnumber'), array('help' => 'wpsg_showArticelnumber')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_hideBasketCountrySelect', __('Länderauswahl im Warenkorb verbergen', 'wpsg'), $this->get_option('wpsg_hideBasketCountrySelect'), array('help' => 'wpsg_hideBasketCountrySelect')); ?>
+
+				<br />
+
+				<?php echo wpsg_drawForm_Checkbox('wpsg_alternativeProductDetailDesign', __('Alternatives Design für die Produktverwaltung aktivieren', 'wpsg'), $this->get_option('wpsg_alternativeProductDetailDesign'), array('help' => 'wpsg_alternativeProductDetailDesign')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_alternativeOrderDesign', __('Alternatives Design für die Bestellansichtsseite aktivieren', 'wpsg'), $this->get_option('wpsg_alternativeOrderDesign'), array('help' => 'wpsg_alternativeOrderDesign')); ?>
+
+			</div>
+		</div>
+
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+	
+	</form>
+</div>

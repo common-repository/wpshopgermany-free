@@ -1,0 +1,94 @@
+<?php
+
+	/**
+	 * Template für die Übersichtsseite der Bestellungen im Frontend
+	 */
+
+	//wpsg_debug($this->view['arOrder']);
+
+?>
+
+<div class="wpsg_mod_kundenverwaltung_order wpsg">
+
+	<?php echo $this->writeFrontendMessage(); ?>
+	
+	<?php if (wpsg_isSizedArray($this->view['arOrder'])) { ?>
+		<?php foreach ($this->view['arOrder'] as $order) { ?>
+		
+		<div class="wpsg_box">
+
+		<h2><?php echo wpsg_translate(__('Bestellung vom #1# über #2#', 'wpsg'), date('d.m.Y', strtotime($order['cdate'])), wpsg_ff($order['price_gesamt'], $this->get_option('wpsg_currency'))); ?></h2>
+		
+			<div class="wpsg_inner wpsg_order_<?php echo $order['id']; ?>">
+				<strong><?php echo __('Bestellstatus', 'wpsg'); ?>:</strong>&nbsp;
+					<?php echo $this->arStatus[$order['status']]; ?>
+					<?php if ($this->hasMod('wpsg_mod_rechnungen')) { ?>
+					
+						<?php if ($r = $this->callMod('wpsg_mod_rechnungen', 'getOrderInvoice', array($order['id']))) { ?>
+						<a href="<?php echo $this->callMod('wpsg_mod_rechnungen', 'getFrontendLink', array($r['id'])); ?>"><?php echo wpsg_translate(__('Rechnung #1#', 'wpsg'), $r['rnr']); ?></a>
+						<?php } else if ($r = $this->callMod('wpsg_mod_rechnungen', 'getOrderCredit', array($order['id']))) { ?>
+						<a href="<?php echo $this->callMod('wpsg_mod_rechnungen', 'getFrontendLink', array($r['id'])); ?>"><?php echo wpsg_translate(__('Rechnungskorrektur #1#', 'wpsg'), $r['gnr']); ?></a>
+						<?php } ?>
+						
+					<?php } ?>
+				<br />
+				<strong><?php echo __('Rechnungsbetrag', 'wpsg'); ?>:</strong> <?php echo wpsg_ff($order['price_gesamt'], $this->get_option('wpsg_currency')); ?><br />
+				<strong><?php echo __('Bestellte Produkte', 'wpsg'); ?>:</strong>				
+				
+				<table class="wpsg_mod_kundenverwaltung_producttable">
+					<tr>
+						<th class="col_name"><?php echo __('Name', 'wpsg'); ?></th>
+						<th class="col_price"><?php echo __('Preis', 'wpsg'); ?></th>						
+					</tr>				
+					<?php foreach ((array)$order['arProdukte'] as $p) { ?>					
+					<tr>
+						<td class="col_name">
+							<a href="<?php echo $p['url']; ?>"><?php echo $this->getProductName($this->getProduktID($p['id']), true); ?></a>
+							<br /><?php echo __('Artikelnummer', 'wpsg'); ?>: <?php echo $p['anr']; ?>
+							<?php if ($this->hasMod('wpsg_mod_productvariants') && wpsg_isSizedString($p['mod_vp_varkey'])) { $arVarInfo = $this->callMod('wpsg_mod_productvariants', 'getVariantenInfoArray', array($p['mod_vp_varkey'])); ?>
+							<br /><?php echo __('Variante', 'wpsg'); ?>: <?php echo $arVarInfo['key']; ?>
+							<?php } ?>	
+							<?php if ($this->hasMod('wpsg_mod_downloadplus')) { ?>
+							<?php if ($this->callMod('wpsg_mod_downloadplus', 'isPDFProdukt', array($p['id'])) === true) { $arDownloads = $this->callMod('wpsg_mod_downloadplus', 'getIndivFiles', array($p['id'], $order['id'])); ?>
+							<?php foreach ((array)$arDownloads as $d) { ?>
+							<br /><?php echo wpsg_translate(__('Datei "#1#": ', 'wpsg'), ((strlen($d['file_out']) > 0)?$d['file_out']:$d['file'])); ?> 
+							<?php if ($d['status'] == '0') { ?>
+							<?php echo __('Noch nicht geplant', 'wpsg'); ?>			
+							<?php } else if ($d['status'] == '1') { ?>
+							<?php echo wpsg_translate(__('Geplant am #1#.', 'wpsg'), date('d.m.Y', strtotime($d['scheduled']))); ?>							
+							<?php } else if ($d['status'] == '2') {  ?>
+							<?php $strURL = site_url().'?wpsg_action=wpsg_mod_downloadplus_download&hash='.$d['hash'].'&indi='.$d['indiv_id']; ?>
+							<?php echo wpsg_translate(__('<a href="#1#" target="blank">Download</a>', 'wpsg'), $strURL); ?>
+							<?php } ?>			
+							<?php } ?>
+							<?php } ?>
+							<?php } ?>
+							<br />							
+							<?php if ($this->hasMod('wpsg_mod_productvars')) { $arPV = $this->callMod('wpsg_mod_productvars', 'getAllProductVarValues', array($order['id'], $p['product_index'])); ?>
+							<?php if (wpsg_isSizedArray($arPV)) { ?>
+							<?php foreach ($arPV as $pv) { ?>
+							<?php echo wpsg_hspc($pv['name']); ?>: <?php echo wpsg_hspc($pv['value']); ?>
+							<?php } ?>
+							<?php } ?>			
+							<?php } ?>
+						</td>	 				
+						<td class="col_price">
+							<?php if ($this->getFrontendTaxview() == WPSG_NETTO) { ?>
+							<?php echo wpsg_ff($p['preis_netto'], $this->get_option('wpsg_currency')); ?>
+							<?php } else { ?>
+							<?php echo wpsg_ff($p['preis'], $this->get_option('wpsg_currency')); ?>
+							<?php } ?>
+						</td>
+					</tr>
+					<?php } ?>
+				</table>
+				
+			</div>
+		</div>
+				
+		<?php } ?>
+	<?php } else { ?>
+	<p><?php echo __('Bisher keine Bestellungen durchgeführt.', 'wpsg'); ?></p>
+	<?php } ?>
+	
+</div>

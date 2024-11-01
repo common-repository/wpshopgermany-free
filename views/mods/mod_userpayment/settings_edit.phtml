@@ -1,0 +1,84 @@
+<?php
+
+	/**
+	 * Template für die Einstellungsseite des Zahlungsvarianten Moduls
+	 */
+
+?>
+<script type="text/javascript">
+
+	/**
+	 * Speichert die Änderung in der Checkbox der MwSt.
+	 */
+	function wpsg_saveZVMwSt(oElement, zv_id)
+	{
+	
+		if (jQuery(oElement).attr("checked")) value = '1'; else value = '0';
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&do=inlinedit&noheader=1',
+			data: {
+				field: 'mwst_laender',
+				zv_id: zv_id,
+				value: value
+			}		
+		} );
+		
+	} // function wpsg_saveZVMwSt(oElement, va_id)	
+
+	function wpsg_addZV() 
+	{
+
+		jQuery('#wpsg_zv_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&noheader=1&do=add',
+			success: function(data) {
+				jQuery('#wpsg_zv_list').html(data);
+			}
+		} );
+
+		return false;
+		
+	} // function wpsg_addZV()
+
+	function wpsg_removeZV(zv_id)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass sie die Zahlvariante löschen möchten?', 'wpsg'); ?>')) return false;
+		
+		jQuery('#wpsg_zv_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment&noheader=1&do=remove',
+			data: {
+				zv_id: zv_id
+			},
+			success: function(data) {
+				jQuery('#wpsg_zv_list').html(data);
+			}
+		} );
+		
+	} // function wpsg_removeZV(zv_id)
+	
+</script>
+
+<div class="wpsg_admin_box">		
+		  		
+	<div class="head">
+		<div class="title">
+			<div class="fulltab">
+				<?php echo __('Zahlvarianten', 'wpsg'); ?>
+			</div>
+		</div>
+	</div>
+	<div class="content" id="wpsg_zv_list">
+		<?php echo $this->callMod('wpsg_mod_userpayment', 'zv_list'); ?>
+	</div>
+					
+</div>
+
+<p class="wpsg_hinweis"><?php echo __('Um eine Zahlvariante zu bearbeiten klicken Sie einfach auf den Namen oder den Rabattwert.', 'wpsg'); ?></p>
+
+<br />
+<a href="#" onclick="return wpsg_addZV();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span>Neue Zahlvariante anlegen</a>

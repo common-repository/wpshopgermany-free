@@ -1,0 +1,78 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen der Deinstallation
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+
+<div class="wpsg_admin_content">
+
+	<?php echo wpsg_drawForm_AdminboxStart(__('Datensätze löschen / Plugin deinstallieren', 'wpsg')); ?>
+
+	<form name="form1" class="form-horizontal" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;noheader=1&amp;subaction=<?php echo $_REQUEST['subaction']; ?>">
+
+		<?php echo wp_nonce_field('wpsg-admin-deinstall'); ?>
+		
+		<p><?php echo __('Bitte wählen Sie aus, was Sie entfernen möchten?', 'wpsg'); ?></p>
+
+		<?php echo wpsg_drawForm_Checkbox('wpsg_deinstall_products', wpsg_translate(__('Produkte (#1# Datensätze)', 'wpsg'), (($this->view['count_products'] > 0)?$this->view['count_products']:0)), false, array('fullWidth' => true)); ?>
+		<?php echo wpsg_drawForm_Checkbox('wpsg_deinstall_customer', wpsg_translate(__('Kunden (#1# Datensätze)', 'wpsg'), (($this->view['count_customer'] > 0)?$this->view['count_customer']:0)), false, array('fullWidth' => true)); ?>
+		<?php echo wpsg_drawForm_Checkbox('wpsg_deinstall_order', wpsg_translate(__('Bestellungen (#1# Datensätze)', 'wpsg'), (($this->view['count_order'] > 0)?$this->view['count_order']:0)), false, array('fullWidth' => true)); ?>
+		<?php echo wpsg_drawForm_Checkbox('wpsg_deinstall_incompleteorder', wpsg_translate(__('Unvollständige Bestellungen (#1# Datensätze)', 'wpsg'), (($this->view['count_order_incomplete'] > 0)?$this->view['count_order_incomplete']:0)), false, array('fullWidth' => true)); ?>
+
+		<br />
+		
+		<?php echo wpsg_drawForm_Checkbox('wpsg_deinstall_core', __('Plugin, Programmdateien, Moduldateien und Datenbanktabellen', 'wpsg'), false, array('fullWidth' => true)); ?>
+
+		<br />
+		
+		<?php echo wpsg_drawForm_Checkbox('wpsg_deinstall_sites', __('Shopseiten (Warenkorbseite, Produktdetailseite, Versandkosten, AGB, Datenschutz, Widerrufsbelehrung, Impressum, ... )', 'wpsg'), false, array('fullWidth' => true)); ?>
+		
+		<p class="submit"><input onclick="return wpsg_check_deinstall();" type="submit" value="<?php echo __('Deinstallation durchführen', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+
+		<div class="wpsg_hinweis">
+			<?php echo __('Hinweis: Es werden hier auch bereits gelöschte Datensätze angezeigt/gezählt, da diese noch im System hinterlegt bleiben.', 'wpsg'); ?><br /><br />
+			<strong><?php echo __('Das Deinstallieren und Löschen der Datensätze ist nicht umkehrbar!', 'wpsg'); ?></strong>
+		</div>
+
+	</form>
+
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	function wpsg_check_deinstall()
+	{
+
+		if (jQuery('.wpsg_admin_content input:checked').length <= 0)
+		{
+			
+			alert('<?php echo __('Bitte mindestens eine Option wählen.', 'wpsg'); ?>'); return false;
+			
+		}
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher? Der Vorgang ist nicht umkehrbar!', 'wpsg'); ?>'))
+		{
+
+			return false;
+			
+		}
+
+		return true;
+		
+	} // function wpsg_check_deinstall()
+
+/* ]]> */</script>

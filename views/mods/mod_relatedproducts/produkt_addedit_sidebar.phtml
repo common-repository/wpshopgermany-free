@@ -1,0 +1,74 @@
+<?php
+
+	/**
+	 * Template für die Zuweisung von Zubehörprodukten
+	 */
+
+?>
+<div id="wpsg_mod_relatedproducts_dialog" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+            <div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-label="<?php echo __('Abbrechen', 'wpsg'); ?>"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title"><?php echo __('Produktauswahl', 'wpsg'); ?></h4>
+      		</div>
+			<div class="modal-body">
+	 
+			</div>
+			<div class="modal-footer">
+	 
+				<button type="button" class="btn-sm btn btn-default" data-dismiss="modal"><?php echo __('Abbrechen', 'wpsg'); ?></button>
+				<button type="button" class="btn-sm btn btn-primary" onclick="return insertProdukt();"><?php echo __('Einfügen', 'wpsg'); ?></button>
+				<button type="button" class="btn-sm btn btn-primary" onclick="return insertProduktClose();"><?php echo __('Einfügen und schließen', 'wpsg'); ?></button>
+				
+			</div>
+			
+		</div>
+	</div>      
+</div>
+
+<div id="wpsg_relatedproducts" class="panel panel-default" tabindex="-1">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">
+			<?php echo __('Zubehörprodukte', 'wpsg'); ?>
+		</h3>
+	</div>
+	<div class="panel-body">		 
+		 <div id="relatedproducts_list"><?php echo $this->callMod('wpsg_mod_relatedproducts', 'drawList', array($this->view['data']['id'])); ?></div>
+
+		<script type="text/javascript">
+		
+			/**
+			 * Wird aufgerufen wenn ein Produkt zugeordnet werden soll
+			 */
+			function wpsg_relatedproducts_add() 
+			{
+				
+				jQuery('#wpsg_mod_relatedproducts_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		 		jQuery('#wpsg_mod_relatedproducts_dialog').modal( { } ).modal('show');
+				
+				jQuery.ajax( {
+					url: 'admin.php?page=wpsg-Produkt&action=select&noheader=1&wpsg_mode=wpsg_mod_relatedproducts&edit_id=<?php echo $this->view['data']['id']; ?>',
+					success: function(data) {
+					
+						jQuery('#wpsg_mod_relatedproducts_dialog .modal-body').html(data);
+						
+					}
+				} ); 
+		
+				return false;
+						
+			} // function wpsg_relatedproducts_add()
+		
+		</script>
+		
+		<br />
+ 
+		<a title="<?php echo __('Neues Produkt zuordnen', 'wpsg'); ?>" href="" onclick="return wpsg_relatedproducts_add();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Produkt zuordnen', 'wpsg'); ?></a>
+			
+		<br /><br />
+	
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_relatedproducts"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration der Zubehörprodukte', 'wpsg'); ?></a>
+		
+	</div>
+</div>		

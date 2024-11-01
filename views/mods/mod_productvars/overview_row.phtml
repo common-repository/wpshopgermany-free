@@ -1,0 +1,39 @@
+<?php
+
+	/**
+	 * Template für eine Produktzeile bei der Bestellzusammenfassung
+	 */
+
+?>
+<?php if (is_array($this->view['wpsg_mod_productvars']['data']) && sizeof($this->view['wpsg_mod_productvars']['data']) > 0) { ?>
+
+<?php foreach ($this->view['wpsg_mod_productvars']['data'] as $pv) { ?>
+<div class="product_info">
+	<div 
+	<?php if ($this->view['$bPicture'] == true) { ?>class="titlep"><?php } else { ?>class="title"><?php } ?>
+		<?php echo __($pv['name'], 'wpsg'); ?><?php if ($pv['pflicht'] == '1') { ?><span class="wpsg_required">*</span><?php } ?>
+	</div>
+	<div class="valuel">
+		<?php if ($pv['typ'] == '1') { // Auswahlfeld ?>		
+			<?php if ($this->view['wpsg_mod_productvars']['p']['wpsg_mod_productvars'][$pv['id']] == 'not_set') { ?>
+			<?php echo __('Nicht angegeben', 'wpsg'); ?>
+			<?php } else { ?>
+			<?php echo wpsg_hspc($this->view['wpsg_mod_productvars']['p']['wpsg_mod_productvars'][$pv['id']]); ?>
+			<?php } ?>
+		<?php } else if ($pv['typ'] == '2') { // Textfeld ?>
+			<?php echo wpsg_hspc($this->view['wpsg_mod_productvars']['p']['wpsg_mod_productvars'][$pv['id']]); ?>
+		<?php } else if ($pv['typ'] == '3') { // Checkbox ?>
+			<?php if ($this->view['wpsg_mod_productvars']['p']['wpsg_mod_productvars'][$pv['id']] == '1') { ?>
+			<?php echo __('Ja', 'wpsg'); ?>
+			<?php } else { ?>
+			<?php echo __('Nein', 'wpsg'); ?>
+			<?php } ?>
+		<?php } ?>
+	</div>
+	<div class="dummyr">
+		<?php echo __('&nbsp;'); ?>
+	</div>
+	
+</div>
+<?php } ?>
+<?php } ?>

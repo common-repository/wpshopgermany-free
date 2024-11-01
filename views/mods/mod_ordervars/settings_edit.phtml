@@ -1,0 +1,37 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Bestellvariablen Moduls
+	 */
+
+?>
+<script type="text/javascript">
+/* <![CDATA[ */
+
+    /**
+     * Wird beim anlegen einer neuen Bestellvariable aufgerufen
+     */
+	function wpsg_addOV()
+	{
+
+		jQuery('#wpsg_ov_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordervars&noheader=1&do=add',
+			success: function(data) {
+				jQuery('#wpsg_ov_list').html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_addOV()
+            
+/* ]]> */
+</script>
+
+<div class="content" id="wpsg_ov_list"><?php echo $this->mod->ov_list(); ?></div>
+
+<br />
+
+<a title="<?php echo __('Neue Bestellvariable anlegen', 'wpsg'); ?>" href="" class="" onclick="return wpsg_addOV();"><span class="glyphicon wpsg-glyphicon glyphicon-plus"></span><?php echo __('Neue Bestellvariable anlegen.', 'wpsg'); ?></a>

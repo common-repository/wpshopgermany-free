@@ -1,0 +1,50 @@
+<?php
+	 
+	/**
+	 * User: Daschmi (daschmi@daschmi.de)
+	 * Date: 31.07.2019
+	 * Time: 17:15
+	 */ 
+    
+	namespace wpsg;
+	
+	$arCalculation = $this->view['basket']['arCalculation'];
+	
+	if ($this->getFrontendTaxView() === WPSG_BRUTTO) $display_brutto_netto = 'brutto';
+	else $display_brutto_netto = 'netto';
+	
+?>
+
+<?php foreach ($arCalculation['coupon'] as $gs) { ?>
+	
+	<tr class="totalrow">
+		<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="3"><?php echo __('Wertgutschein', 'wpsg'); ?> <?php echo ((wpsg_isSizedString($gs['code']))?'('.$gs['code'].')':''); ?>:</td>
+		<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst"></td>
+		<?php } ?>
+		<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+		<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php
+				
+			echo wpsg_ff($gs[$display_brutto_netto], $this->get_option('wpsg_currency'));
+			
+			if (strpos($gs['set'], '%') !== false) {
+				
+				echo '<span class="procent_payship">('.wpsg_ff(wpsg_tf($gs['set']), '%').')</span>';
+				
+			}
+		
+		?></td>
+	</tr>
+	
+<?php } ?>
+
+<tr class="totalrow">
+	<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="2"><?php echo __('Zu zahlen', 'wpsg'); ?>:</td>
+	<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price">&nbsp;</td>
+	<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+		<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst"></td>
+	<?php } ?>
+	<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+	<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><strong><?php echo wpsg_ff($this->view['basket']['arCalculation']['sum']['topay_brutto'], $this->get_option('wpsg_currency')); ?></strong></td>
+</tr>
+    

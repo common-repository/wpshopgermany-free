@@ -1,0 +1,20 @@
+<?php
+
+	/**
+	 * Template für das Trusted Shops Widget im Backend
+	 */
+
+?>
+
+<label>
+	<input type="checkbox" value="1" <?php echo (($this->view['wpsg_mod_trustedshops_vote'] == '1')?'checked="checked"':''); ?> name="<?php echo $this->view['widget']->get_field_name('wpsg_mod_trustedshops_vote'); ?>" id="<?php echo $this->view['widget']->get_field_id('wpsg_mod_trustedshops_vote'); ?>" />&nbsp;<?php echo __('Bewertungen anzeigen', 'wpsg'); ?>
+	<a class="glyphicon glyphicon-question-sign" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_mod_trustedshops_vote" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_mod_trustedshops_vote"></a><br />	
+</label>
+<label>
+	<input type="checkbox" value="1" <?php echo (($this->view['wpsg_mod_trustedshops_badge'] == '1')?'checked="checked"':''); ?> name="<?php echo $this->view['widget']->get_field_name('wpsg_mod_trustedshops_badge'); ?>" id="<?php echo $this->view['widget']->get_field_id('wpsg_mod_trustedshops_badge'); ?>" />&nbsp;<?php echo __('Badge anzeigen', 'wpsg'); ?>
+	<a class="glyphicon glyphicon-question-sign" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_mod_trustedshops_badge" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_mod_trustedshops_vote"></a><br />
+</label>
+   
+<br />
+    
+<?php echo wpsg_translate(__('Die weitere Konfiguration des Widgets erfolgt in den <a href="#1#">Moduleinstellungen.</a>', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_trustedshops'); ?>

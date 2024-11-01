@@ -1,0 +1,28 @@
+<?php 
+	
+	/**
+	 * Template für die Einstellungen des Downloadprodukt Moduls
+	 */ 
+
+?>
+
+<?php echo wpsg_drawForm_Select('wpsg_mod_downloadprodukte_zt', __('Zähltyp', 'wpsg'), array(0 => __('Tage', 'wpsg'), 1 => __('Downloads', 'wpsg')), $this->get_option('wpsg_mod_downloadprodukte_zt'), array('help' => 'wpsg_mod_downloadprodukte_zt')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_downloadprodukte_days', __('Tage/Downloads gültig', 'wpsg'), $this->get_option('wpsg_mod_downloadprodukte_days'), array('help' => 'wpsg_mod_downloadprodukte_days')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_downloadprodukte_raid', __('Meldung wenn kein Download mehr möglich ist', 'wpsg'), $this->get_option('wpsg_mod_downloadprodukte_raid'), array('help' => 'wpsg_mod_downloadprodukte_raid')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_downloadprodukte_zip', __('Gezippte Auslieferung', 'wpsg'), $this->get_option('wpsg_mod_downloadprodukte_zip'), array('help' => 'wpsg_mod_downloadprodukte_zip')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_downloadprodukte_ziptemp', __('Verzeichnis für temporäres Archiv (Standard /tmp)', 'wpsg'), $this->get_option('wpsg_mod_downloadprodukte_ziptemp'), array('help' => 'wpsg_mod_downloadprodukte_ziptemp')); ?>
+
+<br />
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_downloadprodukte_einsplusx', __('Mehr als ein Produkt im Warenkorb zulassen', 'wpsg'), $this->get_option('wpsg_mod_downloadprodukte_einsplusx'), array('help' => 'wpsg_mod_downloadprodukte_einsplusx')); ?>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_downloadprodukte_shipping', __('Versandart "Versand per Mail" aktiv', 'wpsg'), $this->get_option('wpsg_mod_downloadprodukte_shipping'), array('help' => 'wpsg_mod_downloadprodukte_shipping')); ?>

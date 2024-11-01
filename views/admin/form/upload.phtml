@@ -1,0 +1,64 @@
+<div class="form-group form-group-sm <?php echo ((wpsg_isSizedString($this->view['field_config']['help']))?'has-feedback':''); ?>">
+
+	<label class="col-sm-6 control-label" for="<?php echo $this->view['field_id']; ?>"><?php echo $this->view['field_label']; ?></label>
+	
+	<div class="col-sm-6">
+	
+		<div class="wpsg_field_wrap">
+			<input 
+				type="file"
+				size="<?php echo $this->view['field_size']; ?>"
+				maxLength="<?php echo $this->view['field_maxLength']; ?>"
+				<?php if (wpsg_isSizedString($this->view['field_config']['accept'])) { ?>
+				accept="<?php echo $this->view['field_config']['accept']; ?>"
+				<?php } ?> 
+				class="form-control input-sm" 
+				name="<?php echo $this->view['field_name']; ?>" 
+				value="<?php echo wpsg_hspc($this->view['field_value']); ?>" 
+				id="<?php echo $this->view['field_id']; ?>"
+				placeholder="<?php echo wpsg_getStr($this->view['field_config']['placeholder']); ?>" 
+				<?php if (wpsg_isTrue($this->view['field_config']['readonly'])) { ?>
+				readonly="readonly"
+				<?php } ?>
+				/>
+			<?php if (wpsg_isSizedString($this->view['field_config']['help'])) { ?>
+				<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>" class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+			<?php } ?>
+		</div>
+				
+	</div>
+	
+	<?php if (wpsg_isTrue($this->view['field_config']['ajax_upload'])) { ?>
+	<script type="text/javascript">/* <![CDATA[ */
+	
+	    jQuery(document).ready(function() {
+			
+			jQuery('#<?php echo $this->view['field_id']; ?>').on('change', function() {
+   
+				var data = new FormData();
+   				data.append('file', this.files[0]);
+				   
+				jQuery.ajax( {
+      				url: '<?php echo $this->view['field_config']['ajax_upload_url']; ?>',
+      				data: data,
+      				type: 'POST',         
+      				processData: false,
+      				contentType: false,
+					success: function(data) {
+						
+						<?php if (wpsg_isSizedString($this->view['field_config']['ajax_success'])) { ?>
+						<?php echo $this->view['field_config']['ajax_success']; ?>(data);
+						<?php } ?>
+						
+					}
+				} );
+			} );
+			
+		} );
+	
+	/* ]]> */</script>
+	<?php } ?>
+	
+	<div class="clearfix wpsg_clear"></div>
+	
+</div>

@@ -1,0 +1,68 @@
+<div class="form-group form-group-sm <?php echo ((wpsg_isSizedString($this->view['field_config']['help']))?'has-feedback':''); ?>">
+
+	<label class="col-sm-6 control-label" for="<?php echo $this->view['field_id']; ?>"><?php echo $this->view['field_label']; ?></label>
+	
+	<div class="col-sm-6">
+	
+		<div class="wpsg_field_wrap">
+			<input 
+				type="<?php echo wpsg_getStr($this->view['field_config']['type'], 'text'); ?>"
+				class="form-control input-sm <?php echo wpsg_getStr($this->view['field_config']['input_class']); ?>" 
+				<?php if (!wpsg_isTrue($this->view['field_config']['autocomplete'])) { ?> autocomplete="off" <?php } ?>
+				name="<?php echo $this->view['field_name']; ?>"  
+				tabindex="<?php
+
+					if (!isset($GLOBALS['wpsg']['tabindex']))
+					{
+
+						$GLOBALS['wpsg']['tabindex'] = 10;
+
+					}
+					else
+					{
+
+						$GLOBALS['wpsg']['tabindex'] += 10;
+
+					}
+
+					echo $GLOBALS['wpsg']['tabindex'];
+
+				?>"
+				value="<?php echo wpsg_hspc($this->view['field_value']); ?>"
+				id="<?php echo $this->view['field_id']; ?>"
+				placeholder="<?php echo wpsg_getStr($this->view['field_config']['placeholder']); ?>" 
+				<?php if (wpsg_isTrue($this->view['field_config']['readonly'])) { ?>
+				readonly="readonly"
+				<?php } ?>
+				<?php if (wpsg_isSizedInt($this->view['field_config']['maxlength'])) { ?>
+				maxlength="<?php echo $this->view['field_config']['maxlength']; ?>"
+				<?php } ?>
+				/>
+			<?php if (wpsg_isSizedString($this->view['field_config']['help'])) { ?>
+				<?php if (wpsg_isTrue($this->view['field_config']['rAlign'])) { ?>
+					<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>"
+					class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true" style="float:right;"></a>
+				<?php } else { ?>
+					<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>"
+					class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+				<?php } ?>
+			<?php } ?>
+		</div>
+				
+	</div>
+
+    <?php if (wpsg_isTrue($this->view['field_config']['datepicker'])) { ?>
+    <script>
+
+        jQuery(document).ready(function() {
+
+            jQuery('#<?php echo $this->view['field_id']; ?>').datepicker( { dateFormat: 'dd.mm.yy' } );
+
+        } );
+
+    </script>
+    <?php } ?>
+
+	<div class="clearfix wpsg_clear"></div>
+	
+</div>

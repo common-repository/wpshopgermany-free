@@ -1,0 +1,58 @@
+<?php
+
+	/**
+	 * Template für den Reiter "Versand-/ Zahlungsarten"
+	 */
+	
+?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Erlaubte Zahlungsarten', 'wpsg')); ?>
+	<?php echo wpsg_drawForm_Select('wpsg_paymentmethods_select', '', array('0' => __('Alle', 'wpsg'), '1' => __('Auswahl', 'wpsg')), ((wpsg_isSizedArray($this->view['allowedPayment']))?'1':'0')); ?>		
+	<div class="wpsg_paymentmethods_select">
+		<?php foreach ($this->arPayment as $p) { if (!isset($p['deleted']) || $p['deleted'] != '1') { ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_paymentmethods[]', $p['name'], in_array(strval($p['id']), (array)$this->view['allowedPayment']), array('id' => 'wpsg_paymentmethods_'.$p['id'], 'value' => (string)$p['id'])); ?>
+		<?php } } ?>
+	</div>
+	
+	<?php if ($this->hasMod('wpsg_mod_userpayment')) { ?>
+	<br />
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_userpayment"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Weitere Zahlvarianten definieren', 'wpsg'); ?></a>
+	<?php } ?>
+	
+	<script>
+
+		jQuery('#wpsg_paymentmethods_select').bind('change', function() {
+
+			if (jQuery(this).val() == '1') jQuery('.wpsg_paymentmethods_select').show();
+			else jQuery('.wpsg_paymentmethods_select').hide();
+			
+		} ).change();
+	
+	</script>
+	
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Erlaubte Versandarten', 'wpsg')); ?>
+	<?php echo wpsg_drawForm_Select('wpsg_shippingmethods_select', '', array('0' => __('Alle', 'wpsg'), '1' => __('Auswahl', 'wpsg')), ((wpsg_isSizedArray($this->view['allowedShipping']))?'1':'0')); ?>
+	<div class="wpsg_shippingmethods_select">
+		<?php foreach ($this->arShipping as $s) { if (!isset($s['deleted']) || $s['deleted'] != '1') { ?> 
+			<?php echo wpsg_drawForm_Checkbox('wpsg_shippingmethods[]', $s['name'], in_array(strval($s['id']), (array)$this->view['allowedShipping']), array('id' => 'wpsg_shippingmethods_'.$s['id'], 'value' => $s['id'])); ?>
+		<?php } } ?>
+	</div>
+	
+	<?php if ($this->hasMod('wpsg_mod_versandarten')) { ?>
+	<br />
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Weitere Versandarten definieren', 'wpsg'); ?></a>
+	<?php } ?>
+							
+	<script>
+	
+		jQuery('#wpsg_shippingmethods_select').bind('change', function() {
+	
+			if (jQuery(this).val() == '1') jQuery('.wpsg_shippingmethods_select').show();
+			else jQuery('.wpsg_shippingmethods_select').hide();
+									
+		} ).change();
+							
+	</script>
+	
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

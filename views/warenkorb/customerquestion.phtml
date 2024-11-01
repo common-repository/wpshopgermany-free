@@ -1,0 +1,51 @@
+<?php 
+
+	/**
+	 * Zeigt die Abfrage nach der EU - Leistungsortregel an
+	 */
+
+?> 
+<form method="post" action="<?php echo $this->getURL(wpsg_ShopController::URL_BASKET); ?>">
+
+	<input type="hidden" name="wpsg[action]" value="customeranswer" />
+	<input type="hidden" name="wpsg[redirect]" value="<?php echo wpsg_hspc($this->view['url']); ?>" />
+
+	<h2><?php echo __('Für eine korrekte Preisberechnung benötigen wir folgende Informationen von Ihnen.', 'wpsg'); ?></h2>
+	
+	<div class="customertype">
+		
+		<h2><?php echo __('Sie sind:', 'wpsg'); ?></h2>
+		
+		<div id="customerquestion_fk">
+			<label >
+				<input id="customerquestion_fk_button" type="radio" value="0" <?php echo ((!isset($_SESSION['wpsg']['checkout']['customertype']) || $_SESSION['wpsg']['checkout']['customertype'] === '0')?'checked="checked"':''); ?> name="wpsg[customertype]">&nbsp;<?php echo __('Firmenkunde', 'wpsg'); ?>
+			</label>
+		</div>
+		<div id="customerquestion_ek">
+			<label >
+				<input id="customerquestion_ek_button" type="radio" value="1" <?php echo ((isset($_SESSION['wpsg']['checkout']['customertype']) && $_SESSION['wpsg']['checkout']['customertype'] === '1')?'checked="checked"':''); ?> name="wpsg[customertype]">&nbsp;<?php echo __('Endkunde', 'wpsg'); ?>
+			</label>
+		</div>
+
+	</div>
+
+	<div class="country">
+		<h2><?php echo __('aus:', 'wpsg'); ?></h2>
+		<select class="wpsg_land" name="wpsg[customerCountry]">
+			<?php foreach ($this->view['arCountry'] as $country) { ?>
+			<option value="<?php echo wpsg_hspc($country->id); ?>" <?php echo (($country->id == $this->view['defaultCountry_id'])?'selected="selected"':''); ?>><?php echo wpsg_hspc($country->name); ?></option>
+			<?php } ?>
+		</select>
+	</div>
+	
+	<div class="button_wrap">
+		<input id="customerquestion_ok_button" type="submit"  name="wpsg_submit" class="wpsg_button" value="<?php echo __('OK', 'wpsg'); ?>" />	
+	</div>
+
+</form>
+
+<div class="wpsg_clear"></div> 
+
+<script type="text/javascript">/* <![CDATA[ */
+
+/* ]]> */</script>

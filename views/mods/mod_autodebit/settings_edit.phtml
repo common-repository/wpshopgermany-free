@@ -1,0 +1,19 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Moduls "Bankeinzug"
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_autodebit_bezeichnung', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_autodebit_bezeichnung'), array('help' => 'wpsg_shippay_name')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_autodebit_aktiv', __('Aktiv', 'wpsg'), $this->get_option('wpsg_mod_autodebit_aktiv'), array('help' => 'wpsg_shippay_activ')); ?>
+<?php echo wpsg_drawForm_Textarea('wpsg_mod_autodebit_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_autodebit_hint'), array('help' => 'wpsg_shippay_hint')); ?>
+
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_autodebit_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_autodebit_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_shippay_gebuehr')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_autodebit_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_autodebit_mwst')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_autodebit_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_autodebit_mwstland'), array('help' => 'wpsg_shippay_mwstland')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_autodebit_iban', __('IBAN/BIC statt Kontonummer/BLZ verwenden', 'wpsg'), $this->get_option('wpsg_mod_autodebit_iban'), array('help' => 'wpsg_mod_autodebit_iban')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_autodebit_bic', __('BIC validieren', 'wpsg'), $this->get_option('wpsg_mod_autodebit_bic'), array('help' => 'wpsg_mod_autodebit_bic')); ?>
+<?php // echo wpsg_drawForm_Button('wpsg_mod_autodebit_ibanbicconvert2',  __('BIC/IBAN Konvertierung', 'wpsg'), array('button_text' => __('BIC/IBAN Konvertieren', 'wpsg'), 'button_class' => 'wpsg_mod_autodebit_button', 'button_onclick' => 'if (!confirm(\''.wpsg_hspc(__('Es werden die Bankdaten von allen Bestellungen mit Bankeinzug in BIC/IBAN konvertiert, sofern noch nicht angegeben. Die Länderkürzel müssen den IBAN Länderkürzeln entsprechen.', 'wpsg')).'\')) return false; location.href=\''.WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_autodebit&wpsg_mod_autodebit_bicibanconverter=1&mail=0&noheader=1\'')); ?>
+<?php // echo wpsg_drawForm_Button('wpsg_mod_autodebit_ibanbicconvert', '', array('button_text' => __('BIC/IBAN Konvertierung starten / Kunden informieren', 'wpsg'), 'button_class' => 'wpsg_mod_autodebit_button', 'button_onclick' => 'if (!confirm(\''.wpsg_hspc(__('Es werden die Bankdaten von allen Bestellungen mit Bankeinzug in BIC/IBAN konvertiert, sofern noch nicht angegeben. Die Länderkürzel müssen den IBAN Länderkürzeln entsprechen. Der Kunde wird darüber per E-Mail informiert.', 'wpsg')).'\')) return false;', 'onclick' => WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_autodebit&wpsg_mod_autodebit_bicibanconverter=1&mail=1&noheader=1')); ?>

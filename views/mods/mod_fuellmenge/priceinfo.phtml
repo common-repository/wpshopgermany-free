@@ -1,0 +1,26 @@
+<?php
+
+	/**
+	 * Anzeige der Grundpreisinformationen im Produkttemplate
+	 */
+	
+?>
+
+<?php if ($this->view['wpsg_mod_fuellmenge']['layout'] === 1) { ?>
+
+    <span class="wpsg_mod_fuellmenge_info"><?php echo wpsg_translate(
+        __('#1# (#2# / #3#)', 'wpsg'),
+        wpsg_ff($this->view['wpsg_mod_fuellmenge']['fmenge'], $this->view['wpsg_mod_fuellmenge']['feinheit'], true, 0),
+        wpsg_ff($this->view['wpsg_mod_fuellmenge']['fmenge_preis'], $this->get_option('wpsg_currency'), true, 0),
+        wpsg_ff($this->view['wpsg_mod_fuellmenge']['referencevalue'],$this->view['wpsg_mod_fuellmenge']['referenceunit'], true, 0)
+    ); ?></span>
+    
+<?php } else { ?>
+
+    <div class="wpsg_mod_fuellmenge_info"><?php echo wpsg_translate(
+        __('(#1# / #2#)', 'wpsg'),
+        wpsg_ff($this->view['wpsg_mod_fuellmenge']['fmenge_preis'], $this->get_option('wpsg_currency'), true, 0),
+        wpsg_ff($this->view['wpsg_mod_fuellmenge']['referencevalue'], $this->view['wpsg_mod_fuellmenge']['referenceunit'], true, 0)
+    ); ?></div>
+
+<?php } ?>

@@ -1,0 +1,122 @@
+<?php
+
+	/**
+	 * Template welches den Zahlungsdienstleister nach Bestellabschluss einbindet
+	 */
+
+?>
+<?php if (wpsg_isSizedString($this->view['wpsg_mod_micropayment']['payLink'])) { ?>
+<?php echo __('Klicken Sie auf das folgende Logo um ihre Bestellung zu bezahlen.', 'wpsg'); ?>
+<br /><br />
+
+<a href="<?php echo $this->view['wpsg_mod_micropayment']['payLink']; ?>"><img src="<?php echo $this->view['wpsg_mod_micropayment']['logo']; ?>" alt="<?php echo $this->view['wpsg_mod_micropayment']['title']; ?>" /></a>
+
+	<?php if ($this->get_option('wpsg_mod_micropayment_paystart') == '1') { ?>
+	<script type="text/javascript">
+	 
+		jQuery(document).ready(function() { 
+			window.setTimeout(function() {
+	    	location.href = "<?php echo $this->view['wpsg_mod_micropayment']['payLink']; ?>";
+			}, 1000);
+		} );
+		
+	</script>
+	<?php } ?>
+
+<?php } else { ?>
+
+<p><?php echo __('Bitte geben Sie ihre Kreditkarteninformationen (Kartennummer, Gültigkeitsdatum und Prüfnummer) in folgende Felder ein. Die Daten werden an Micropayment übermittelt und nicht durch uns gespeichert oder ausgewertet.', 'wpsg'); ?></p>
+
+<form method="post" id="wpsg_mod_micropayment_creditcard">
+
+	<div class="micropayment_card">
+		<div class="front card">
+			<div class="chip"></div>
+			<div class="number"><input placeholder="<?php echo __('Kreditkartennummer', 'wpsg'); ?>" type="text" name="number" /></div>
+			<div class="bankname"><?php echo __('Kreditkarte - Vorderseite', 'wpsg'); ?></div>
+			<div class="name"><?php echo __('Max Mustermann', 'wpsg'); ?></div>
+			<div class="validthrough"><?php echo __('Gültig bis', 'wpsg'); ?>:</div>
+			<div class="valid">
+				<select name="expiryMonth">
+					<?php for ($i = 1; $i <= 12; $i ++) { ?>
+					<option value="<?php echo $i; ?>"><?php echo str_pad($i, 2, '0', STR_PAD_LEFT); ?>
+					<?php } ?>		
+				</select>
+				<span>/</span>
+				<select name="expiryYear">
+					<?php for ($i = date('Y'); $i <= date('Y') + 10; $i ++) { ?>
+					<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<?php } ?>
+				</select>						
+			</div>			
+		</div>	
+		
+		<div class="back card">
+			<div class="bankname"><?php echo __('Kreditkarte - Rückseite', 'wpsg'); ?></div>
+			<div class="blackmagnetic"></div>
+			<div class="number"><?php echo __('HC600214C', 'wpsg'); ?></div>
+			<div class="signature"><?php echo __('Unterschrift Max Mustermann', 'wpsg'); ?></div>
+			<div class="sign"><input type="text" name="cvc2" value="" placeholder="<?php echo __('Prüfnummer', 'wpsg'); ?>" /></div>
+		</div>
+		
+		<input type="button" id="wpsg_mod_micropayment_pay_button" class="wpsg_button" value="<?php echo __('Zahlung starten', 'wpsg'); ?>" />
+		
+	</div>
+
+</form>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_mod_micropayment_pay_button').bind('click', function() {
+			
+			var form_data = jQuery('#wpsg_mod_micropayment_creditcard').serialize();
+			
+			jQuery('.micropayment_card input, .micropayment_card select').prop('disabled', true);
+			
+			jQuery.ajax( {
+				url: wpsg_ajax.ajaxurl,
+				data: {
+					action: 'ajax',
+					wpsg_plugin: 'wpsg_mod_micropayment',
+					module_action: 'pay', 
+					form_data: form_data,
+					order_id: <?php echo $this->view['o_id']; ?>
+				},
+				success: function(data) {
+
+					if (data === "1")
+					{
+
+						alert('<?php echo __('Vielen Dank für Ihre Zahlungsreservierung.', 'wpsg'); ?>');
+						location.href = '<?php echo get_permalink($this->get_option('wpsg_mod_micropayment_successPage')); ?>';
+						
+					}
+					else
+					{
+
+						alert(data);
+
+					}
+
+					jQuery('.micropayment_card input, .micropayment_card select').prop('disabled', false);
+						
+				},
+				error: function(rdata, data)
+				{
+					
+					alert("<?php echo __('Unerwarteter Serverfehler!', 'wpsg'); ?>");
+					
+				}
+			} );
+			
+			return false;
+			
+		} );
+		
+	} );
+
+/* ]]> */</script>
+
+<?php } ?>

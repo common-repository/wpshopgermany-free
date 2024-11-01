@@ -1,0 +1,28 @@
+<?php
+
+	/**
+	 * Template um die Produktvariablen im unteren Bereich des Produkttemplates zu integrieren
+	 */
+
+?> 
+<?php foreach ((array)$this->view['wpsg_mod_produktattribute']['data'] as $a) { ?>
+<?php if (wpsg_isSizedString($a['value']) && $a['autoshow'] == '1') { ?>
+<div class="wpsg_mod_produktattribute_row">
+	<div class="wpsg_mod_produktattribute_label"><?php echo __($a['name'], 'wpsg'); ?>:</div>
+	<div class="wpsg_mod_produktattribute_value">
+		<?php if ($a['typ'] == 3) { // Checkbox ?>
+			<?php echo (($a['value'] == '1')?__('Ja', 'wpsg'):__('Nein', 'wpsg')); ?>
+		<?php } else if ($a['typ'] == 2) { // Auswahl { ?>
+			<?php
+				$arAuswahl = explode('|', $a['auswahl']);
+				$value = $arAuswahl[$a['value']];
+				echo $value;
+			?>
+		<?php } else { // Textfeld { ?>
+			<?php echo $a['value']; ?>
+		<?php } ?>
+	</div>
+	<div class="wpsg_clear"></div>
+</div>
+<?php } ?>
+<?php } ?>

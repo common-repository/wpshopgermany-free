@@ -1,0 +1,100 @@
+<?php
+
+	/**
+	 * Integration des Moduls "Lieferzeit" in die Produktverwaltung
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Lieferzeit', 'wpsg')); ?>
+
+	<?php echo wpsg_drawForm_Select('wpsg_mod_deliverytime[wpsg_mod_deliverytime_source]', __('Lieferzeit anzeigen von', 'wpsg'), array(0 => 'Moduleinstellungen', 1 => 'Produkt'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_source'], array('noIndex' => true, 'help' => 'wpsg_mod_deliverytime_source')); ?>
+
+	<div class="wpsg_mod_deliverytime_show">
+	<?php if ($this->get_option('wpsg_mod_deliverytime_mode') == wpsg_mod_deliverytime::MODE_SELECT) { ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_deliverytime[wpsg_mod_deliverytime_deliverytime]', __('Lieferzeit', 'wpsg'), $this->view['wpsg_mod_deliverytime']['arSelection'], $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_deliverytime'], array('noIndex' => true, 'help' => 'wpsg_mod_deliverytime_select')); ?>
+	<?php } else if ($this->get_option('wpsg_mod_deliverytime_mode') == wpsg_mod_deliverytime::MODE_DAYS) { ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_deliverytime[wpsg_mod_deliverytime_deliverytime]', __('Lieferzeit', 'wpsg'), wpsg_getStr($this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_deliverytime']), array('unit' => __('Tage', 'wpsg'), 'help' => 'wpsg_mod_deliverytime_input')); ?>
+	<?php } ?>
+	</div>
+	<?php if (isset($this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_storeproduct'])) {?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_deliverytime[wpsg_mod_deliverytime_storeproduct]', __('Als Offlineprodukt anzeigen', 'wpsg'), array(0 => 'Moduleinstellungen', 1 => 'Offlineprodukt', 2 => 'Onlineprodukt'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_storeproduct'], array('noIndex' => true, 'help' => 'wpsg_mod_deliverytime_store')); ?>
+	
+		<div class="wpsg_mod_deliverytime_store wpsg_mod_deliverytime_store_1">
+		    <?php echo wpsg_drawForm_Input('wpsg_mod_deliverytime[wpsg_mod_deliverytime_storetext]', __('Hinweistext', 'wpsg'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_storetext'], array('help' => 'wpsg_mod_deliverytime_storetext')); ?>
+		    <?php ?>
+		    <?php $arPageWithoutCreate = $this->view['pages']; unset($arPageWithoutCreate['-1']); ?>
+		    <?php echo wpsg_drawForm_Select('wpsg_mod_deliverytime[wpsg_mod_deliverytime_storelink]', __('Seite mit Adressdaten', 'wpsg'), wpsg_array_merge(array(
+		        '0' => __('Keine Verlinkung auf eine Seite anzeigen', 'wpsg')
+		    ), $arPageWithoutCreate), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_storelink'], array('help' => 'wpsg_page_mod_deliverytime_storelink')); ?>
+		</div>
+			
+		<br />
+	
+	<?php } ?>
+
+	<?php /* Verzögerung */ ?>
+	<?php if ($this->hasMod('wpsg_mod_deliverytime') && ($this->get_option('wpsg_mod_deliverytime_delay') == '1')) { ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_deliverytime[wpsg_mod_deliverytime_delay]', __('Hinweistext bei Verzögerungen anzeigen', 'wpsg'), array(0 => 'Moduleinstellungen', 1 => 'Anzeigen', 2 => 'Nicht anzeigen'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_delay'], array('noIndex' => true, 'help' => 'wpsg_mod_deliverytime_delay')); ?>
+		<div class="wpsg_mod_deliverytime_delay_activ" style="display:none;">
+			<?php echo wpsg_drawForm_Input('wpsg_mod_deliverytime[wpsg_mod_deliverytime_delaytext]', __('Grund für verzögerte Lieferung', 'wpsg'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_delaytext'], array('help' => 'wpsg_mod_deliverytime_delayText')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_deliverytime[wpsg_mod_deliverytime_delaytime]', __('Zeitangabe der Verzögerung', 'wpsg'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_delaytime'], array('help' => 'wpsg_mod_deliverytime_delayTime')); ?>
+		</div>
+	<?php } ?>
+	
+	<br />
+	
+	<?php /* Urlaubsmodus aktiv */ ?>
+	<?php if ($this->hasMod('wpsg_mod_deliverytime') && ($this->get_option('wpsg_mod_deliverytime_holiday') == '1')) { ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_deliverytime[wpsg_mod_deliverytime_holiday]', __('Urlaubszeit', 'wpsg'), array(0 => 'Moduleinstellungen', 1 => 'Produktspezifische Einstellung'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_holiday'], array('noIndex' => true, 'help' => 'wpsg_mod_deliverytime_holiday')); ?>
+		<div class="wpsg_mod_deliverytime_holiday_activ" style="display:none;">
+			<?php echo wpsg_drawForm_Input('wpsg_mod_deliverytime[wpsg_mod_deliverytime_holidayStart]', __('Urlaubsbeginn', 'wpsg'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_holidayStart'], array('datepicker' => true, 'help' => 'wpsg_mod_deliverytime_holidayStart')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_deliverytime[wpsg_mod_deliverytime_holidayEnd]', __('Urlaubsende', 'wpsg'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_holidayEnd'], array('datepicker' => true, 'help' => 'wpsg_mod_deliverytime_holidayEnd')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_deliverytime[wpsg_mod_deliverytime_holidaytext]', __('Urlaubsgruß', 'wpsg'), $this->view['wpsg_mod_deliverytime']['wpsg_mod_deliverytime_holidaytext'], array('help' => 'wpsg_mod_deliverytime_holidayText')); ?>
+		</div>
+	<?php } ?>
+	
+	<br />
+
+
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_deliverytime"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration der Lieferzeit', 'wpsg'); ?></a>
+	
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+        jQuery('#wpsg_mod_deliverytimewpsg_mod_deliverytime_storeproduct').bind('change', function() {
+			//alert('TEST:' + jQuery(this).val());
+            jQuery('.wpsg_mod_deliverytime_store').hide();
+            //if (jQuery(this).prop('checked')) jQuery('.wpsg_mod_deliverytime_store_1').show();
+            if (jQuery(this).val() == 1) jQuery('.wpsg_mod_deliverytime_store_1').show();
+
+        } ).change();
+
+		jQuery('#wpsg_mod_deliverytimewpsg_mod_deliverytime_delay').bind('change', function() {
+
+			//if (jQuery(this).is(':checked')) jQuery('.wpsg_mod_deliverytime_delay_activ').show();
+			if (jQuery(this).val() == 1) jQuery('.wpsg_mod_deliverytime_delay_activ').show();
+			else jQuery('.wpsg_mod_deliverytime_delay_activ').hide();
+			
+		} ).change();
+
+		jQuery('#wpsg_mod_deliverytimewpsg_mod_deliverytime_holiday').bind('change', function() {
+
+			if (jQuery(this).val() == 1) jQuery('.wpsg_mod_deliverytime_holiday_activ').show();
+			else jQuery('.wpsg_mod_deliverytime_holiday_activ').hide();
+			
+		} ).change();
+
+		jQuery('#wpsg_mod_deliverytimewpsg_mod_deliverytime_source').bind('change', function() {
+
+			if (jQuery(this).val() == 1) jQuery('.wpsg_mod_deliverytime_show').show();
+			else jQuery('.wpsg_mod_deliverytime_show').hide();
+			
+		} ).change();
+		
+	} );
+
+/* ]]> */</script>

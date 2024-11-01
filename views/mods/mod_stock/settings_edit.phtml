@@ -1,0 +1,32 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Lagerbestandsmoduls
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_allow', __('Bestellungen bei negativen Bestand verhindern', 'wpsg'), $this->get_option('wpsg_mod_stock_allow'), array('help' => 'wpsg_mod_stock_allow')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_showBackendStock', __('Bestand in Produktübersicht (Backend) anzeigen', 'wpsg'), $this->get_option('wpsg_mod_stock_showBackendStock'), array('help' => 'wpsg_mod_stock_showBackendStock')); ?>
+
+<br />
+
+<?php if ($this->hasMod('wpsg_mod_productindex')) { ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_showProductindex', __('Bestand in Produktübersicht (Frontend) anzeigen', 'wpsg'), $this->get_option('wpsg_mod_stock_showProductindex'), array('help' => 'wpsg_mod_stock_showProductindex')); ?>
+<?php } ?>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_showProduct', __('Bestand in Produkt (Frontend) anzeigen', 'wpsg'), $this->get_option('wpsg_mod_stock_showProduct'), array('help' => 'wpsg_mod_stock_showProduct')); ?>
+
+<br/>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_minstockproduct',  __('Minimalbestand im Produkt hinterlegen', 'wpsg'), $this->get_option('wpsg_mod_stock_minstockproduct'), array('help' => 'wpsg_mod_stock_minstockproduct')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_hideSoldout',  __('Ausverkaufte Produkte nicht anzeigen', 'wpsg'), $this->get_option('wpsg_mod_stock_hideSoldout'), array('help' => 'wpsg_mod_stock_hideSoldout')); ?>
+
+<?php if ($this->hasMod('wpsg_mod_productgroups')) { ?>
+	
+	<br />
+	
+	<?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_updateProductSave', __('Bestand in Produktgruppen automatisch ermitteln.', 'wpsg'), $this->get_option('wpsg_mod_stock_updateProductSave'), ['help' => 'wpsg_mod_stock_updateProductSave']); ?>
+
+<?php } ?>
+ 

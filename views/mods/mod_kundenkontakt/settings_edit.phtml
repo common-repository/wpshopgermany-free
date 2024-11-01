@@ -1,0 +1,60 @@
+<?php
+	
+	/**
+	 * Einstellungen für das Kundenkontaktmodul
+	 */
+	
+	namespace wpsg;
+	
+?>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_kundenkontakt[smsflatrate][active]', __('SMS Flatrate Dienst nutzen', 'wpsg'), $this->get_option('wpsg_mod_kundenkontakt_smsflatrate_active'), ['help' => 'wpsg_mod_kundenkontakt_smsflatrate_active']); ?>
+     
+<div id="smsflatrate_layer" style="display:<?php echo (($this->get_option('wpsg_mod_kundenkontakt_smsflatrate_active') === '1')?'block':'none'); ?>;">
+
+	<?php echo wpsg_drawForm_TextStart(); ?>
+    	<p style="font-weight:bold; "><?php echo __('Vorgehensweise:', 'wpsg'); ?></p>
+    	<ol>
+    		<li><?php echo __('Kundenaccount <a href="http://smsflatrate.de/">hier</a> anlegen', 'wpsg'); ?></li>
+    		<li><?php echo __('In Kundenaccount <a href="https://my.smsflatrate.net/">hier</a> einloggen', 'wpsg'); ?></li>
+    		<li><?php echo __('App-Key anlegen', 'wpsg'); ?></li>
+    		<li><?php echo __('AppKey und andere Daten in Modul hinterlegen', 'wpsg'); ?></li>
+    	</ol>
+    	
+    	<br/>
+	
+		<p style="font-weight:bold; "><?php echo __('Hinweis:', 'wpsg'); ?></p>
+		<p><?php echo __('Bitte beachten Sie während der Nutzung der SMS-Funktion innerhalb des wpShopGermany Ihr Guthaben, welches bei dem SMS-Anbieter aufgeladen werden muss.', 'wpsg'); ?></p>
+		
+		<?php /* TODO: Guthaben anzeigen */ ?>
+		
+	<?php echo wpsg_drawForm_TextEnd(); ?>
+
+	<hr>
+	
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenkontakt[smsflatrate][key]',__('Schlüssel', 'wpsg'), $this->get_option('wpsg_mod_kundenkontakt_smsflatrate_key'), ['help' => 'wpsg_mod_kundenkontakt_smsflatrate_key']); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenkontakt[smsflatrate][from]',__('Absender', 'wpsg'), $this->get_option('wpsg_mod_kundenkontakt_smsflatrate_from'), ['help' => 'wpsg_mod_kundenkontakt_smsflatrate_from']); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenkontakt[smsflatrate][type]',__('Feld d / "type"', 'wpsg'), $this->get_option('wpsg_mod_kundenkontakt_smsflatrate_type'), ['help' => 'wpsg_mod_kundenkontakt_smsflatrate_type']); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenkontakt[smsflatrate][status]',__('Feld e / "status"', 'wpsg'), $this->get_option('wpsg_mod_kundenkontakt_smsflatrate_status'), ['help' => 'wpsg_mod_kundenkontakt_smsflatrate_status']); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenkontakt[smsflatrate][reply]',__('Feld f / "reply"', 'wpsg'), $this->get_option('wpsg_mod_kundenkontakt_smsflatrate_reply'), ['help' => 'wpsg_mod_kundenkontakt_smsflatrate_reply']); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_mod_kundenkontakt[smsflatrate][replytomail]',__('Feld g / "replytomail"', 'wpsg'), $this->get_option('wpsg_mod_kundenkontakt_smsflatrate_replytomail'), ['help' => 'wpsg_mod_kundenkontakt_smsflatrate_replytomail']); ?>
+	
+</div>
+
+<script>
+	
+	jQuery('#wpsg_mod_kundenkontaktsmsflatrateactive').on('click', function() {
+		
+		if (jQuery(this).prop('checked')) {
+			
+			jQuery('#smsflatrate_layer').show();
+			
+		} else {
+
+			jQuery('#smsflatrate_layer').hide();
+			
+		}
+		
+	} );
+	
+</script>

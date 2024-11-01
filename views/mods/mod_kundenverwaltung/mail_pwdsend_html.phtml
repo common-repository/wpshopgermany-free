@@ -1,0 +1,15 @@
+<?php
+
+	/**
+	 * Diese Mail wird an den Kunden geschickt, wenn er die Passwort Anfrage erfolgreich bestätigt hat
+	 */
+
+?><p><?php echo wpsg_translate(__('Hallo #1# #2#,', 'wpsg'), $this->view['kunde']['vname'], $this->view['kunde']['name']); ?></p>  
+ 
+<p><?php echo __('Sie haben eine neues Passwort angefragt.', 'wpsg'); ?></p> 
+ 
+<p><?php echo wpsg_translate(__('Ihr neues Passwort lautet ab sofort: #1#', 'wpsg'), $this->view['kunde']['passwort']); ?></p> 
+ 
+<p><?php echo __('Viele Grüße', 'wpsg'); ?></p> 
+ 
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p> 

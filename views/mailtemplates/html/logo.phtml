@@ -1,0 +1,38 @@
+<style>
+	.email-logo { padding-bottom: 10px; }
+	.email-logo-watermark { position:absolute; top:10%; left:0; right:0; display:flex; justify-content:center; align-items:center; }
+</style>
+
+<?php
+	
+	$logoPath = '';
+	
+	if($this->get_option('wpsg_email_logo_activated'))
+	{
+
+		$logoWatermark = $this->get_option('wpsg_email_logo_watermark') ? "email-logo-watermark" : "";
+
+		$logoTransparency = str_replace("#", "", get_option('wpsg_email_logo_transparency'));
+		if($logoTransparency !== "100") $logoTransparency = str_replace(array("0", "00"), "", $logoTransparency);
+		if($logoTransparency !== "100") $logoTransparency = "0." . $logoTransparency;
+
+		$logoAlignment = $this->get_option('wpsg_email_logo_alignment');
+		$logoPath = WPSG_PATH_CONTENT . 'uploads/wpsg/wpsg_mailconf/wpsg_email_logo.jpg';
+
+		if(file_exists($logoPath))
+		{
+			$logoType = pathinfo($logoPath);
+			$logoData = file_get_contents($logoPath);
+			$logoBase64 = 'data:image/' . $logoType . ';base64,' . base64_encode($logoData);
+		}
+
+	}
+?>
+
+<?php if (file_exists($logoPath) && $this->get_option('wpsg_email_logo_activated')) { ?>
+	
+	<?php echo "<div class='email-logo $logoWatermark' style='text-align:$logoAlignment; opacity:$logoTransparency;'>" ?>
+	<?php echo "<img alt='Emaillogo' class='email-logo-$logoAlignment' src='$logoBase64'>"; ?>
+	<?php echo "</div>"; ?>
+	
+<?php } ?>

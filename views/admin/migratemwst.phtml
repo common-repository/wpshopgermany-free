@@ -1,0 +1,62 @@
+<?php 
+	
+	/**
+	 * Template für die Migration der alten MwSt. Sätze in die Länder
+	 */
+	
+?>
+<form method="post" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=migratemwst&noheader=1">
+
+	<h3><?php echo __('Standardland', 'wpsg'); ?></h3>
+	
+	<?php echo wpsg_drawForm_Input('', __('Name', 'wpsg'), $this->view['defaultCountry']->name, array('text' => true)); ?>
+	
+	<br />
+	
+	<h3><?php echo __('Produkte im Datenbestand', 'wpsg'); ?></h3>
+	<?php if (wpsg_isSizedArray($this->view['distinctProductTax'])) { ?> 
+	<?php foreach ($this->view['distinctProductTax'] as $dp) { ?>
+	
+		<?php if (wpsg_isSizedInt($dp['id'])) { ?>
+		<?php echo wpsg_drawForm_Select('mwst['.$dp['id'].']', wpsg_translate(__('#1# Produkte mit #2# Mehrwertsteuer (#3#)', 'wpsg'), $dp['count_product'], wpsg_ff($dp['value'], '%'), $dp['name']), wpsg_tax_groups(true), 'c'); ?>
+		<?php } else { ?>
+		<?php echo wpsg_drawForm_Select('mwst['.$dp['id'].']', wpsg_translate(__('#1# Produkte mit ungültigem Steuersatz', 'wpsg'), $dp['count_product']), wpsg_tax_groups(true), 'c'); ?>
+		<?php } ?>
+	
+	<?php } ?>
+	<?php } else { ?>
+	<p><?php echo __('Keine Produkte die noch keiner Mehrwertsteuergruppe zugewiesen wurden im Datenbestand.', 'wpsg'); ?>
+	<?php } ?>
+	
+	<?php if (wpsg_isSizedArray($this->view['arConf'])) { ?>
+	<h3><?php echo __('Modulkonfigurationen', 'wpsg'); ?></h3>
+	
+	<?php foreach ($this->view['arConf'] as $key => $label) { ?>
+	<?php echo wpsg_drawForm_Select('conf['.$key.']', $label, wpsg_tax_groups(), 'c'); ?>
+	<?php } ?>
+	
+	<?php } ?>
+	
+	<?php if ($this->hasMod('wpsg_mod_userpayment')) { ?>
+	<?php if (wpsg_isSizedArray($this->view['arPaymentMethods'])) { ?>
+	<h3><?php echo __('Zahlvarianten', 'wpsg'); ?></h3>
+	<?php foreach ($this->view['arPaymentMethods'] as $pm) { ?>
+	<?php echo wpsg_drawForm_Select('pv['.$pm['id'].']', __($pm['name'], 'wpsg'), wpsg_tax_groups(), 'c'); ?>
+	<?php } ?>
+	<?php } ?>
+	<?php } ?>
+	
+	<?php if ($this->hasMod('wpsg_mod_versandarten')) { ?>
+	<?php if (wpsg_isSizedArray($this->view['arShippingMethods'])) { ?>
+	<h3><?php echo __('Versandarten', 'wpsg'); ?></h3>
+	<?php foreach ($this->view['arShippingMethods'] as $sm) { ?>
+	<?php echo wpsg_drawForm_Select('sv['.$sm['id'].']', __($sm['name'], 'wpsg'), wpsg_tax_groups(), 'c'); ?>
+	<?php } ?>
+	<?php } ?>
+	<?php } ?>
+	
+	<br />
+	
+	<input type="submit" name="submit" class="button-primary" value="<?php echo __('Mehrwertsteuersätze zuweisen', 'wpsg'); ?>" />
+	
+</form>

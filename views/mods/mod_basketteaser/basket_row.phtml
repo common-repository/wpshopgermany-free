@@ -1,0 +1,33 @@
+<?php
+
+	/**
+	 * Template für die Integration der Warenkorbteaserprodukte innerhalb des Warenkorbs
+	 */
+
+?>
+<div class="wpsg_mod_basketteaser_row wpsg_mod_basketteaser_row_<?php echo $this->view['data']['id']; ?>">
+    <div class="valuel">
+		<?php if ($this->getProduktLink($this->view['data'])) { ?>
+		<a href="<?php echo $this->getProduktLink($this->view['data']); ?>"><?php echo wpsg_hspc((($this->view['data']['detailname'] != '')?$this->view['data']['detailname']:$this->view['data']['name'])); ?></a>
+		<?php } else { ?>
+		<?php echo wpsg_hspc((($this->view['data']['detailname'] != '')?$this->view['data']['detailname']:$this->view['data']['name'])); ?>
+		<?php } ?>
+    </div>
+    <div class="valuel">
+		<?php echo wpsg_ff($this->view['data']['preis'], $this->get_option('wpsg_currency')); ?>
+    </div>
+    <div class="valuel">
+		<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<?php echo wpsg_ff($this->view['data']['mwst_value'], '%'); ?>
+		<?php } ?>
+    </div>
+    <div class="valuer">
+		<input name="wpsg_mod_basketteaser_row[<?php echo $this->view['data']['id']; ?>]" type="text" size="3" value="0" />
+    </div>
+    <div class="valuer">
+		<a href="#" onclick="return wpsg_mod_basketteaser_add(<?php echo $this->view['data']['id']; ?>);"><?php echo __('Hinzufügen', 'wpsg'); ?></a>
+    </div>
+
+</div>
+<br />
+<div class="wpsg_spacer"></div>

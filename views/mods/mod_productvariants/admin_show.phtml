@@ -1,0 +1,115 @@
+<?php
+
+	/**
+	 * Verwaltung der Produktvarianten im Backend
+	 */
+
+?>
+
+<input type="hidden" id="wpsg_mod_productvariants_product_id" value="<?php echo $this->view['product_id']; ?>" />
+
+<?php if (wpsg_isSizedArray($this->view['arVariants'])) { ?>
+
+	<table class="table table-striped wpsg_mod_productvariants_table_variants">
+    	<thead>
+      		<tr>
+      			<th class="col_id"><?php echo __('Id', 'wpsg'); ?></th>
+        		<th class="col1"><?php echo __('Name', 'wpsg'); ?></th>
+        		<th class="col_type"><?php echo __('Typ', 'wpsg'); ?></th>
+        		<th class="col_vari"><?php echo __('Variationen', 'wpsg'); ?></th>
+        		
+        		<?php if (!wpsg_isSizedInt($this->view['product_id'])) { ?>
+        		<th class="col_products"><?php echo __('Produkte', 'wpsg'); ?></th>
+        		<?php } ?>
+        		
+        		<th class="col_action"></th>
+      		</tr>
+    	</thead>
+    	<tbody>
+    		<?php foreach ($this->view['arVariants'] as $var) { ?>
+    		<tr id="var_<?php echo $var['id']; ?>">
+    			<td class="col_id"><?php echo $var['id']; ?></td>
+    			<td class="col1">
+    				<span class="wpsg_editable" id="productvariants_name_<?php echo $var['id']; ?>"><?php echo wpsg_hspc($var['name']); ?></span>
+    				<?php if (wpsg_isSizedInt($var['product_id'])) { ?>
+    				&nbsp;<span class="wpsg_mod_productvariants_info"><?php echo __('(Produktbezogen)', 'wpsg'); ?></span>
+    				<?php } ?>
+    			</td>
+    			<td class="col_type"><span class="wpsg_editable" id="productvariants_type_<?php echo $var['id']; ?>"><?php echo $var['type_label']; ?></span></td>
+    			<td class="col_vari"><?php 
+    			
+    				if (wpsg_isSizedInt($this->view['product_id'])) echo $var['count_active'].'/'.$var['count_variation'];
+    				else echo $var['count_variation']; 
+    			
+    			?></td>
+    			<?php if (!wpsg_isSizedInt($this->view['product_id'])) { ?>
+    			<td class="col_products"><?php echo wpsg_hspc($var['count_produkte']); ?></td>
+    			<?php } ?>
+    			<td class="col_action">
+    			
+    				<script type="text/javascript">/* <![CDATA[ */
+
+    					<?php if ((wpsg_isSizedInt($this->view['product_id']) && $this->view['product_id'] == $var['product_id']) || (!wpsg_isSizedInt($var['product_id']) && !wpsg_isSizedInt($this->view['product_id']))) { ?>
+
+						jQuery('#productvariants_name_<?php echo $var['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&subaction=admin_inlineEdit&noheader=1', {
+							submitdata: { 
+					    		field: 'name',
+					    		field_id: '<?php echo $var['id']; ?>'
+							}
+						});
+
+						jQuery('#productvariants_type_<?php echo $var['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&subaction=admin_inlineEdit&noheader=1', { 
+							submitdata: {
+								field: 'type',
+								field_id: '<?php echo $var['id']; ?>'
+							},
+							data: <?php echo wpsg_prepare_for_inlineEdit(wpsg_mod_productvariants::$arTypeLabel); ?>,
+							type: 'select'							
+						});	
+						
+						<?php } ?>		
+		
+					/* ]]> */</script>
+    			
+    				<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Variante bearbeiten', 'wpsg'); ?>" onclick="return wpsg_mod_productvariants_edit(<?php echo $var['id']; ?>);"><span class="glyphicon glyphicon-pencil"></span></a>
+    				
+    				<?php if ((wpsg_isSizedInt($this->view['product_id']) && $this->view['product_id'] == $var['product_id']) || (!wpsg_isSizedInt($var['product_id']) && !wpsg_isSizedInt($this->view['product_id']))) { ?>    				
+    				<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Variante löschen', 'wpsg'); ?>" onclick="return wpsg_mod_productvariants_del(<?php echo $var['id']; ?>);"><span class="glyphicon glyphicon-trash"></span></a>
+					<?php } ?>
+			
+    			</td>
+    		</tr>
+    		<?php } ?>
+    	</tbody>
+    </table>
+    
+    <p class="wpsg_hinweis"><?php echo __('Reihenfolge kann mittels Drag&Drop verändert werden.', 'wpsg'); ?></p>
+    
+    <script>/* <![CDATA[ */
+
+	    jQuery('.wpsg_mod_productvariants_table_variants tbody').sortable( {
+			items: 'tr',
+			helper: wpsg_Tablefix,  
+			update: function(event, ui) {
+
+				var wpsg_reorder = jQuery(this).sortable('toArray');
+				var product_id = jQuery('#wpsg_mod_productvariants_product_id').val();
+
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&subaction=admin_inlineEdit&noheader=1',
+					data: {
+						'field': 'pos',
+						'product_id': product_id,
+						'value': jQuery(this).sortable('toArray')
+					},
+					success: function(data) { }
+				} );
+																			 
+			}			
+		} );
+
+    /* ]]> */</script>
+
+<?php } else { ?>
+<?php echo __('Bisher keine Produktvarianten angelegt.', 'wpsg'); ?>
+<?php } ?>

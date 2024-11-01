@@ -1,0 +1,17 @@
+<?php
+
+	/**
+	 * Template für die Kundenvoreinstellungen im Backend
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_Select('wpsg_customerpreset_shipping', __('Standard Versandart', 'wpsg'), $this->view['arShipping'], $this->get_option('wpsg_customerpreset_shipping'), array('help' => 'wpsg_customerpreset_shipping')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_customerpreset_payment', __('Standard Zahlungsart', 'wpsg'), $this->view['arPayment'], $this->get_option('wpsg_customerpreset_payment'), array('help' => 'wpsg_customerpreset_payment')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_defaultland', __('Standardland', 'wpsg'), $this->view['arLander'], $this->get_option('wpsg_defaultland'), array('help' => 'wpsg_defaultland', 'hint' => 
+	'nohspc_'.wpsg_translate(__('Die Länder können in der <a href="#1#">Länderverwaltung</a> definiert werden.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender')		
+)); ?>
+<?php echo wpsg_drawForm_Select('wpsg_customerpreset_title', __('Standardanrede', 'wpsg'), $this->view['arTitle'], $this->get_option('wpsg_customerpreset_title'), array( 'help' => 'wpsg_customerpreset_title',
+	'hint' => 'nohspc_'.wpsg_translate(__('Die Auswahl kann in den <a href="#1#">Kundendaten</a> definiert werden.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten'),
+	'noIndex' => true 
+)); ?>

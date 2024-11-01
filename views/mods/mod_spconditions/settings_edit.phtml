@@ -1,0 +1,42 @@
+<?php
+
+	/**
+	 * Template für das Modul "Versand- und Zahlungsbedingungen"
+	 */
+
+?>
+<div class="wpsg_admin_box">		
+		  		
+	<div class="head">
+		<div class="title">
+			<div class="fulltab">
+				<?php echo __('Versand- und Zahlungsbedingungen', 'wpsg'); ?>
+				<a title="<?php echo __('Neue Versand- und Zahlungsbedingung anlegen', 'wpsg'); ?>" href="" class="wpsg_glyphicon_right glyphicon glyphicon-plus-sign" onclick="return wpsg_addSPCondition();"></a>
+			</div>
+		</div>
+	</div>
+	<div class="content" id="wpsg_mod_spconditions_list">
+		<?php echo $this->view['conditionList']; ?>
+	</div>
+			
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	function wpsg_addSPCondition()
+	{
+
+		jQuery('#wpsg_mod_spconditions_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_spconditions&noheader=1&do=add',
+			success: function(data) {
+				jQuery('#wpsg_mod_spconditions_list').html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_addSPCondition()
+
+/* ]]> */</script>

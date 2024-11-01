@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * Template für die Einstellungen des Satollo Newsletter Moduls
+ */
+
+?>
+<?php if ($this->view['plugin_active'] !== true) { ?>
+
+    <div class="wpsg_error"><br /><?php echo __('Das Modul ist nur mit aktiviertem Satollo Newsletter Plugin funktionsfaehig.', 'wpsg'); ?><br /></div>
+
+<?php } else { ?>
+
+    <?php echo wpsg_drawForm_Select('wpsg_mod_nlsatolo_doubleoptin', __('Double Opt-In', 'wpsg'), array('0' => __('Nein', 'wpsg'), '1' => __('Ja', 'wpsg')), $this->get_option('wpsg_mod_nlsatolo_doubleoptin'), array('help' => 'wpsg_mod_nlsatolo_doubleoptin')); ?>
+
+    <?php /* Listen werden im Satolo-Newsletter-Plugin unter Subscribers > Listen erstellen > Listen angelegt*/ ?>
+    <?php echo wpsg_drawForm_Select('wpsg_mod_nlsatolo_group', __('Gruppezuordnung nach Registrierung', 'wpsg'), $this->view['arLists'], $this->get_option('wpsg_mod_nlsatolo_group'), array('help' => 'wpsg_mod_nlsatolo_group')); ?>
+
+<?php } ?>

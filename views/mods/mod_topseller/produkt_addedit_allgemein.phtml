@@ -1,0 +1,35 @@
+<?php
+
+	/**
+	 * Template für die Konfiguration der Topseller innerhalb der Produktverwaltung
+	 */
+
+?>
+<div id="wpsg_topseller_layer" class="panel panel-default">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">
+			<span><?php echo __('Topseller', 'wpsg'); ?></span>
+		</h3>
+	</div>
+	<div class="panel-body">
+	<?php if ($this->get_option('wpsg_mod_topseller_auto') == '1') { ?>
+		<?php echo wpsg_drawForm_Select('wpsg_mod_topseller[status]', __('TopSeller Status', 'wpsg'), array(
+		'0' => __('Einbeziehen', 'wpsg'),
+		'1' => __('Ausschließen', 'wpsg')
+		), $this->view['wpsg_mod_topseller']['status']); ?>
+	
+	<?php } else { ?>
+	
+		<?php echo wpsg_drawForm_Select('wpsg_mod_topseller[status]', __('TopSeller Status', 'wpsg'), array(
+		'0' => __('Nicht anzeigen', 'wpsg'),
+		'1' => __('Anzeigen', 'wpsg')
+		), $this->view['wpsg_mod_topseller']['status']); ?>		
+	<?php } ?>
+	
+	<br /><br />
+	
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_topseller"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration des Topsellermoduls', 'wpsg'); ?></a>	
+	
+	</div>
+</div>
+

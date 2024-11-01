@@ -1,0 +1,123 @@
+<?php
+
+	/**
+	 * Template für die Maske eines neuen Gutscheins
+	 */
+ 
+	$used = 0;
+	
+	if (wpsg_isSizedInt($_REQUEST['voucher_id'])) {
+		
+		$oVoucher = wpsg_voucher::getInstance($_REQUEST['voucher_id']);
+		
+		$used = $oVoucher->getUsedAmount();
+		
+	}
+	
+?>
+
+<div class="content form-horizontal">
+
+	<form method="POST" id="wpsg_voucher_form" autocomplete="off">
+
+		<?php wpsg_drawForm_AdminboxStart(); ?>
+			
+			<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_value', __('Betrag', 'wpsg'), wpsg_ff($this->view['mod_gutschein']['value'])); ?>
+			<?php echo wpsg_drawForm_Input(false, __('Bereits verwendet'), wpsg_ff($used), ['field_id' => 'wpsg_voucher_used', 'readonly' => true]); ?>
+		
+			<div style="margin-top:-15px;"> 
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_gutschein_coupon', __('Als Wertgutschein behandeln', 'wpsg'), $this->view['mod_gutschein']['coupon']); ?>
+			</div>
+		
+			<div class="wpsg_mod_gutschein_coupon wpsg_mod_gutschein_coupon_0">
+				<?php echo wpsg_drawForm_Select('wpsg_mod_gutschein_calc', __('Berechnung', 'wpsg'), array(
+					'w' => __('Absoluter Betrag', 'wpsg'),
+					'p' => __('Prozentual', 'wpsg')
+				), $this->view['mod_gutschein']['calc']); ?>
+			</div>
+
+			<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_start', __('Gültig ab', 'wpsg'), $this->view['mod_gutschein']['start'], array('datepicker' => true)); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_end', __('Gültig bis', 'wpsg'), $this->view['mod_gutschein']['end'], array('datepicker' => true)); ?>
+
+			<?php if (!wpsg_isSizedInt($this->view['edit_id'])) { ?>
+			
+				<?php echo wpsg_drawForm_Select('wpsg_mod_gutschein_gen', __('Code Generierung', 'wpsg'), array(
+					'0' => __('Automatisch', 'wpsg'),
+					'1' => __('Manuell', 'wpsg')
+				), wpsg_getStr($this->view['mod_gutschein']['gen']), array('help' => 'wpsg_mod_gutschein_gen')); ?>
+				<div id="wpsg_mod_gutschein_layercode">
+					<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_code', __('Code', 'wpsg'), wpsg_getStr($this->view['mod_gutschein']['code']), array('help' => 'wpsg_mod_gutschein_code')); ?>
+				</div>
+		
+			<?php } else { ?>
+
+				<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_code', __('Code', 'wpsg'), wpsg_getStr($this->view['mod_gutschein']['code']), array('help' => 'wpsg_mod_gutschein_code')); ?>
+				
+			<?php } ?>                
+		
+			<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_minvalue', __('Minimaler Warenwert', 'wpsg'), wpsg_getStr($this->view['mod_gutschein']['minvalue']), array('help' => 'wpsg_mod_gutschein_minvalue')); ?>
+
+			<?php if (!wpsg_isSizedInt($this->view['edit_id'])) { ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_count', __('Menge', 'wpsg'), $this->view['mod_gutschein']['count']); ?>
+			<?php } ?>
+			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_gutschein_multi', __('Mehrfach verwendbar', 'wpsg'), $this->view['mod_gutschein']['multi']); ?>
+			<?php echo wpsg_drawForm_Textarea('wpsg_mod_gutschein_comment', __('Kommentar', 'wpsg'), @$this->view['mod_gutschein']['comment']); ?>
+			<?php if ($this->hasMod('wpsg_mod_productgroups') && wpsg_isSizedArray($this->view['wpsg_mod_gutschein']['arProductGroups'])) { ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_gutschein_productgroups', __('Beschränkung auf Produktgruppen', 'wpsg'), $this->view['wpsg_mod_gutschein']['arProductGroups'], $this->view['mod_gutschein']['productgroups'], array('multiple' => ((sizeof($this->view['wpsg_mod_gutschein']['arProductGroups']) > 5)?5:sizeof($this->view['wpsg_mod_gutschein']['arProductGroups'])), 'help' => 'wpsg_mod_gutschein_productgroups')); ?>
+			<?php } ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_gutschein_products', __('Beschränkung auf Produkte', 'wpsg'), @$this->view['wpsg_mod_gutschein']['arProducts'], @$this->view['mod_gutschein']['products'], array('multiple' => ((sizeof($this->view['wpsg_mod_gutschein']['arProducts']) > 5)?5:sizeof($this->view['wpsg_mod_gutschein']['arProducts'])), 'help' => 'wpsg_mod_gutschein_products')); ?>
+		<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+		<?php if (wpsg_isSizedInt($this->view['edit_id'])) { ?>
+		
+			<input type="hidden" name="voucher_id" value="<?php echo $this->view['edit_id']; ?>" />
+		
+		<?php } ?>
+
+	</form>
+
+</div>
+
+<script>
+
+    jQuery(document).ready(function() {
+
+		wpsg_ajaxBind();
+				
+		jQuery('#wpsg_mod_gutschein_coupon').on('change', function() {
+			
+			jQuery('.wpsg_mod_gutschein_coupon').hide();
+			
+			if (jQuery(this).prop('checked')) {
+
+				jQuery('.wpsg_mod_gutschein_coupon_1').show();	
+				
+			} else {
+
+				jQuery('.wpsg_mod_gutschein_coupon_0').show();
+				
+			}
+			
+		}).change();
+    	
+        jQuery('#wpsg_mod_gutschein_gen').bind('change', function() {
+
+            if (jQuery(this).val() == '1')
+            {
+
+                jQuery('#wpsg_mod_gutschein_layercode').show();
+
+            }
+            else
+            {
+
+                jQuery('#wpsg_mod_gutschein_layercode').hide();
+
+            }
+
+        } ).change();
+
+    } );
+
+</script>

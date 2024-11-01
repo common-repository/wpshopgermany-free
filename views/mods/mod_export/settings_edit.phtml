@@ -1,0 +1,168 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Export Moduls
+	 */
+
+?>
+
+<script type="text/javascript">
+
+	function wpsg_mod_export_profilSwitch()
+	{
+
+		jQuery('#profil_content').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {			
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=wpsg_mod_export_profilSwitch&noheader=1',
+			data: {
+				profil: jQuery('#wpsg_mod_export_profil').val()
+			},			
+			success: function(data) {
+				jQuery("#profil_content").html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_mod_export_profilSwitch()
+
+	function wpsg_mod_export_addField(profil_id)
+	{
+		
+		jQuery('#wpsg_mod_export_fields').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( { 
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=wpsg_mod_export_addField&noheader=1',
+			data: {
+				profil_id: profil_id
+			},			
+			success: function(data) {
+				
+				jQuery('#wpsg_mod_export_fields').html(data);
+				
+			}
+		} );
+		
+		return false;
+		
+	}
+	
+	function wpsg_mod_export_removeField(field_id)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass das Feld gelöscht werden soll?', 'wpsg'); ?>')) return false;
+		
+		jQuery('tr.wpsg_mod_export_fieldrow_' + field_id).parent().remove();
+		
+		jQuery.ajax( { 
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=wpsg_mod_export_removeField&noheader=1',
+			data: {
+				field_id: field_id
+			},			
+			success: function(data) {
+				
+				if (data != '1')
+				{
+					
+					alert(data);
+					
+				}
+				
+			}
+		} );
+
+		return false;	
+		
+	} // function wpsg_mod_export_removeField(field_id)
+	
+	function wpsg_mod_export_removeProfil(profil_id)
+	{
+
+		if (!confirm('<?php echo __('Sind sie sich sicher?', 'wpsg'); ?>')) return false;
+		
+		jQuery('#profil_content').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {			
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=wpsg_mod_export_removeProfil&noheader=1',
+			data: {
+				profil: profil_id
+			},			
+			success: function(data) {
+				jQuery("#wpsg_profil_list").html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_mod_export_removeProfil(profil_id)
+	
+	function wpsg_mod_export_addProfil(type)
+	{
+
+		jQuery('#wpsg_profil_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {			
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=wpsg_mod_export_addProfil&noheader=1',
+			data: {
+				type: type
+			},
+			success: function(data) {
+				
+				jQuery("#wpsg_profil_list").html(data);
+				
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_addExportProfil()
+
+	function wpsg_mod_export_setAtt(htmlCheckbox, field_id)
+	{
+		
+		var value = '0';
+		if (jQuery(htmlCheckbox).prop('checked') == true) value = '1';
+		
+		jQuery.ajax( { 
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=inlinedit&noheader=1',
+			data: {
+				'name': 'field_xml_att_' + field_id,
+				'value': value
+			},			
+			success: function(data) {
+				
+				if (data != '1' && data != '0')
+				{
+					
+					alert(data);
+					
+				}
+				
+			}
+		} );
+		
+	}
+	
+</script>
+
+<a title="<?php echo __('Neuens Exportprofil anlegen', 'wpsg'); ?>" href="#" class="" onclick="return wpsg_mod_export_addProfil(<?php echo wpsg_mod_export::TYPE_ORDER; ?>);"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neues Exportprofil für Bestellungen anlegen', 'wpsg'); ?></a><br />
+<a title="<?php echo __('Neuens Exportprofil anlegen', 'wpsg'); ?>" href="#" class="" onclick="return wpsg_mod_export_addProfil(<?php echo wpsg_mod_export::TYPE_PRODUCT; ?>);"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neues Exportprofil für Produkte anlegen', 'wpsg'); ?></a><br />
+<a title="<?php echo __('Neuens Exportprofil anlegen', 'wpsg'); ?>" href="#" class="" onclick="return wpsg_mod_export_addProfil(<?php echo wpsg_mod_export::TYPE_CUSTOMER; ?>);"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neues Exportprofil für Kunden anlegen', 'wpsg'); ?></a>
+
+<br /><br />
+
+<div id="wpsg_profil_list"><?php echo $this->callMod('wpsg_mod_export', 'profilList'); ?></div>
+
+<br />
+
+<fieldset>
+	<legend><?php echo __('Profil importieren', 'wpsg'); ?></legend>
+	<form method="post" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=import&noheader=1" enctype="multipart/form-data">
+		
+		<?php echo wpsg_drawForm_Upload('profil_file', __('JSON Profildatei', 'wpsg')); ?>
+		
+		<input type="submit" value="<?php echo __('Profil importieren', 'wpsg'); ?>" class="button"  />
+		
+	</form>
+</fieldset>

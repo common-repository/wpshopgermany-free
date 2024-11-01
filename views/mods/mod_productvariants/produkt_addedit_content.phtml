@@ -1,0 +1,33 @@
+<?php
+
+	/**
+	 * Template für die Verwaltung der Produktvarianten innerhalb des Produktes
+	 */
+
+?>
+ 
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktvarianten', 'wpsg')); ?>
+
+<?php if (wpsg_isSizedInt($this->view['data']['id'])) { ?>
+
+	<?php echo $this->view['wpsg_mod_productvariants']['html']; ?>
+
+	<script type="text/javascript">/* <![CDATA[ */
+
+		jQuery(document).ready(function() {
+
+			wpsg_mod_productvariants_show(<?php echo $this->view['data']['id']; ?>);
+			
+		} );
+
+	/* ]]> */</script>
+
+<?php } else { ?>
+
+	<p><?php echo __('Bitte speichern Sie das Produkt zuerst.', 'wpsg'); ?></p>
+			
+<?php } ?>
+
+<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration der Produktvarianten', 'wpsg'); ?></a>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

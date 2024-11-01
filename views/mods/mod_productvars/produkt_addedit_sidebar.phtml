@@ -1,0 +1,33 @@
+<?php
+
+	/*
+	 * Aktivierung der Produktvariablen in der Produktvarwaltung
+	 */
+
+?>
+<div id="wpsg_productvars" class="panel panel-default">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">
+			<?php echo __('Produktvariablen', 'wpsg'); ?>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<?php if (is_array($this->view['wpsg_mod_productvars']['data']) && sizeof($this->view['wpsg_mod_productvars']['data']) > 0) { ?>		
+			<?php foreach ($this->view['wpsg_mod_productvars']['data'] as $pv) { ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_pv['.$pv['id'].']', __($pv['name'], 'wpsg'), ((in_array($pv['id'], (array)$this->view['wpsg_mod_productvars']['productvars_set']))?true:false)); ?>
+			<?php } ?>
+		<?php } else { ?>
+		 	<?php echo __('Bisher keine Produktvariablen angelegt.', 'wpsg'); ?>
+		<?php } ?>
+		<br />
+		
+		<br /><br />
+		<!-- 		
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=module&amp;modul=wpsg_mod_productvars"><?php echo __('Zur Produktvariablenverwaltung', 'wpsg'); ?></a>
+		-->
+		<br /><br />
+		
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvars"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration der Produktvariablen', 'wpsg'); ?></a>		
+	
+	</div>
+</div>

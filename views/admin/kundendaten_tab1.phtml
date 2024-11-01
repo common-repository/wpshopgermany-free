@@ -1,0 +1,30 @@
+<?php
+
+	/**
+	 * Template für den ersten Karteireiter der Kundendaten
+	 */
+
+	$arSelect = array(
+		'0' => __('Ja', 'wpsg'),
+		'1' => __('Nein', 'wpsg'),
+		'2' => __('Nicht anzeigen', 'wpsg')
+	);
+
+?>
+
+<?php echo wpsg_drawForm_Select('pflicht[anrede]', __('Anrede', 'wpsg'), $arSelect, $this->view['pflicht']['anrede']); ?>
+<?php echo wpsg_drawForm_Input('pflicht[anrede_auswahl]', __('Mögliche Werte für Auswahl getrennt mit |', 'wpsg'), $this->view['pflicht']['anrede_auswahl']); ?>
+<?php echo wpsg_drawForm_Select('pflicht[firma]', __('Firma', 'wpsg'), $arSelect, $this->view['pflicht']['firma'])?>
+<?php echo wpsg_drawForm_Select('pflicht[vname]', __('Vorname', 'wpsg'), $arSelect, $this->view['pflicht']['vname'])?>
+<?php echo wpsg_drawForm_Select('pflicht[name]', __('Name', 'wpsg'), $arSelect, $this->view['pflicht']['name'])?>
+<?php echo wpsg_drawForm_Select('pflicht[geb]', __('Geburtsdatum', 'wpsg'), $arSelect, $this->view['pflicht']['geb'])?>
+<?php echo wpsg_drawForm_Select('pflicht[email]', __('E-Mail Adresse', 'wpsg'), $arSelect, $this->view['pflicht']['email'])?>
+<?php echo wpsg_drawForm_Checkbox('pflicht[emailconfirm]', __('E-Mail Adresse (Wiederholung)', 'wpsg'), $this->view['pflicht']['emailconfirm']); ?>
+<?php echo wpsg_drawForm_Select('pflicht[tel]', __('Telefon', 'wpsg'), $arSelect, $this->view['pflicht']['tel'])?>
+<?php echo wpsg_drawForm_Select('pflicht[fax]', __('Fax', 'wpsg'), $arSelect, $this->view['pflicht']['fax'])?>
+<?php echo wpsg_drawForm_Select('pflicht[strasse]', __('Straße', 'wpsg'), $arSelect, $this->view['pflicht']['strasse'])?>
+<?php echo wpsg_drawForm_Checkbox('pflicht[wpsg_showNr]', __('Hausnummer separat erfassen', 'wpsg'), @$this->view['pflicht']['wpsg_showNr']); ?>
+<?php echo wpsg_drawForm_Select('pflicht[plz]', __('Postleitzahl', 'wpsg'), $arSelect, $this->view['pflicht']['plz'])?>
+<?php echo wpsg_drawForm_Select('pflicht[ort]', __('Ort', 'wpsg'), $arSelect, $this->view['pflicht']['ort'])?>
+<?php echo wpsg_drawForm_Select('pflicht[land]', __('Land', 'wpsg'), $arSelect, $this->view['pflicht']['land'])?>
+<?php echo wpsg_drawForm_Select('pflicht[ustidnr]', __('UStIdNr.', 'wpsg'), $arSelect, $this->view['pflicht']['ustidnr'])?>

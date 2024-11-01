@@ -1,0 +1,513 @@
+/* Datepicker */
+.ui-datepicker .ui-datepicker-calendar td a,.ui-datepicker a,.ui-datepicker a:hover{text-decoration:none}.ui-datepicker{background-color:#fff;border:1px solid #66AFE9;border-radius:4px;box-shadow:0 0 8px rgba(102,175,233,.6);display:none;margin-top:4px;padding:10px;width:240px}.ui-datepicker a:hover,.ui-datepicker td:hover a{color:#2A6496;-webkit-transition:color .1s ease-in-out;-moz-transition:color .1s ease-in-out;-o-transition:color .1s ease-in-out;transition:color .1s ease-in-out}.ui-datepicker .ui-datepicker-header{margin-bottom:4px;text-align:center}.ui-datepicker .ui-datepicker-title{font-weight:700}.ui-datepicker .ui-datepicker-next,.ui-datepicker .ui-datepicker-prev{cursor:default;font-family:'Glyphicons Halflings';-webkit-font-smoothing:antialiased;font-style:normal;font-weight:400;height:20px;line-height:1;margin-top:2px;width:30px}.ui-datepicker .ui-datepicker-prev{float:left;text-align:left}.ui-datepicker .ui-datepicker-next{float:right;text-align:right}.ui-datepicker .ui-datepicker-prev:before{content:"\e079"}.ui-datepicker .ui-datepicker-next:before{content:"\e080"}.ui-datepicker .ui-icon{display:none}.ui-datepicker .ui-datepicker-calendar{table-layout:fixed;width:100%}.ui-datepicker .ui-datepicker-calendar td,.ui-datepicker .ui-datepicker-calendar th{text-align:center;padding:4px 0}.ui-datepicker .ui-datepicker-calendar td{border-radius:4px;-webkit-transition:background-color .1s ease-in-out,color .1s ease-in-out;-moz-transition:background-color .1s ease-in-out,color .1s ease-in-out;-o-transition:background-color .1s ease-in-out,color .1s ease-in-out;transition:background-color .1s ease-in-out,color .1s ease-in-out}.ui-datepicker .ui-datepicker-calendar td:hover{background-color:#eee;cursor:pointer}.ui-datepicker .ui-datepicker-current-day{background-color:#4289cc}.ui-datepicker .ui-datepicker-current-day a{color:#fff}.ui-datepicker .ui-datepicker-calendar .ui-datepicker-unselectable:hover{background-color:#fff;cursor:default}
+
+/* Allgemein */
+.wpsg_clear { clear:both; }
+.wpsg_flex { display:flex; width:100%; }
+.wpsg_flex_justify_content_space_between { justify-content:space-between; }
+.wpsg_flex_align_items_center { align-items:center; }
+
+.ajax_loading { position:absolute; display:flex; align-items:center; justify-content:center; left:0px; top:0px; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.5); z-index:1000000; }
+
+/* Bootstrap Teil */
+#wpsg-bs { margin-top:20px; min-width:1000px; }
+#wpsg-bs .updated,
+#wpsg-bs .error,
+#wpsg-bs .notice { margin-left:0px; margin-right:0px; width:auto; margin-bottom:1.5rem; }
+#wpsg-bs .flex { display:flex; }
+#wpsg-bs .flex-100 { width:100%; justify-content:space-between; }
+#wpsg-bs nav.navbar { margin-right:20px; }
+#wpsg-bs nav.navbar li { margin-bottom:0px; }
+#wpsg-bs nav.navbar .glyphicon { margin-right:10px; }
+#wpsg-bs .wpsg-export,
+#wpsg-bs .wpsg-filter-tab,
+#wpsg-bs .wpsg-filter { border-top:1px solid #E0E0E0; padding:15px; }
+#wpsg-bs .pagination_wrap { text-align:right; padding-right:20px; }
+#wpsg-bs .pagination_wrap_bottom { padding-right:0px; }
+#wpsg-bs .pagination { margin-top:0px; margin-bottom:10px; }
+#wpsg-bs .content { width:100%; box-sizing:border-box; padding-right:20px; }
+#wpsg-bs .form-group { margin-bottom:5px; margin-top:5px; }
+#wpsg-bs .form-checkbox { margin-top:-5px; margin-bottom:0px; }
+#wpsg-bs .popover { max-width:400px; margin-right:20px; }
+#wpsg-bs .arrow { margin-left:0px !important; }
+#wpsg-bs .popover.left > .arrow { left:auto; }
+#wpsg-bs .content .panel-title { font-size:14px; }
+#wpsg-bs .wpsg_admin_content .panel-title { line-height:10px; font-size:14px; }
+#wpsg-bs .wpsg_admin_content .panel-title h4 { line-height:20px; font-size:14px; }
+#wpsg-bs .table .wpsg-sm { height:20px; line-height:20px; font-size:12px; }
+#wpsg-bs .wpsg_code { background-color:#EFEFEF; border:1px solid #000000; padding:3px; margin-top:5px; margin-bottom:5px; font-family:monospace; font-size:12px; }
+#wpsg-bs .form-horizontal .editable { padding-top:0px; display:inline; }
+#wpsg-bs .editableform textarea { width:500px; height:250px; }
+#wpsg-bs .wpsg-glyphicon { margin-right:10px; }
+#wpsg-bs .wpsg_glyphicon_right { float:right; }
+#wpsg-bs .wpsg-glyphlink-td > span { margin-left:5px; margin-top:5px; }
+#wpsg-bs .wpsg-glyphlink-td:hover { text-decoration:none; }
+#wpsg-bs .wpsg_message_ok { color:green; }
+#wpsg-bs .wpsg_message_demo { color:blue; }
+#wpsg-bs .wpsg_error { color:red; }
+#wpsg-bs .form-group-sm .form-control { padding-left:8px; }
+#wpsg-bs .form-group-text { position:relative; }
+#wpsg-bs .form-group-text p { padding-top:5px;  line-height:150%; min-height:18px; }
+#wpsg-bs .form-select .form-control { padding-left:5px; }
+#wpsg-bs .form-group-sm .form-control-static { padding-left:10px; height:auto; }
+#wpsg-bs .list-group-head { background-color:#666666; color:#FFFFFF; border:1px solid #666666; }
+#wpsg-bs .wpsg_admin_submenu .list-group-item.active { color:#FFFFFF; }
+#wpsg-bs .list-group-head a { color:#FFFFFF; }
+#wpsg-bs .modal-dialog { width:70%; }
+#wpsg-bs .table-bordered thead { background-color:#FFFFFF; }
+#wpsg-bs .table-body-striped > tbody:nth-of-type(odd) { background-color:#f9f9f9; }
+#wpsg-bs .checkbox input { margin-top:1px; }
+#wpsg-bs .info { font-style:italic; }
+#wpsg-bs .tab-pane { padding-top:15px; }
+#wpsg-bs fieldset > legend { padding-top:2rem; text-align:left; }
+#wpsg-bs fieldset > legend > div { padding-left:25px; }
+#wpsg-bs .wpsg_table_wrap { max-width:100%; overflow-x:auto; margin-bottom:1rem; }
+#wpsg-bs .wpsg-bs-toggle-nav { float:right; line-height:50px; font-size:25px; text-decoration:none; }
+#wpsg-bs .wpsg-wp-header-end { margin-top:-10px !important; }
+#wpsg-bs .wpsg_msg_wrap { margin-right:20px; }
+#wpsg-bs .d-flex { display:flex; }
+#wpsg-bs .w-100 { width:100%; }
+#wpsg-bs .justify-content_center { justify-content:center; }
+#wpsg-bs .align-items_center { align-items:center; }
+#wpsg-bs .justify-content_space-between {justify-content:space-between; }
+#wpsg-bs .grow-1 { flex-grow:1; }
+
+.wp-admin #wpsg-bs select { max-width:100%; padding-right:0; line-height:initial; }
+.wp-admin #wpsg-bs .checkbox input { margin-top:3px; width:15px; height:15px; }
+.branch-5-3.wp-admin #wpsg-bs .checkbox input:before { margin:1px 0 0 1px; width:10px; height:10px; }
+
+/* Allgemeine Klassen */
+.wpsg_grey { color:#999999; }
+.wpsg_editable { line-height:125%; }
+
+/* Tabellensortierung */
+.wpsg-table-order .wpsg_order { position:relative; }
+.wpsg-table-order .wpsg_order:after { content:"\e150"; position:absolute; font-size:1em; font-weight:normal; bottom:8px; right:8px; display:block; font-family:'Glyphicons Halflings'; opacity:0.2; color:#337AB7; }
+.wpsg-table-order .wpsg_order:hover { cursor:pointer; }
+.wpsg-table-order .wpsg_order:hover:after { content:"\e155"; opacity:0.8; }
+.wpsg-table-order .wpsg_order.wpsg_order_asc:after { content:"\e155"; opacity:1; }
+.wpsg-table-order .wpsg_order.wpsg_order_desc:after { content:"\e156"; opacity:1; }
+.wpsg-table-order .wpsg_order.wpsg_order_asc:hover:after { content:"\e156"; }
+.wpsg-table-order .wpsg_order.wpsg_order_desc:hover:after { content:"\e155"; }
+
+/* Inline Edit */
+#wpsg-bs .editableform > .control-group > div { padding-left:15px; padding-right:15px; }
+#wpsg-bs .editableform > .control-group > div input[type="text"] { min-width:300px; }
+
+/* Kundenverwaltung -> Kundendaten */
+#wpsg-bs .wpsg_customerfield .tab-content { position:relative; padding-top:1.5rem; }
+#wpsg-bs .wpsg_customervar_row2 td { border-top:0px; }
+.wpsg-table-customer .wpsg_pic_col { text-align:center; }
+.wpsg-table-customer .wpsg_pic_col img { margin-bottom:5px; }
+.tom_customerdata_deletebutton .button-primary { float:right; right:5px; background:#ba0000; font-size:10px; border-color:#aa0018 #990000 #7d0101; text-shadow:0 -1px 1px #aa0018, 1px 0 1px #aa0018, 0 1px 1px #aa0018, -1px 0 1px #aa0018; box-shadow:0 1px 0 #990000; }
+.tom_customerdata_deletebutton .button-primary:hover { background:#aa0018; border-color:#aa0018; }
+
+/* Rechtstexte */
+.wpsg_mod_legaltexts_protectedshops_table th { width:58%; text-align:right; font-size:12px; }
+.wpsg_mod_legaltexts_protectedshops_table th label { margin-right:30px; }
+.wpsg_mod_legaltexts_protectedshops_table #wpshopgermany_ts_shopid {  }
+.itrechtlogo { float:right; margin-left:15px; }
+.wpsg_mod_legaltext_select > label { width:100%; font-size:18px; font-weight:normal; padding:15px; display:flex; flex-direction:row; justify-content:flex-start; align-items:center; border:1px solid #31708f; }
+.wpsg_mod_legaltext_select > label.mark { border-width:3px; }
+.wpsg_mod_legaltext_select > label.open { border-bottom:0px; }
+.wpsg_mod_legaltext_select > label > * { flex-grow:0; flex-shrink:0; }
+.wpsg_mod_legaltext_select > label > .grow { flex-grow:1; flex-shrink:1; }
+.wpsg_mod_legaltext_select > label > .glyphicon { font-size:2em; }
+.wpsg_mod_legaltext_select > label input { margin:0px 15px 0px 0px; }
+.wpsg_provider_target { display:none; padding:15px; border:1px solid #31708f; border-top:0px; margin-top:-5px; margin-bottom:15px; }
+.wpsg_provider_target .wpsgitrecht_form_field { width:100%; display:flex; flex-direction:row; justify-content:flex-start; align-items:center; }
+.wpsg_provider_target .wpsgitrecht_form_field .wpsgitrecht_form_left { width:50%; flex-grow:0; flex-shrink:0; }
+.wpsg_provider_target .wpsgitrecht_form_field .wpsgitrecht_form_right { width:50%; flex-grow:0; flex-shrink:0; }
+.wpsg_provider_target .wpsgitrecht_form_field .wpsgitrecht_form_right input { width:100%; }
+.wpsg_provider_target .wpsgitrecht_table { width:100%; border-spacing:0px; border-collapse:collapse; }
+.wpsg_provider_target .wpsgitrecht_table .col0 { width:50%; }
+.wpsg_provider_target .wpsgitrecht_table .col1 { width:50%; }
+.wpsg_provider_target .wpsgitrecht_table select { margin-bottom:5px; width:100%; }
+.wpsg_provider_target .wpsgitrecht_table p { padding:0px 0px 0px 8px; }
+.wpsg_provider_target_3 { border-width:3px; margin-top:-8px; }
+.wpsg_provider_target_3 .button_agb { float:right; }
+.wpsg_provider_target_3 ul li { list-style:initial; margin-left:20px; } 
+
+.wphb_form_left { width:30% !important; }
+.wphb_form_right { width:68% !important; }
+.wphb_form_right select { margin-left:15px; width:40% !important; float:left !important; margin-bottom:20px;  }
+.wphb_form_right input.checkbox { margin-left:20px !important; }
+.wphb_clear { clear:none !important; }
+
+/* Datepicker */
+#ui-datepicker-div { z-index:1151221 !important; }
+
+/* Kundenkontakt */
+.wpsg_kundenkontakt_template,
+.wpsg_kundenkontakt_betreff { width:80%; float:right; margin-bottom:20px; }
+.wpsg_kundenkontakt_textarea { width:100%; float:right; height:150px; }
+
+/* SMS-Versand */
+.wpsg_sms_template,
+.wpsg_sms_newnumber { width:70%; float:right; margin-bottom:20px; }
+.wpsg_sms_textarea { width:100%; float:right; height:150px; }
+
+/* Länderverwaltung */
+.wpsg_table_country { margin-bottom:0px; }
+.wpsg_table_country .col_mwst { width:25px; }
+.wpsg_table_country .col_mwst { width:75px; }
+.wpsg_table_country .col_mwstsetting { width:100px; }
+.wpsg_table_country .col_vz { width:100px; }
+.wpsg_table_country .col_action { width:60px; text-align:right; }
+.wpsg_table_country .col_action a { margin-left:5px; }
+.wpsg_table_country tr:last-child .glyphicon-trash { margin-top:5px; }
+
+/* Tabelle der Berechtigungen */
+.wpsg_access_table .wpsg_col_cap { text-align:center; }
+.wpsg_access_table .wpsg_col_cap select { max-width:100%; padding-right:0; line-height:unset; }
+.wpsg_access_table .wpsg_col_cap input { margin-top:0px; width:15px; height:15px; font-size: 12px; }
+.wpsg_access_table .wpsg_col_cap input:before { margin:1px 0 0 1px; width:10px; height:10px; }
+
+/* Hilfe Dialog */
+#wpsg-bs .wpsg-help-content { max-height:500px; overflow:auto; }
+#wpsg-bs .wpsg-help-content h1 { font-size:16px; font-weight:bold; }
+#wpsg-bs .wpsg-help-content h2 { font-size:14px; font-weight:bold; }
+#wpsg-bs .wpsg-help-content img { max-width:100%; height:auto; }
+
+/* Formulare NEU */
+#wpsg-bs .has-feedback .wpsg_field_wrap { width:100%; position:relative; padding-right:25px; }
+#wpsg-bs .wpsg_field_wrap .form-control-feedback { right:0px; width:20px; cursor:pointer; pointer-events:all; }
+#wpsg-bs .form-checkbox .wpsg_field_wrap .form-control-feedback { line-height:25px; }
+#wpsg-bs .wpsg_field_wrap .form-control-feedback:focus,
+#wpsg-bs .wpsg_field_wrap .form-control-feedback:hover { text-decoration:none; }
+#wpsg-bs .form-control-static input[type="file"] { margin-top:-5px; }
+
+/* Bootstrap Formulare im alten Teil */
+.wpsg_old_forms .form-group { margin-left:-15px; margin-right:-15px; margin-bottom:5px; }
+.wpsg_old_forms .form-checkbox > div:first-child { width:100%; margin-left:0px; }
+
+/* Auswahl der Versand-/Zahlungsarten */
+#wpsg_shippingmethods_select,
+#wpsg_paymentmethods_select { margin-bottom:10px; }
+.wpsg_shippingmethods_select .checkbox,
+.wpsg_paymentmethods_select .checkbox { margin-top:0px; margin-bottom:0px; }
+
+/* Alte Formularelemente */
+.wpsg_form_field { width:100%; margin-bottom:5px; }
+.wpsg_form_field_fullrow { position:relative; }
+.wpsg_form_field_fullrow label { font-weight:bold; line-height:25px; }
+.wpsg_form_field .wpsg_form_left { line-height:24px; font-weight:bold; width:50%; float:left; }
+.wpsg_form_field .wpsg_form_right { width:50%; padding-left:15px; float:left; position:relative; }
+.wpsg_form_field .wpsg_form_right select, .wpsg_form_field .wpsg_form_right input, .wpsg_form_field .wpsg_form_right textarea { width:95%; }
+.wpsg_form_field .wpsg_form_right input.button { width:auto; }
+.wpsg_form_field .wpsg_form_right input[type="checkbox"] { margin-top:-4px; margin-right:5px; }
+.wpsg_form_field .wpsg_form_right label { line-height:25px; }
+.wpsg_form_field .wpsg_form_right p { padding-top:5px; }
+.wpsg_form_field_max select { width:100%; }
+
+/* Konfiguration */
+.wpsg_admin_wrap { position:relative; }
+.wpsg_admin_submenu { width:180px; float:left; }
+.wpsg_admin_content { padding-left:20px; width:800px; float:left; }
+.wpsg_admin_content h3 { margin:20px; }
+.wpsg_admin_content h3.panel-title { margin:0px; }
+.wpsg_admin_submenu .list-group-item { padding:5px 10px; }
+.list-group { margin-bottom:15px !important; }
+.wpsg_admin_ueber_check_wrap { padding-top:15px; }
+.wpsg_admin_ueber_check_wrap .wpsg_admin_ueber_check { padding:15px; }
+.wpsg_admin_ueber_check_wrap .wpsg_admin_ueber_check_1 { } /* Notice Meldungen */
+.wpsg_admin_ueber_check_wrap .wpsg_admin_ueber_check_2 { } /* Warnungen Meldungen */
+.wpsg_admin_ueber_check_wrap .wpsg_admin_ueber_check_3 { } /* Error Meldungen */
+.email-logo-alignment, .email-logo-alignment input[type="radio"] { font-family: FontAwesome; margin: 0; outline: 0; }
+.email-logo { padding-bottom: 10px; }
+.email-logo-watermark { position:absolute; top:10%; left:0; right:0; display:flex; justify-content:center; align-items:center; }
+.wpsg_mailattachment { padding:8px 0px; }
+.wpsg_mailattachment a { display:block; min-height:24px; line-height:24px; }
+.btnAddAttachment { width:11rem; }
+
+/* Produktverwaltung */
+.wpsg_pic_col { width:50px; }
+.wpsg_admin_submenu input[type="submit"], .wpsg_admin_submenu input[type="button"] { width:100%; margin-bottom:10px !important; }
+#wpsg-bs.wpsg_products .wpsg_productgroup_link_wrap { float:left; }
+.wpsg_mod_productvariants_productimage_row .mark { display:inline-block; background-color:#FFF; border:2px solid #444444;}
+.wpsg_be_imagelist_image { width:100px; }
+.wpsg_be_productindex_image { border:0px !important; width:75px; background-color:#FFFFFF; }
+.v3Design_leistungsortregelCheckbox { padding-left: 15px; padding-right: 15px; }
+.addedit_templateV3 .form-control-feedback:hover { cursor: pointer; }
+.addedit_templateV3 .form-control-feedback { z-index: 99999; }
+.addedit_templateV3 .form-control-feedback:hover {  }
+.addedit_templateV3 .postbox { border-radius: 3px; }
+.addedit_templateV3 .postbox .inside { padding-bottom: 0; }
+.addedit_templateV3 .col-sm-6 { width: 100% !important; margin-left: 0 !important; }
+.addedit_templateV3 #wpsg_generally .col-sm-6 { width: 80% !important; }
+.addedit_templateV3 #wpsg_generally label.col-sm-6 { width: 20% !important; }
+.addedit_templateV3 .general-panel-block { display: block; position: relative; width: 100%; height: auto; }
+.addedit_templateV3 .general-panel-subblock { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+.addedit_templateV3 .general-panel-urlnotification,
+.addedit_templateV3 .general-panel-ordercondition { width: 50%; position: relative; display: block; }
+.addedit_templateV3 .general-panel-urlnotification .panel,
+.addedit_templateV3 .general-panel-ordercondition .panel { width: 99%; display: block; position: relative; margin: 0 auto 20px auto; height: 135px; }
+.addedit_templateV3 .general-panel-ordercondition .panel-body { display: flex; justify-content: flex-start; align-items: center; width: 100%; height: 85%; margin-top: -10px; }
+.addedit_templateV3 .general-panel-urlnotification .form-group:first-child { width: 100% !important; }
+.addedit_templateV3 .general-panel-urlnotification .form-group-sm{ width: 50%; padding: 0; margin: 0 auto; float: left; }
+.addedit_templateV3 .texte-title { color: #72777c; padding: 10px 15px; border-bottom: 1px solid transparent; font-size: 15px; }
+.addedit_templateV3 .panel-general .wpsg_field_wrap { padding-right: 15px; }
+.addedit_templateV3 .panel-texte .wpsg_handlediv { width: 100%; display: flex; justify-content: flex-start; align-items: center; padding: 10px; }
+.addedit_templateV3 .panel-texte .panel-heading { height: fit-content; width: 100%; }
+.addedit_templateV3 .mod-area .wpsg_field_wrap { padding-right: 0px !important; }
+.addedit_templateV3 #wpsg_paymentmethods .last-form-group,
+.addedit_templateV3 #wpsg_paymentmethods .last-form-group .form-control{ margin-bottom: 2.5px !important; }
+.addedit_templateV3 br { display: none; }
+.addedit_templateV3 #wpsg_images br,
+.addedit_templateV3 #wpsg_mods br:first-child{ display: block !important; }
+
+
+/* Bild allgemein */
+.box_img_wrap { position:relative; padding-top:100%; border:1px solid #000000; background:transparent; }
+.box_img_wrap img {border:0px !important; position:absolute; left:50%; top:50%; max-height:100% !important; max-width:100%!important; height:auto!important; width:auto!important; margin:0px !important;
+    transform:translateY(-50%) translateX(-50%);
+    -ms-transform:translateY(-50%) translateX(-50%);
+    -webkit-transform:translateY(-50%) translateX(-50%);
+}
+
+/*
+ * Produktbackend
+ */
+.wpsg_productview_backend-sold-out { color:#dc3232; font-weight:700; }
+.wpsg_productview_backend-available { color:#7ad03a; font-weight:700; float:left; margin-right:5px; }
+.wpsg_top_extend { line-height:50px; margin-left:15px; }
+.wpsg_top_extend .commenticon { cursor:default; display:inline-block; margin:0px !important; padding-right:0px; }
+
+/* Bewertung */
+.wpsg_rating { background-color:#29556E; }
+.sto_comment_form .comment_list,
+.sto_comment_form .comment_form { width:55rem; }
+.wpsg_comment_form .comment { background-color:#ececec; padding:20px; margin-bottom:30px; }
+.wpsg_comment_form .wpsg_star_wrap { float:right; }
+.wpsg_comment_form .wpsg_bewertung_comment_name { font-weight:bold; color:#29556e; text-transform:uppercase; float:left; }
+.wpsg_comment_form .wpsg_bewertung_comment_date { padding:20px 0px; color:#29556e; }
+.wpsg_comment_form .wpsg_bewertung_comment_text { color:#29556e; }
+.wpsg_comment_form .row { margin-left:0px !important; }
+.wpsg_star_wrap { font-size:15px; font-weight:normal; margin-bottom:5px; }
+.wpsg_star_wrap .fa { margin-right:5px; }
+.wpsg_star_wrap { color:#F8E71C; text-shadow:-1px 0 #F6B03A, 0 1px #F6B03A, 1px 0 #F6B03A, 0 -1px #F6B03A; }
+.wpsg_star_wrap .fa-star-active { color:#C8C8C8; text-shadow:-1px 0 #9B9B9B, 0 1px #9B9B9B, 1px 0 #9B9B9B, 0 -1px #9B9B9B; }
+.wpsg_comment_form .wpsg_star_wrap { float:right; }
+
+/* Bestellverwaltung */
+.wpsg_order .wpsg_status_link_wrap { min-height:50px; float:left; display:inline-block; }
+.wpsg_order .col_checkbox { width:20px; }
+.wpsg_order .col_checkbox input { margin-top:-2px; }
+.wpsg_order .col_nr { width:250px; }
+.wpsg_order .col_nr .actions a { font-size:0.9em; }
+.wpsg_order .col_nr .glyphicon { margin-top:5px; font-size:1.2em; margin-right:5px; text-decoration:none; }
+.wpsg_order .col_nr .glyphicon.shippingadress { color:red; }
+.wpsg_top_extend .commenticon.admincomment,
+.wpsg_order .col_nr .glyphicon.admincomment { color:red; }
+.wpsg_order .wpsg-order-tab { padding-top:15px; padding-bottom:15px; }
+.wpsg_order_view #restored_notice { margin-bottom:15px; color:red; }
+.procent_payship { font-size:0.75em; line-height:0.75em; color:#666666; displaY:block; }
+
+#wpsg-bs.wpsg_order_view .editableform textarea { height:150px;}
+.wpsg_order_view .wpsg_cell_gesamtpreis { text-align:right; }
+.wpsg_order_view .wpsg_admin_submenu .glyphicon { float:left; height:30px; width:20px;}
+
+/* Modulverwaltung */
+.wpsg_admin_submenu .list-group-item.modul_akt { color:#3c763d; font-weight:bold; }
+.wpsg_admin_submenu .list-group-item.modul_akt .glyphicon { position:absolute; right:5px; top:5px; color:#3c763d; }
+.wpsg_admin_submenu .list-group-item.active { color:#dff0d8; }
+.wpsg_admin_submenu .list-group-item.active .glyphicon { position:absolute; right:5px; top:5px; color:#dff0d8; }
+.wpsg_modul_search_wrap { width:100%; position:relative; }
+.wpsg_modul_search { margin-bottom:15px; width:70%; }
+.wpsg_modul_onlyactive { position:absolute; }
+.wpsg_modul_onlyactive_glyphicon { position:absolute !important; right:5px; top:7px !important; color:#3c763d; }
+.wpsg_modul_search_wrap input[type="checkbox"] { right:25px; top:3px; position:absolute; }
+#wpsg-bs .modultable td { padding:4px 8px !important; font-size:1.2rem; }
+#wpsg-bs .modultable tr > *:nth-child(2) { width:100px; }
+#wpsg-bs .modultable tr > *:nth-child(3) { width:175px; }
+#wpsg-bs .modultable tr > *:nth-child(4) { width:200px; }
+.modul_help_link { float:right; }
+
+/* Domainverwaltung */
+#wpsg-bs .domaintable td { padding:4px 8px !important; vertical-align:middle; }
+#wpsg-bs .domaintable td.col_action { text-align:right; }
+
+/* Verwaltung Versandzonen */
+.wpsg_table_vz .col_aktion { text-align:right; }
+.wpsg_table_vz .wpsg_icon_plzedit { margin-right:5px; }
+.wpsg_table_vz .wpsg_plz_div textarea { width:100%; padding:5px; margin-top:5px; margin-bottom:5px; }
+
+/* Formularanpassungen */
+.form-checkbox label { font-size:12px; line-height:200%; }
+
+/* Modul AboProdukte */
+.wpsg_mod_abo_expired { color:red; }
+.wpsg_mod_abo_future_expire { color:green; }
+
+/* Modul Produktbilder (wpsg_mod_produktbilder) */
+#produktbilder_target img { }
+.wpsg_mod_produktbilder_admin_bild a { position:relative; display:inline-block; float:left; margin-right:5px; margin-bottom:5px; }
+.wpsg_mod_produktbilder_admin_bild a > span { left:0px; top:0px; display:none; position:absolute; width:100%; height:100%; text-align:center; background-color:rgba(255, 0, 0, 0.3); }
+.wpsg_mod_produktbilder_admin_bild a > span > span { font-size:30px; top:50%; margin-top:-15px; }
+.wpsg_mod_produktbilder_admin_bild a:hover > span { display:block; }
+
+/* Modul Produktartikel (wpsg_mod_produktartikel) */
+.wpsg-mod_produktartikel_categorydiv .tabs-panel { padding-top:8px !important; }
+.wpsg-mod_produktartikel_categorydiv label { font-weight:normal; font-size:14px; }
+.wpsg-mod_produktartikel_categorydiv label input[type="checkbox"] { margin-top:-2px; }
+
+/* Modul Produktattribute (wpsg_mod_productattribute) */
+.wpsg_mod_produktattribute_table .col_show { text-align:center; width:60px; }
+.wpsg_mod_produktattribute_table .col_action { width:60px; text-align:right; }
+.wpsg_mod_produktattribute_table .col_typ { width:75px; }
+.wpsg_mod_produktattribute_table .col_id { width:15px; }
+.wpsg_mod_produktattribute_table .auswahlrow2 td { border-top:0px; }
+.wpsg_mod_produktattribute_table > tbody + tbody { border-top:0px; }
+.wpsg_produkt_pa_label { margin-left:10px; }
+#wpsg_produktattribute .wpsg_form_field { padding:10px 0; }
+
+/* Modul Produktvarianten */
+.wpsg_mod_productvariants_table_variants .col_action { text-align:right; width:60px; }
+.wpsg_mod_productvariants_table_variants .col_products { text-align:center; width:75px; }
+.wpsg_mod_productvariants_table_variants .col_vari { width:75px; text-align:center; }
+.wpsg_mod_productvariants_table_variants .col_type { width:100px; }
+.wpsg_mod_productvariants_table_variants .col_id { width:50px; }
+.wpsg_mod_productvariants_table_variation .col_action { text-align:right; width:75px; }
+.wpsg_mod_productvariants_table_variation tbody:nth-child(even) td { background-color:#F9F9F9; }
+.wpsg_mod_productvariants_table_variation .col_id { width:50px; }
+.wpsg_mod_productvariants_table_variation .col_active { width:25px; }
+.wpsg_mod_productvariants_info { font-style:italic; font-size:0.9em; }
+.wpsg_mod_productvariants_dialog_noDialog { border:1px solid #DDDDDD; padding:10px; margin:-5px; margin-top:-16px; margin-left:0px; margin-right:0px; margin-bottom:15px; }
+.wpsg_mod_productvariants_dialog_noDialog .modal-body { padding:1rem 0px; }
+.wpsg_mod_productvariants_dialog_noDialog .modal-footer { padding:1rem 0px; }
+
+/* Modul Exportprofile */
+#wpsg_profil_list { padding:10px; border:1px solid #DDDDDD; }
+
+/* Modul Bestellbedingungen */
+#wpsg_oc_list .glyphicon-trash { position:absolute; right:5px; top:0px; font-size:1.4rem; }
+#wpsg_oc_list .wpsg_mod_ordercondition_text { width:100%; height:150px; }
+
+/* Modul Gutschein */
+#wpsg-bs.wpsg_voucher .col_checkbox { width:20px; }
+.wpsg_mod_voucher_fieldtable { font-size:12px; }
+.wpsg_mod_voucher_fieldtable .col_bezeichnung { width:25px; }
+.wpsg_mod_voucher_fieldtable .col_x,
+.wpsg_mod_voucher_fieldtable .col_y { width:60px; }
+.wpsg_mod_voucher_fieldtable .col_color { width:80px; }
+.wpsg_mod_voucher_fieldtable .col_groesse { width:60px; }
+.wpsg_voucher .wpsg_status_link_wrap { min-height:50px; float:left; display:inline-block; }
+.wpsg_voucher td .actions { opacity:1; font-size: 0.9em; }
+.wpsg_voucher td:hover .actions { opacity:1; }
+
+
+@media (min-width: 768px) {
+    #wpsg_voucher_dialog > .modal-dialog { width:1000px; }
+}
+
+/* Modul Lieferschein/Rechnung */
+.wpsg_mod_deliverynote_fieldtable { font-size:12px; }
+.wpsg_mod_deliverynote_fieldtable .col_bezeichnung { width:125px; }
+.wpsg_mod_deliverynote_fieldtable .col_x,
+.wpsg_mod_deliverynote_fieldtable .col_y { width:50px; }
+.wpsg_mod_deliverynote_fieldtable .col_color { width:80px; }
+.wpsg_mod_deliverynote_fieldtable .col_groesse { width:60px; }
+.wpsg_foottextlist .col_standard { text-align:center; }
+.align-buttons input, .align-buttons input:hover { font-family: FontAwesome !important; cursor: pointer; outline: 0; border: 1px solid #ddd; background: #f9f9f9; color: #666; padding: 3px 7px; width: 30%; }
+.align-buttons-active { background: #f1f1f1 !important; border-color: #ccc !important; box-shadow: 0 1px 0 #ccc; color: #555 !important; }
+.logo-transparency * { text-align:center; }
+.logo-transparency { margin:20px 0; }
+.logo-transparency input { width: 30%; margin-left: -20px; margin-right: 5px; }
+.align-buttons { margin:20px 0; }
+
+#rechnungen_order_backend label,
+#wpsg_rechnungen_email,
+#wpsg_rechnungen_faelligkeitsdatum,
+#wpsg_rechnungen_status_neu,
+#wpsg_rechnungen_datum,
+#wpsg_rechnungen_select,
+#wpsg_rechnungen_fusstext { font-size:12px; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; color:#333; }
+
+#deliverynote_order_backend label,
+#wpsg_mod_deliverynote_email,
+#wpsg_mod_deliverynote_status,
+#wpsg_mod_deliverynote_date,
+#wpsg_mod_deliverynote_fusstext { font-size:12px; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; color:#333; }
+
+/* Modul Rabatt */
+.wpsg_mod_discount_hirarchieorder input { display:none;  }
+.wpsg_mod_discount_hirarchieorder li { border:1px solid #C4C4C4; border-radius:5px; width:100%; display:inline-block; margin-bottom:5px; padding:5px 5px 5px 5px; font-size:12px; cursor:move; }
+.wpsg_mod_discount_seriescol { width:33%; float:left; font-size:12px; line-height:30px; }
+.wpsg_mod_discount_seriescol input { width:70%; line-height:20px; float:right; }
+.wpsg_mod_discount_seriescol:nth-child(2) strong { width:70%; float:right; }
+
+#beschreibung_ifr { height:500px; }
+
+/* Modul Downloadplus */
+.wpsg_mod_downloadplus_fieldtable { font-size:12px; }
+.wpsg_mod_downloadplus_fieldtable .col_x,
+.wpsg_mod_downloadplus_fieldtable .col_y { width:50px; }
+
+/* Produktvariablen */
+.wpsg_pv_table { width:100%; }
+.wpsg_pv_table tr td { vertical-align:top; }
+.wpsg_pv_table .wpsg_id { width:20px; text-align:left; cursor:move; }
+.wpsg_pv_table .wpsg_delcol { width:24px; text-align:center; }
+.wpsg_pv_table .wpsg_typ { width:100px; text-align:left; }
+.wpsg_pv_table .wpsg_pflicht { width:100px; text-align:center; }
+.wpsg_pv_table .wpsg_label { text-align:left; }
+
+/* Produktattribute */
+.wpsg_pa_table { width:100%; }
+.wpsg_pa_table tr td { vertical-align:top; }
+.wpsg_pa_table .wpsg_id { width:20px; text-align:left; cursor:move; }
+.wpsg_pa_table .wpsg_action { width:80px; text-align:center; }
+.wpsg_pa_table .wpsg_typ { width:150px; text-align:left; }
+.wpsg_pa_table .wpsg_show { width:100px; text-align:center; }
+.wpsg_pa_table .wpsg_label { text-align:left; }
+
+/* Bestellvariablen */
+.wpsg_ov_table { width:100%; }
+.wpsg_ov_table .wpsg_id { width:20px; text-align:left; }
+.wpsg_ov_table .wpsg_delcol { width:24px; text-align:center; }
+.wpsg_ov_table .wpsg_typ { width:100px; text-align:left; }
+.wpsg_ov_table .wpsg_pflicht { width:100px; text-align:center; }
+.wpsg_ov_table .wpsg_label { text-align:left; }
+
+/* News Bereich Backend */
+.wpsg_news_wrap { margin-right:20px; }
+
+/* Statistikmodul */
+.wpsg_mod_statistics_totals_row { width:100%; }
+.wpsg_mod_statistics_totals_block { float:left; width:auto; text-align:center; font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif; }
+.wpsg_mod_statistics_totals_block .number { font-size:18px; color:#21759B; display:block; padding-bottom:10px; padding-top:5px; }
+.wpsg_mod_statistics_totals_block .label { font-size:16px; color:#8F8F8F; display:block; padding-bottom:5px; }
+.wpsg_mod_statistics_totals_block .label a { color:#8F8F8F; border-bottom:1px solid #ECECEC; padding-left:10px; padding-right:15px; padding-bottom:5px; }
+.subsubsub #table-data .th-right span { float:right; }
+.subsubsub #table-data .td-right { text-align:right; }
+
+/* Download plus */
+.wpsg_mod_downloadplus_order_view_filelist { width:100%; }
+.wpsg_mod_downloadplus_order_view_filelist .col_file { text-align:left; }
+.wpsg_mod_downloadplus_order_view_filelist .col_status { text-align:left; width:200px; }
+.wpsg_mod_downloadplus_order_view_filelist .col_counter { text-align:center; width:100px;}
+.wpsg_mod_downloadplus_order_view_filelist .col_action { text-align:left; width:100px;}
+.wpsg_mod_downloadplus_order_view_filelist .row_raid td { color:red; }
+
+/* Passwort Visualisierung */
+#wpsg_pwd_info { width:250px; background:#fefefe; width:85%; padding:25px; border-radius:5px; box-shadow:0 1px 3px #ccc; border:1px solid #ddd; }
+#wpsg_pwd_info::before { position:absolute; font-size:14px; text-shadow:none; disblay:block; color:#ddd; line-height:14px; display:none; }
+#wpsg_pwd_info ul li { margin:10px 20px; display:block; }
+.invalid { padding-left:22px; line-height:24px; color:#ec3f41; }
+.valid { padding-left:22px; line-height:24px; color:#3a7d34; }
+
+@media (min-width:1024px) and (max-width:1640px) {
+
+
+}
+
+
+@media (min-width:768px) and (max-width:1023px) {
+
+
+}
+
+@media (min-width:375px) and (max-width:767px) {
+
+
+}

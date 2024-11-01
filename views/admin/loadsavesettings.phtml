@@ -1,0 +1,56 @@
+<?php
+
+	/**
+	 * Template für den Menüpunkt "Backup/Restore"
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php 
+			 
+			echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; 
+			
+		?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+		
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=loadsavesettings&noheader=1'); ?>">
+		
+		<?php \wp_nonce_field('wpsg-save-admin-loadsavesettings'); ?>
+		
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Einstellungen sichern', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+	
+				<?php echo wpsg_drawForm_TextStart(); ?>
+				<a href="<?php 
+					
+					echo \wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=loadsavesettings&noheader=1&wpsg_do=downloadsettings&submit=1', 'wpsg-save-admin-loadsavesettings-download'); 
+					
+				?>" title="<?php echo __('Einstellungen als XML Datei downloaden', 'wpsg'); ?>"><?php echo __('Download', 'wpsg'); ?></a>				
+				<?php echo wpsg_drawForm_TextEnd(__('Einstellungen speichern', 'wpsg')); ?>
+	
+				<?php echo wpsg_drawForm_TextStart(); ?>
+				<input type="file" name="wpsg_settings" />		
+				<?php echo wpsg_drawForm_TextEnd(__('Einstellungen laden', 'wpsg')); ?>
+ 				
+			</div>
+		</div>
+				
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen übernehmen', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p> 
+		
+		<p class="wpsg_hinweis">
+			<?php echo __('Derzeit werden nur die Einstellungen gespeichert. Produkte/Kunden/Bestellungen etc. sind nicht enthalten!', 'wpsg'); ?>
+		</p>
+		
+	</form>
+</div>

@@ -1,0 +1,75 @@
+<?php
+
+	/**
+	 * Tempalte für die Einstellungen des Produktfilter Moduls
+	 */
+	
+?>
+
+<?php echo wpsg_drawForm_Select('wpsg_mod_productfilter_page', __('Seite mit Produktfilter', 'wpsg'), $this->view['wpsg_mod_productfilter']['pages'], $this->get_option('wpsg_mod_productfilter_page'), array()); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productfilter_showotherpage', __('Auf anderen Seiten anzeigen', 'wpsg'), $this->get_option('wpsg_mod_productfilter_showotherpage')); ?>
+
+<br />
+
+<?php if ($this->hasMod('wpsg_mod_produktattribute')) { ?>
+<div class="wpsg_admin_box" id="wpsg_mod_productfilter_pa_box">
+	<div id="wpsg_mod_productfilter_pa" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('Produktattribute', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">		
+			<?php if (!wpsg_isSizedArray($this->view['wpsg_mod_productfilter']['arPA'])) { ?>
+			<?php echo wpsg_translate(__('Noch keine Produktattribute hinterlegt. Definieren Sie in der <a href="#1#">Verwaltung der Produktattribute</a> Ihre Produktattribute.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_produktattribute'); ?>
+			<?php } else { ?>
+			<?php $index = 0; foreach ($this->view['wpsg_mod_productfilter']['arPA'] as $k => $v) { $index ++; ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productfilter[pa][]', __($v['name'], 'wpsg'), $v['set'], array('value' => $v['id'], 'id' => 'wpsg_mod_productfilter_pa_'.$index)); ?>
+			<?php } ?>			
+			<?php } ?>		
+		</div>
+	</div>
+</div>
+<?php } ?>
+
+<br />
+
+<div class="wpsg_admin_box" id="wpsg_mod_productfilter_preis_box">
+	<div id="wpsg_mod_productfilter_preis" class="head" style="border-bottom:0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('Preisfilter', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display:block">
+			<?php echo wpsg_drawForm_Input('wpsg_mod_productfilter_pricefilter', __('Preisgruppen', 'wpsg'), $this->get_option('wpsg_mod_productfilter_pricefilter'), array('hint' => __('Preisgruppenformat: 1-100|101-200|>200', 'wpsg'))); ?>
+		</div>
+	</div>
+</div>
+
+<br />
+
+<?php if ($this->hasMod('wpsg_mod_productvariants')) { ?>
+<div class="wpsg_admin_box" id="wpsg_mod_productfilter_varianten_box">
+	<div id="wpsg_mod_productfilter_varianten" class="head" style="border-bottom:0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('Varianten', 'wpsg'); ?></div>
+		</div>	
+		<div class="content wpsg_admin_box_content" style="display:block;">
+			<?php if (!wpsg_isSizedArray($this->view['wpsg_mod_productfilter']['arVarianten'])) { ?>
+			<?php echo wpsg_translate(__('Noch keine Varianten hinterlegt. Definieren Sie in der <a href="#1#">Variantenverwaltung</a> Ihre Varianten.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants'); ?>
+			<?php } else { ?>
+			<?php $index = 0; foreach ($this->view['wpsg_mod_productfilter']['arVarianten'] as $var_name => $set) { $index ++; ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productfilter[varianten][]', __($var_name, 'wpsg'), $set, array('value' => $var_name, 'id' => 'wpsg_mod_productfilter_varianten_'.$index)); ?>
+			<?php } ?>
+			<?php } ?>
+		</div>
+	</div>
+</div>
+<?php } ?>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('.wpsg_admin_box').wpsg_adminbox();
+		
+	} );
+
+/* ]]> */</script>

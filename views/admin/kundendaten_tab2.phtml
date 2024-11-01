@@ -1,0 +1,136 @@
+<?php
+
+	/**
+	 * Template für die erweiteren Kundendaten
+	 */
+
+?>
+
+<?php if (wpsg_isSizedArray($this->view['pflicht']['custom'])) { ?>
+<div id="wpsg_kv_code_dialog" style="display:none;"><div class="wpsg_dialog"></div></div>
+
+<table class="wpsg_customfields table">
+	<thead>			
+		<tr>
+			<th class="col0"><?php echo __('Index', 'wpsg'); ?></th>		
+			<th class="col1"><?php echo __('Kundenvariablen', 'wpsg'); ?></th>
+			<th class="col2"><?php echo __('Pflichtfeld', 'wpsg'); ?></th>
+			<th class="col3"><?php echo __('Typ', 'wpsg'); ?></th>
+			<th class="col4"></th>
+			<th class="col5"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+		$arShow = array('0' => __('Ja', 'wpsg'), '1' => __('Nein', 'wpsg'), '2' => __('Nicht zeigen', 'wpsg'));
+		$arTyp = array('0' => __('Textfeld', 'wpsg'), '1' => __('Auswahlfeld', 'wpsg'), '2' => __('Checkbox', 'wpsg'));
+		foreach ($this->view['pflicht']['custom'] as $c_id => $c) { ?>	
+		<tr class="wpsg_customervar_row_<?php echo $c_id; ?>">
+			<td class="col0"><?php echo $c_id; ?></td>
+			<td class="col1"><span class="wpsg_editable" id="kundenvariable_name_<?php echo $c_id; ?>"><?php echo wpsg_hspc($c['name']); ?></span></td>
+			<td class="col2">
+				<span id="kundenvariable_show_<?php echo $c_id; ?>"><?php echo $arShow[$c['show']]; ?></span>
+			
+			</td>
+			<td class="col3">
+				<span id="kundenvariable_typ_<?php echo $c_id; ?>"><?php echo $arTyp[$c['typ']]; ?></span>
+			</td>
+			<td class="col4">
+			
+				<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('HTML Code generieren', 'wpsg'); ?>" onclick="return wpsg_genKVCode(<?php echo $c_id; ?>);"><span class="glyphicon glyphicon-modal-window"></span></a>
+			
+				<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Kundenvariable löschen', 'wpsg'); ?>" onclick="return wpsg_removeCustomField(<?php echo $c_id; ?>);"><span class="glyphicon glyphicon-trash"></span></a>
+				
+				<script type="text/javascript">/* <![CDATA[ */
+
+					jQuery(document).ready(function() {
+						jQuery('#kundenvariable_name_<?php echo $c_id; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten&do=inlinedit&noheader=1', {
+							submitdata: { 
+					    		field: 'name',
+					    		field_id: '<?php echo $c_id; ?>'
+							}, 					
+							submit  : '<?php echo __('Speichern', 'wpsg'); ?>',
+							placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+							indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+					    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+						});
+	
+	                    jQuery('#kundenvariable_show_<?php echo $c_id; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten&do=inlinedit&noheader=1', {
+	                        submitdata: {
+	                            field: 'show',
+	                            field_id: '<?php echo $c_id; ?>'
+	                        },
+	                        submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+	                        data: <?php echo wpsg_prepare_for_inlineEdit(array('0' => __('Ja', 'wpsg'), '1' => __('Nein', 'wpsg'), '2' => __('Nicht zeigen', 'wpsg'))); ?>,
+	                        type: 'select',
+	                        placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+	                        indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+	                        tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+	                        callback: function(el) {
+	                            if (el == '<?php echo __('Auswahl', 'wpsg'); ?>')
+	                            {
+	                                jQuery('#row_auswahl_<?php echo $c_id; ?>').show();
+	                            }
+	                            else
+	                            {
+	                                jQuery('#row_auswahl_<?php echo $c_id; ?>').hide();
+	                            }
+	                        }
+	                    });
+					
+	                    jQuery('#kundenvariable_typ_<?php echo $c_id; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten&do=inlinedit&noheader=1', {
+	                        submitdata: {
+	                            field: 'typ',
+	                            field_id: '<?php echo $c_id; ?>'
+	                        },
+	                        submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+	                        data: <?php echo wpsg_prepare_for_inlineEdit(array('0' => __('Textfeld', 'wpsg'), '1' => __('Auswahlfeld', 'wpsg'), '2' => __('Checkbox', 'wpsg'))); ?>,
+	                        type: 'select',
+	                        placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+	                        indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+	                        tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+	                        callback: function(el) {
+	                            if (el == '<?php echo __('Auswahl', 'wpsg'); ?>')
+	                            {
+	                                jQuery('#row_auswahl_<?php echo $c_id; ?>').show();
+	                            }
+	                            else
+	                            {
+	                                jQuery('#row_auswahl_<?php echo $c_id; ?>').hide();
+	                            }
+	                        }
+	                    });
+	
+						jQuery('#kundenvariable_auswahl_<?php echo $c_id; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=kundendaten&do=inlinedit&noheader=1', {
+							submitdata: { 
+					    		field: 'auswahl',
+					    		field_id: '<?php echo $c_id; ?>'
+							}, 					
+							submit  : '<?php echo __('Speichern', 'wpsg'); ?>',
+							placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+							indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+					    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+						});
+				
+					} );
+        
+				/* ]]> */</script>
+					
+			</td>
+		</tr>
+		<tr class="wpsg_customervar_row2 wpsg_customervar_row_<?php echo $c_id; ?>" id="row_auswahl_<?php echo $c_id; ?>" style="<?php echo (($c['typ'] == '1')?'':'display:none;'); ?>">
+			<td class="col0"></td>
+			<td class="col1"><?php echo __('Auswahlmöglichkeiten ("|" als Trenner)', 'wpsg'); ?></td>
+			<td class="col234" colspan="3">
+				<span class="wpsg_editable editable editable-click" id="kundenvariable_auswahl_<?php echo $c_id; ?>"><?php echo wpsg_hspc($c['auswahl']); ?></span>
+			</td>
+		</tr>
+		<?php } ?>
+	</tbody>
+</table>
+
+<br />
+<?php echo wpsg_drawForm_Checkbox('wpsg_kundenvariablen_show', __('Kundenvariablen direkt abfragen', 'wpsg'), $this->get_option('wpsg_kundenvariablen_show'), array('fullWidth' => true)); ?>
+<?php } else { ?>
+<p><?php echo __('Keine benutzerdefinierten Kundenfelder angelegt.', 'wpsg'); ?>
+<?php } ?>

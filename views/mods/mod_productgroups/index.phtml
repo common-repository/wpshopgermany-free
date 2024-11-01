@@ -1,0 +1,166 @@
+<?php
+
+	/**
+	 * Template für die Produktgruppenübersicht
+	 */
+
+?>
+
+<div class="wpsg_productgroups" id="wpsg-bs">
+
+    <nav class="navbar navbar-default">
+
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-customer-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="wpsg-customer-tab-a active"><a href="#" onclick="return false;"><?php echo wpsg_translate(__("Produktgruppenverwaltung (#1# Produktgruppen)", "wpsg"), $this->view['countAll']); ?></a></li>
+                    <li role="presentation" class="wpsg-customer-tab-a wpsg_showhide_filter" id="wpsg-customer-tab-0"><a href="#" onclick="return false;"><span class="glyphicon glyphicon-search"></span><?php echo __("Suche", "wpsg"); ?></a></li>
+                    <li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'add'))?'active':''); ?>"><a href="<?php 
+							
+						echo wpsg_admin_url('Productgroups', '', ['wpsg_mod_action' => 'add']);
+						
+					?>"><span class="glyphicon glyphicon-plus"></span><?php echo __("Hinzufügen", "wpsg"); ?></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+				</ul>
+			</div>
+		</div>
+
+        <div class="wpsg-filter wpsg-customer-tab wpsg-customer-tab-0 container-fluid form-horizontal" style="display:<?php echo (($this->view['hasFilter'] === true)?'block':'none'); ?>;">
+            <div class="row">
+                <div class="col-lg-4">
+                    <form method="post" id="filter_form">
+
+						<?php echo wp_nonce_field('wpsg-mod-productgroups-search'); ?>
+						
+                        <input id="wpsg_seite" type="hidden" name="filter[page]" value="<?php echo @$this->view['page']; ?>" class="current-page" />
+
+                        <input id="wpsg_order" type="hidden" name="filter[order]" value="<?php echo @$this->view['arFilter']['order']; ?>" />
+                        <input id="wpsg_ascdesc" type="hidden" name="filter[ascdesc]" value="<?php echo @$this->view['arFilter']['ascdesc']; ?>" />
+
+                        <?php echo wpsg_drawForm_Input('filter[s]', __('Suchfeld', 'wpsg'), wpsg_getStr($this->view['arFilter']['s'])); ?>
+
+                        <?php echo wpsg_drawForm_SubmitButton(__('Produktgruppen suchen')); ?><br />
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </nav>
+	
+	<div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+	<div class="wpsg_clear"></div>
+	
+    <?php if ($this->view['pages'] > 1) { ?>
+        <nav class="pagination_wrap">
+            <ul class="pagination">
+                <?php if ($this->view['arFilter']['page'] > 1) { ?>
+                    <li><a onclick="return goPage(<?php echo $this->view['arFilter']['page'] - 1; ?>);" href="#" aria-label="<?php echo __('Vorherige Seite'); ?>"><span aria-hidden="true">&laquo;</span></a></li>
+                <?php } ?>
+                <?php for ($i = 1; $i <= $this->view['pages']; $i ++) { ?>
+                    <li class="<?php echo (($i == $this->view['arFilter']['page'])?'active':''); ?>"><a onclick="return goPage(<?php echo $i; ?>);" href="#"><?php echo $i; ?></a></li>
+                <?php } ?>
+                <?php if ($this->view['arFilter']['page'] + 1 <= $this->view['pages']) { ?>
+                    <li><a onclick="return goPage(<?php echo $this->view['arFilter']['page'] + 1; ?>);" href="#" aria-label="<?php echo __('Nächste Seite'); ?>"><span aria-hidden="true">&raquo;</span></a></li>
+                <?php } ?>
+            </ul>
+        </nav>
+	<?php } ?>
+
+    <div class="wpsg_clear"></div>
+
+	<div class="content">
+
+        <?php if (is_array($this->view['arData']) && sizeof($this->view['arData']) > 0) { ?>
+
+            <table class="table wpsg-table-order table-bordered table-hover table-striped wpsg-table-customer">
+                <thead>
+                    <tr>
+                        <th class="wpsg_order col_name" data-order="nr"><?php echo __("Name", 'wpsg'); ?></th>
+                        <th class="wpsg_order col_template" data-order="template"><?php echo __("Template", 'wpsg'); ?></th>
+                        <th class="wpsg_order col_products" data-order="products"><?php echo __("Produkte", 'wpsg'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->view['arData'] as $pg) { ?>
+                    <tr>
+                        <td class="col_name">
+                            <strong><a title="<?php echo __("Diese Produktgruppe bearbeiten", "wpsg"); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Productgroups&wpsg_mod_action=edit&edit_id=<?php echo $pg->id; ?>" class="row-title"><?php echo $pg->name; ?></a></strong>
+					        <div class="row-actions">
+                                <span class="edit"><a title="<?php echo __("Diese Produktgruppe bearbeiten", "wpsg"); ?>" href="<?php
+										
+									echo wpsg_admin_url('Productgroups', '', ['wpsg_mod_action' => 'edit', 'edit_id' => $pg->id]);
+										
+								?>"><?php echo __("Bearbeiten", "wpsg"); ?></a>
+                                |
+                                <span class="del"><a onclick="if (!confirm('<?php echo __("Sind Sie sich sicher?", "wpsg"); ?>')) return false;" title="<?php echo __("Diese Produktgruppe löschen", "wpsg"); ?>" href="<?php 
+										
+									echo wpsg_admin_url('Productgroups', '', ['wpsg_mod_action' => 'del', 'edit_id' => $pg->id], ['noheader' => '1']); 
+										
+								?>"><?php echo __("Löschen", "wpsg"); ?></a>
+                                <?php if ($pg->countProducts() > 0) { ?>
+                                |
+                                <span class="edit"><a title="<?php echo __("Zur Produktliste", "wpsg"); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&search[pgruppe]=<?php echo $pg->id; ?>"><?php echo __("Zur Produktliste", "wpsg"); ?></a>
+                                <?php } ?>
+                            </div>
+                        </td>
+                        <td class="col_template">
+                            <?php echo (($pg->template_file == "0")?'Individuelle Produkttemplates':$pg->template_file); ?>
+                        </td>
+                        <td class="col_products">
+                            <?php echo $pg->countProducts(); ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+            <?php if ($this->view['pages'] > 1) { ?>
+                <nav class="pagination_wrap pagination_wrap_bottom">
+                    <ul class="pagination">
+                        <?php if ($this->view['arFilter']['page'] > 1) { ?>
+                            <li><a onclick="return goPage(<?php echo $this->view['arFilter']['page'] - 1; ?>);" href="#" aria-label="<?php echo __('Vorherige Seite'); ?>"><span aria-hidden="true">&laquo;</span></a></li>
+                        <?php } ?>
+                        <?php for ($i = 1; $i <= $this->view['pages']; $i ++) { ?>
+                            <li class="<?php echo (($i == $this->view['arFilter']['page'])?'active':''); ?>"><a onclick="return goPage(<?php echo $i; ?>);" href="#"><?php echo $i; ?></a></li>
+                        <?php } ?>
+                        <?php if ($this->view['arFilter']['page'] + 1 <= $this->view['pages']) { ?>
+                            <li><a onclick="return goPage(<?php echo $this->view['arFilter']['page'] + 1; ?>);" href="#" aria-label="<?php echo __('Nächste Seite'); ?>"><span aria-hidden="true">&raquo;</span></a></li>
+                        <?php } ?>
+                    </ul>
+                </nav>
+            <?php } ?>
+
+        <?php } else { ?>
+
+            <?php echo wpsg_drawForm_AdminboxStart(); ?>
+    		<?php echo __('Keine Produktgruppen in der Datenbank.', 'wpsg'); ?>
+            <?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+        <?php } ?>
+
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+    <?php if (wpsg_isSizedString($this->view['arFilter']['order']) && wpsg_isSizedString($this->view['arFilter']['ascdesc'])) { ?>
+    jQuery('th[data-order="<?php echo $this->view['arFilter']['order']; ?>"]').addClass('wpsg_order_<?php echo strtolower($this->view['arFilter']['ascdesc']); ?>');
+    <?php } ?>
+
+	function goPage(page)
+	{
+
+		//if (page <= 0 || page == <?php echo $this->view['arFilter']['page']; ?> || page > <?php echo $this->view['pages']; ?>) return;
+
+		jQuery('#wpsg_seite').val(page);
+		jQuery('#filter_form').submit();
+
+		return false;
+
+	} // function goPage(page)
+
+/* ]]> */</script>

@@ -1,0 +1,40 @@
+<?php
+
+	/**
+	 * Template für die Importmaske in der Produktverwaltung
+	 */
+
+?>
+<div class="wrap">
+	<div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
+	<h2>
+		<?php echo __('Produktimport Mapping', 'wpsg'); ?>
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&amp;action=index" class="button add-new-h2"><?php echo __("Zurück zur Produktverwaltung", "wpsg"); ?></a>
+	</h2>
+	
+	<form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&amp;action=import&amp" id="import_form" enctype="multipart/form-data">
+		
+
+		<div class="wpsg_hinweis"><?php echo __('Ordnen Sie die Spalten der zu importierenden Daten dem jeweiligen Produktattribut (links) zu', 'wpsg'); ?></div>
+		<br />
+		<div class="wpsg_hinweis"><?php echo __('Nicht zugeordnete Felder werden beim Import nicht verändert', 'wpsg'); ?></div>
+		<br />
+		<?php //wpsg_debug($this->view['import']) ?>
+		
+		<?php $i = 0; foreach ($this->view['import']['produkt_fields'] as $pAttr) { ?>
+		<?php if (count(array_intersect(array_keys($this->view['arLabel']), $pAttr)) > 0) { ?>
+		<?php echo wpsg_drawForm_Select('wpsg_import_mapping_field['.$pAttr['Field'].']', $this->view['arLabel'][$pAttr['Field']], $this->view['import']['csv_header_fields'], @$this->view['mappingDefault'][$pAttr['Field']], $conf = array()) ?>
+		<?php }?>
+		<?php $i++; }?>
+		<br />
+		<?php echo wpsg_drawForm_Select('wpsg_importfile_new_produkt', __('unbekannte Datensätze als neue Produkte anlegen', 'wpsg'), array('1' => 'ja', '0' => 'nein'), $this->get_option('wpsg_importfile_new_produkt'), $conf = array()) ?>
+		<?php echo wpsg_drawForm_Checkbox('wpsg_importfile_calcprice', __('Fehlende Preise berechnen?', 'wpsg'), $this->get_option('wpsg_importfile_calcprice'), array('hint' => __('Wenn nur der Brutto Preis angegeben wird, so wird der Netto Preis berechnet.', 'wpsg'))); ?>
+		
+		<br /><br />
+		<input type="submit" value="<?php echo __('Import starten', 'wpsg'); ?>" name="wpsg_import_continue" />
+		<input type="hidden" name="wpsg_import_val_sep" value="<?php echo $this->view['import']['val_sep'] ?>" />
+		<input type="hidden" name="wpsg_import_dec_sep" value="<?php echo $this->view['import']['dec_sep'] ?>" />
+		<input type="hidden" name="wpsg_import_first_row" value="<?php echo $this->view['import']['first_row'] ?>" />
+	</form>
+	
+</div>

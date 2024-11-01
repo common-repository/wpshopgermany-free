@@ -1,0 +1,53 @@
+<?php
+
+	/**
+	 * Template für das Login Widget
+	 */
+
+?>
+<div class="wpsg_mod_kundenverwaltung_widget widget">
+		
+	
+	<?php if ($this->callMod('wpsg_mod_kundenverwaltung', 'isLoggedIn')) { ?>
+	
+		<h2 class="widget-title widgettitle"><?php echo __('Login', 'wpsg'); ?></h2>
+		 
+		<p><?php echo wpsg_translate(__('Hallo #1# #2#', 'wpsg'), $_SESSION['wpsg']['checkout']['vname'], $_SESSION['wpsg']['checkout']['name']); ?></p>
+		<ul class="menu" id="wpsg_mod_kundenverwaltung_seitenmenu">
+			<li class="menu-item menu-item-object-page"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_PROFIL); ?>"><?php echo __('Profil bearbeiten', 'wpsg'); ?></a></li>
+			<li class="menu-item menu-item-object-page"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_ORDER); ?>"><?php echo __('Bestellungen', 'wpsg'); ?></a></li>
+			<?php if ($this->hasMod('wpsg_mod_abo') == '1') { ?>
+			<li class="menu-item menu-item-object-page"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_ABO); ?>"><?php echo __('Abonnements', 'wpsg'); ?></a></li>
+			<?php } else {}?>
+			<li class="menu-item menu-item-object-page"><a href="<?php echo $this->getURL(wpsg_ShopController::URL_LOGOUT); ?>"><?php echo __('Abmelden', 'wpsg'); ?></a></li>
+		</ul>
+		<br />
+		
+		<div class="wpsg_clear"></div>
+	
+	<?php } else { ?>
+	
+	<form method="post" action="<?php echo $this->getURL(wpsg_ShopController::URL_PROFIL); ?>">
+	
+		<h2 class="widget-title widgettitle"><?php echo __('Login', 'wpsg'); ?></h2>
+	 
+		<input type="text" value="<?php echo __('E-Mail', 'wpsg'); ?>" id="wpsg_mod_kundenverwaltung_widget_email" name="wpsg[mod_kundenverwaltung][email]" />
+		<input type="password" value="<?php echo __('Passwort', 'wpsg'); ?>" id="wpsg_mod_kundenverwaltung_widget_passwort" name="wpsg[mod_kundenverwaltung][password]" />
+		
+		<br /><br />
+		
+		<input type="submit" id="wpsg_mod_kundenverwaltung_widget_login" name="wpsg_mod_kundenverwaltung_login" value="<?php echo __('Anmelden', 'wpsg'); ?>" />
+				 
+		<input type="hidden" name="wpsg_referer" value="<?php echo $this->getCurrentURL(); ?>" />
+		 		 
+		<div class="wpsg_mod_kundenverwaltung_pwdlink">
+			<a href="<?php echo $this->callMod('wpsg_mod_kundenverwaltung', 'getPwdVergessenURL'); ?>"><?php echo __('Passwort vergessen?', 'wpsg'); ?></a>
+		</div>
+		
+		<div class="wpsg_clear"></div>
+		
+	</form>
+	
+	<?php } ?>	 
+		
+</div>

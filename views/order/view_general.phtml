@@ -1,0 +1,66 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@daschmi.de)
+     * Date: 06.08.2016
+     * Time: 11:22
+     */
+
+?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Allgemein', 'wpsg')); ?>
+
+    <?php echo wpsg_drawForm_Text(__('Bestellnummer', 'wpsg'), $this->view['oOrder']->getNr().' ['.$this->view['oOrder']->getStateLabel().']'); ?>
+    <?php echo wpsg_drawForm_Text(__('Bestelldatum', 'wpsg'), wpsg_formatTimestamp($this->view['oOrder']->cdate)); ?>
+    <?php echo wpsg_drawForm_Text(__('Bestellwert', 'wpsg'), wpsg_ff($this->view['oOrder']->getAmount(), $this->get_option('wpsg_currency')), 'wpsg_be_orderamount'); ?>
+    <?php echo wpsg_drawForm_Text(__('Bestellkommentar (Admin)', 'wpsg'), $this->view['data']['admincomment'], 'wpsg_order_admincomment', array('inlineEdit' => true, 'inlineEdit_type' => 'textarea', 'inlineEdit_url' => WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Order&noheader=1&action=setAdminComment&edit_id='.$this->view['data']['id'])); ?>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php $comment = $this->view['oOrder']->comment; if (wpsg_isSizedString($comment)) { ?>
+
+	<?php echo wpsg_drawForm_AdminboxStart(__('Bestellkommentar (Kunde)', 'wpsg')); ?>
+
+	<p>
+		<?php echo $comment; ?>
+	</p>
+
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php } ?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Statusänderung', 'wpsg')); ?>
+<form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&amp;action=switchStatus&amp;edit_id=<?php echo $this->view['oOrder']->id; ?>&amp;noheader=1" enctype="multipart/form-data">
+
+    <?php echo wpsg_drawForm_Select('status', __('Neuer Status', 'wpsg'), $this->arStatus, $this->view['data']['status']); ?>
+    <?php echo wpsg_drawForm_Checkbox('sendMail', __('Kunden informieren', 'wpsg'), 0); ?>
+
+    <br />
+	<?php $this->callMods('order_view_switchStatus', array(&$this->view['data']['id'])); ?>						
+	
+    <?php echo wpsg_drawForm_TextStart(); ?>
+    <input type="submit" class="button" value="<?php echo __('Status ändern', 'wpsg'); ?>" />
+    <?php echo wpsg_drawForm_TextEnd(); ?>
+
+</form>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php if ($this->hasMod('wpsg_mod_orderupload')) { ?>
+	<?php echo wpsg_drawForm_AdminboxStart(__('Bestelluploads', 'wpsg')); ?>
+	
+		<div class="inside">
+			 <?php if (!wpsg_isSizedArray($this->view['arFiles'])) { ?>
+			 <p class="wpsg_checkout_orderupload_backend">
+			 	<?php echo __('Keine Dateien hochgeladen.', 'wpsg'); ?>
+			 </p>
+			 <?php } else { ?>
+			 <?php foreach ($this->view['arFiles'] as $f) { ?>
+			 <p class="wpsg_checkout_orderupload_backend">
+			 	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&edit_id=<?php echo $this->view['data']['id']; ?>&noheader=1&action=ajax&mod=wpsg_mod_orderupload&wpsg_mod_orderupload_download=<?php echo rawurlencode($f); ?>"><?php echo $f; ?></a><br /> 
+			 	<span class="wpsg_checkout_orderupload_backend_weight">(<?php echo wpsg_formatSize($this->callMod('wpsg_mod_orderupload', 'getSavePath', array($this->view['data']['id'])).$f); ?>)</span>
+			 </p>
+			 <?php } ?>
+			 <?php } ?>
+		</div>
+	
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php } ?>

@@ -1,0 +1,82 @@
+<?php
+
+	/**
+	 * Template für die Texte innerhalb der Produktverwaltung
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Kurztext', 'wpsg')); ?>
+<?php 
+								
+	function wpsg_ShowTinyMCE() 
+	{ 
+		  
+		wp_print_scripts('editor');
+		if (function_exists('add_thickbox')) add_thickbox();
+		wp_print_scripts('media-upload');
+		if (function_exists('wp_tiny_mce')) wp_tiny_mce();
+		wp_admin_css();
+		
+		do_action("admin_print_styles-post-php");
+		do_action('admin_print_styles');
+		
+	}
+	
+	function wpsg_formatTinyMCE($in)
+	{
+		
+		if (isset($in['theme_advanced_buttons1'])) $in['theme_advanced_buttons1'] = str_replace(",wpsg", "", $in['theme_advanced_buttons1']);
+		
+		return $in;
+		
+	}
+	
+	// Damit die qTranslate Interne Editor Übersetzung nicht aufgerufen wird
+	//remove_filter('the_editor', 'qtrans_modifyRichEditor');
+	 
+	add_filter('tiny_mce_before_init', 'wpsg_formatTinyMCE');
+	add_filter('admin_head', 'wpsg_ShowTinyMCE');
+	wp_editor(@$this->view['data']['beschreibung'], 'beschreibung');
+	
+?>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Langtext', 'wpsg')); ?>
+<?php 
+						 	
+	// Damit die qTranslate Interne Editor Übersetzung nicht aufgerufen wird
+	//remove_filter('the_editor', 'qtrans_modifyRichEditor');
+	
+	add_filter('tiny_mce_before_init', 'wpsg_formatTinyMCE');
+	add_filter('admin_head', 'wpsg_ShowTinyMCE');
+	wp_editor(@$this->view['data']['longdescription'], 'longdescription');
+	
+?>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Zusätzliche Informationen', 'wpsg')); ?>
+<?php 
+						 	
+	// Damit die qTranslate Interne Editor Übersetzung nicht aufgerufen wird
+	//remove_filter('the_editor', 'qtrans_modifyRichEditor');
+	
+	add_filter('tiny_mce_before_init', 'wpsg_formatTinyMCE');
+	add_filter('admin_head', 'wpsg_ShowTinyMCE');
+	wp_editor(@$this->view['data']['moreinfos'], 'moreinfos');
+	
+?>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Lieferumfang', 'wpsg')); ?>
+<?php 
+						 	
+	// Damit die qTranslate Interne Editor Übersetzung nicht aufgerufen wird
+	//remove_filter('the_editor', 'qtrans_modifyRichEditor');
+	
+	add_filter('tiny_mce_before_init', 'wpsg_formatTinyMCE');
+	add_filter('admin_head', 'wpsg_ShowTinyMCE');
+	wp_editor(@$this->view['data']['moreinfos2'], 'moreinfos2');
+	
+?>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

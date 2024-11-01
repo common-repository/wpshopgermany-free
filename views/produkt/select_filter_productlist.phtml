@@ -1,0 +1,12 @@
+<?php
+
+	/**
+	 * Template für das Ergebnis der Produktfilterung
+	 */
+
+?>
+<?php if (wpsg_isSizedArray($this->view['arProducts'])) { ?>
+
+<?php } else { ?>
+<?php echo __('Keine Produkte gefunden', 'wpsg'); ?>
+<?php } ?>

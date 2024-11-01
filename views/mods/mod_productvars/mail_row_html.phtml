@@ -1,0 +1,14 @@
+<?php
+
+	/**
+	 * Template für die Anzeige der Produktvariablen in den HTML Mails
+	 */
+
+?>
+<?php foreach ($this->view['wpsg_mod_productvars']['data'] as $pv) { ?>
+	<tr class="productrow productrow2 <?php echo ((($this->view['i'] % 2) == 0)?'productrow_odd':'productrow_even'); ?>">
+		<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos">&nbsp;</td>
+		<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name"><?php echo wpsg_hspc($pv['name']); ?>:</td>
+		<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_productvars_value" colspan="<?php echo ((sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?'4':'3'); ?>"><?php echo wpsg_hspc($pv['value']); ?></td>
+	</tr>
+<?php } ?>

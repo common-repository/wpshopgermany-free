@@ -1,0 +1,43 @@
+<?php
+
+	/**
+	 * Template für den Produktauswahldialog mit Filter
+	 */
+
+?>
+<div class="wpsg_dialog">
+	
+	<?php echo wpsg_drawForm_Input('wpsg_product_filter_name', __('Produktname', 'wpsg'), ''); ?>
+
+	<br />
+	<input type="submit" onclick="return wpsg_product_filter_submit();" name="submit-filter" class="button" value="<?php echo __('Suchen', 'wpsg'); ?>" />
+
+	<br /><br />
+	<div id="wpsg_product_filter_dialog"></div>
+	
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	function wpsg_product_filter_submit()
+	{
+
+		jQuery('#wpsg_product_filter_dialog').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=select&wpsg_mode=filter&noheader=1',
+			data: {
+				filter_name: jQuery('#wpsg_product_filter_name').val()
+			},
+			success: function(data) {
+
+				jQuery('#wpsg_product_filter_dialog').html(data);
+				
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_product_filter_submit()
+
+/* ]]> */</script>

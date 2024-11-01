@@ -1,0 +1,73 @@
+<?php
+
+	/**
+	 * Template für den Admin Bereich der Preiskalkulation
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $_REQUEST['subaction']; ?>&amp;noheader=1">
+		
+		<?php echo wp_nonce_field('wpsg-admin-kalkulation'); ?>
+		
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Preiskalkulation', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+						
+				<div class="wpsg_kleinunternehmer_layer wpsg_kleinunternehmer_layer_1">
+					<?php echo wpsg_drawForm_Textarea('wpsg_kleinunternehmer_text', __('Kleinunternehmerregelung Text', 'wpsg'), $this->get_option('wpsg_kleinunternehmer_text'), array()) ?>
+				</div>
+				
+				<div class="wpsg_kleinunternehmer_layer wpsg_kleinunternehmer_layer_0">
+					<?php echo wpsg_drawForm_Select('wpsg_preisangaben', __('Preisangaben im Shop (Backend)', 'wpsg'), array(
+						WPSG_NETTO => __('Netto (zzgl. Steuer)', 'wpsg'),
+						WPSG_BRUTTO => __('Brutto (inkl. Steuer)', 'wpsg')
+					), $this->get_option('wpsg_preisangaben')); ?>				
+					<?php echo wpsg_drawForm_Select('wpsg_preisangaben_frontend', __('Preisangaben im Shop (Frontend)', 'wpsg'), array(WPSG_BRUTTO => __('Brutto (inkl. Steuer)', 'wpsg'), WPSG_NETTO => __('Netto (zzgl. Steuer)', 'wpsg')), $this->get_option('wpsg_preisangaben_frontend')); ?>					
+				</div>
+				
+				<?php echo wpsg_drawForm_Checkbox('wpsg_kleinunternehmer', __('Kleinunternehmerregelung', 'wpsg'), $this->get_option('wpsg_kleinunternehmer'), array('help' => 'Preiskalkulation_wpsg_kleinunternehmer')); ?>			
+								
+				<?php echo wpsg_drawForm_Checkbox('wpsg_hideemptyshipping', __('Versandkosten bei 0 ausblenden', 'wpsg'), $this->get_option('wpsg_hideemptyshipping'), array('help' => 'Preiskalkulation_wpsg_hideemptyshipping')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_hideemptypayment', __('Zahlungskosten bei 0 ausblenden', 'wpsg'), $this->get_option('wpsg_hideemptypayment'), array('help' => 'Preiskalkulation_wpsg_hideemptypayment')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_noroundamount', __('Vor Multiplikation mit Menge nicht runden', 'wpsg'), $this->get_option('wpsg_noroundamount'), ['help' => 'Preiskalkulation_wpsg_noroundamount']); ?>
+												
+			</div>
+		</div>
+				
+		<input type="hidden" name="subaction" value="kalkulation" />
+			
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+		
+		<script type="text/javascript">/* <![CDATA[ */
+ 
+			jQuery(document).ready(function() {
+
+				jQuery('#wpsg_kleinunternehmer').bind('change', function() {
+
+					jQuery('.wpsg_kleinunternehmer_layer').hide();
+					 
+					if (jQuery(this).prop('checked')) jQuery('.wpsg_kleinunternehmer_layer_1').show();
+					else jQuery('.wpsg_kleinunternehmer_layer_0').show();
+					
+				} ).change();
+				
+			} );
+		
+		/* ]]> */</script>
+			
+	</form>
+</div>

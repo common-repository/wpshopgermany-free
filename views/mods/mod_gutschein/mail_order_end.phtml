@@ -1,0 +1,27 @@
+<?php
+	 
+	/**
+	 * User: Daschmi (daschmi@daschmi.de)
+	 * Date: 31.07.2019
+	 * Time: 17:15
+	 */ 
+    
+	namespace wpsg;
+	
+	$arCalculation = $this->view['basket']['arCalculation'];
+	
+	if ($this->getFrontendTaxView() === WPSG_BRUTTO) $display_brutto_netto = 'brutto';
+	else $display_brutto_netto = 'netto';
+	
+	echo "\r\n";
+	
+	foreach ($arCalculation['coupon'] as $gs) {
+	
+		echo '     '.wpsg_pad_right(__('Wertgutschein', 'wpsg').' '.((wpsg_isSizedString($gs['code']))?'('.$gs['code'].')':''), 37);
+		echo wpsg_pad_left(wpsg_ff($gs[$display_brutto_netto], $this->get_option('wpsg_currency')), 34)."\r\n";
+		
+	}
+	
+	echo '     '.wpsg_pad_right(__('Zu zahlen', 'wpsg'), 37);
+	echo wpsg_pad_left(wpsg_ff($arCalculation['topay_brutto'], $this->get_option('wpsg_currency')), 34)."\r\n";
+	 

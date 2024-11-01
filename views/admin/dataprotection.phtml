@@ -1,0 +1,84 @@
+<?php
+
+	/**
+	 * Template für den Admin Bereich der Datenschutzeinstellungen
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=<?php echo $_REQUEST['subaction']; ?>&noheader=1">
+	
+		<?php echo wp_nonce_field('wpsg-admin-dataprotection'); ?>
+		
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Datenschutzbeauftragter', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+  			
+	  			<?php /* Behördliche Meldung eines Datenschutzbeauftragten */ ?>
+				<?php echo wpsg_drawForm_Checkbox('dataprotectioncommissioner', __('Datenschutzbeauftragter vorhanden', 'wpsg'), $this->get_option('dataprotectioncommissioner')); ?>
+				<div class="dataprotectioncommissioner_activ" style="display:none;">
+					<?php echo wpsg_drawForm_Input('dataprotectioncommissioner_name', __('Name:', 'wpsg'), $this->get_option('dataprotectioncommissioner_name')); ?>					
+					<?php echo wpsg_drawForm_Input('dataprotectioncommissioner_tel', __('Telefon:', 'wpsg'), $this->get_option('dataprotectioncommissioner_tel')); ?>	
+					<?php echo wpsg_drawForm_Input('dataprotectioncommissioner_email', __('E-Mail:', 'wpsg'), $this->get_option('dataprotectioncommissioner_email')); ?>	
+										
+					<?php echo wpsg_drawForm_TextStart(); ?>
+					<a href="https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html" target=_blank ><?php echo __('Liste der Aufsichtsbehörden (Inland, EU, Ausland)', 'wpsg'); ?></a>				
+					<?php echo wpsg_drawForm_TextEnd(__('Meldepflicht nach §4d Abs. 1 BDSG', 'wpsg')); ?>
+	  			</div>
+  			 			
+  			</div>
+  		</div>	
+  				
+  		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Löschen der kundenspezifischen Daten', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">	
+						
+                <?php echo wpsg_drawForm_Input('wpsg_customerdatadelete', __('Letzte Aktivität älter als', 'wpsg'), $this->get_option('wpsg_customerdatadelete'));?>				
+                <?php echo wpsg_drawForm_Select('wpsg_customerdatadelete_unit', __('Einheit', 'wpsg'), array('0' => __('Tag(e)', 'wpsg'), '1' => __('Monat(e)', 'wpsg'), '2' => __('Jahr(e)', 'wpsg')), $this->get_option('wpsg_customerdatadelete_unit')); ?>
+				<?php echo wpsg_drawForm_Select('wpsg_customerdatedelete_who', __('Kundenart', 'wpsg'), ['0' => __('Alle', 'wpsg'), '1' => __('Nur Gastkunden', 'wpsg')], $this->get_option('wpsg_customerdatedelete_who')); ?>
+								
+			</div>
+			
+		</div>	
+			
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+		
+		<script type="text/javascript">/* <![CDATA[ */
+ 
+			jQuery(document).ready(function() {
+				
+				jQuery('#dataprotectioncommissioner').bind('change', function() {
+
+					if (jQuery(this).is(':checked')) jQuery('.dataprotectioncommissioner_activ').show();
+					else jQuery('.dataprotectioncommissioner_activ').hide();
+					
+				} ).change();
+
+				jQuery('#dataprotectioncommissioner_texts').bind('change', function() {
+
+					if (jQuery(this).is(':checked')) jQuery('.dataprotectioncommissioner_textsactiv').show();
+					else jQuery('.dataprotectioncommissioner_textsactiv').hide();
+					
+				} ).change();
+				
+			} );
+		
+		/* ]]> */</script>
+			
+	</form>
+</div>

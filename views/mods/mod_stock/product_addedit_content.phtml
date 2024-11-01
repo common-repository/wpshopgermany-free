@@ -1,0 +1,40 @@
+<?php
+
+    /**
+     * Template für die Integration des Lagerbestandes in die Produktverwaltung
+     */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Lagerbestand', 'wpsg')); ?>
+
+    <?php
+		// $this->view['oProduct']['loadedData']['id/product_key']
+		$key = $this->view['oProduct']->id;
+
+		if ($this->callMod('wpsg_mod_productvariants', 'isVariantsProduct', array($key)) == true) 
+		{
+			//echo wpsg_drawForm_Input('wpsg_mod_stock_stock', __('Lagerbestand', 'wpsg'), wpsg_getStr($this->view['data']['stock']), array('readonly' => true));
+		} else {
+			//echo wpsg_drawForm_Input('wpsg_mod_stock_stock', __('Lagerbestand', 'wpsg'), wpsg_getStr($this->view['data']['stock']), array());
+		}
+		echo wpsg_drawForm_Input('wpsg_mod_stock_stock', __('Lagerbestand', 'wpsg'), wpsg_getStr($this->view['data']['stock']), array());
+		
+    ?>
+    <?php echo wpsg_drawForm_Checkbox('wpsg_mod_stock_stock_count', __('Lagerbestand zählen', 'wpsg'), wpsg_getStr($this->view['data']['stock_count'], '0')); ?>
+
+    <br />
+
+    <div class="info"><?php echo __('Lagerbestand = Bestand(Variante 1) + Bestand(Variante 2) + Bestand(Variante X)','wpsg'); ?></div>
+
+    <?php /* Mailbenachrichtigung beim Erreichen des Minimalbestandes des Produktes */ ?>
+    <?php if ($this->get_option('wpsg_mod_stock_minstockproduct') == '1') { ?>
+    <?php echo wpsg_drawForm_Input('wpsg_mod_minstockproduct', __('Mindestlagerbestand', 'wpsg'), wpsg_getStr($this->view['data']['minstockproduct_count'])); ?>
+    <?php echo wpsg_drawForm_Input('wpsg_mod_stock_minstockproduct_mail', __('Benachrichtigung an', 'wpsg'), wpsg_getStr($this->view['data']['minstockproduct_mail'])); ?>
+    <?php }?>
+
+    <br />
+
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_stock"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration des Lagerbestandmoduls', 'wpsg'); ?></a>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

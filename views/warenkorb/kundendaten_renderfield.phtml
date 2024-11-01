@@ -1,0 +1,25 @@
+<?php
+
+	/**
+	 * Zeichnet eine einzelne Kundenvariable innerhalb des checkout.phtml	  
+	 */
+
+?>
+<div class="wpsg_checkoutblock">
+	<label class="wpsg_cv" for="wpsg_cv_<?php echo $this->view['field']['id']; ?>">
+		<?php echo wpsg_hspc(__($this->view['field']['name'], 'wpsg')); ?><?php if ($this->view['field']['show'] == '0') { ?> <span class="wpsg_required">*</span><?php } ?>:
+		<?php if ($this->view['field']['typ'] == '0') { // Textfeld ?>
+		<input class="<?php echo (($this->view['field']['show'] == '0')?'validate[required]':''); ?> <?php echo ((in_array("custom_".$this->view['field']['id'], (array)$this->view['error']))?'wpsg_error':''); ?>" name="wpsg[checkout][custom][<?php echo $this->view['field']['id']; ?>]" type="text" value="<?php echo $this->view['basket']['checkout']['custom'][$this->view['field']['id']]; ?>" />
+		<?php } else if ($this->view['field']['typ'] == '1') { $arAuswahl = explode("|", $this->view['field']['auswahl']); // Auswahlfeld ?>
+		<select class="<?php echo (($this->view['field']['show'] == '0')?'validate[required]':''); ?> <?php echo ((in_array("custom_".$this->view['field']['id'], (array)$this->view['error']))?'wpsg_error':''); ?>" name="wpsg[checkout][custom][<?php echo $this->view['field']['id']; ?>]">
+			<option value="-1"><?php echo __('Bitte Auswählen', 'wpsg'); ?></option>
+			<?php foreach ((array)$arAuswahl as $a) { ?>
+			<option value="<?php echo wpsg_hspc($a); ?>" <?php echo (($a == $this->view['basket']['checkout']['custom'][$this->view['field']['id']])?'selected="selected"':''); ?>><?php echo wpsg_hspc($a); ?></option>
+			<?php } ?>
+		</select>
+		<?php } else if ($this->view['field']['typ'] == '2') { // Checkbox ?>
+		<input type="hidden" name="wpsg[checkout][custom][<?php echo $this->view['field']['id']; ?>]" value="0" />
+		<input class="<?php echo (($this->view['field']['show'] == '0')?'validate[required]':''); ?> checkbox" type="checkbox" value="1" name="wpsg[checkout][custom][<?php echo $this->view['field']['id']; ?>]" value="1" <?php echo (($this->view['basket']['checkout']['custom'][$this->view['field']['id']] == '1')?'checked="checked"':''); ?> />
+		<?php } ?>
+	</label>
+</div>

@@ -1,0 +1,64 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Newsletter Moduls
+	 */
+
+?>
+<?php if ($this->view['plugin_active'] !== true) { ?>
+<div class="wpsg_error"><br /><?php echo __('Das Modul ist nur mit aktiviertem wpNewsletterGermany Plugin funktionsfähig.', 'wpsg'); ?><br /></div>
+<?php } else { ?>
+
+	<?php echo wpsg_drawForm_Select('wpsg_mod_newsletter_groups[]', __('Gruppenzuordnung nach Registrierung', 'wpsg'), $this->view['arGroup'], (array)explode(',', $this->get_option('wpsg_mod_newsletter_groups')), array('help' => 'wpsg_mod_newsletter_groups','multiple' => ((sizeof($this->view['arGroup']) > 5)?5:sizeof($this->view['arGroup'])))); ?>
+	<?php echo wpsg_drawForm_Select('wpsg_mod_newsletter_action', __('Aktion', 'wpsg'), array('0' => __('Opt-In Mail versenden', 'wpsg'), '1' => __('Direkt anmelden', 'wpsg')), $this->get_option('wpsg_mod_newsletter_action'), array('help' => 'wpsg_mod_newsletter_action')); ?>
+	
+	<div class="wpsg_form_field">
+		<div class="wpsg_form_left">
+			<label for="wpsg_mod_newsletter_imoprtgroups"><?php echo __('Gruppenimport aus wpShopGermany Kunden', 'wpsg'); ?>:</label>
+		</div>
+		<div class="wpsg_form_right">
+			<select class="select " size="<?php echo ((sizeof($this->view['arGroup']) > 5)?5:sizeof($this->view['arGroup'])); ?>" multiple="multiple" name="wpsg_mod_newsletter_imoprtgroups[]" id="wpsg_mod_newsletter_imoprtgroups">
+				<?php foreach ($this->view['arGroup'] as $group_id => $group) { ?>
+				<option value="<?php echo $group_id; ?>"><?php echo $group; ?></option>
+				<?php } ?>
+			</select>
+			<a style="float:right; position:relative;" class="wpsg_form_help" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=mod_newsletter_imoprtgroups" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=mod_newsletter_imoprtgroups"></a>						
+			<input type="button" onclick="return wpsg_doImport();" value="<?php echo __('Kunden importieren', 'wpsg'); ?>" class="button" style="width:auto;" />
+		</div>
+		<div class="wpsg_clear"></div>
+	</div>
+	
+	<script type="text/javascript">/* <![CDATA[ */
+
+	   	/**
+	   	 * Startet den Import
+	   	 */                          
+		function wpsg_doImport()
+		{
+
+			nGroups = jQuery('#wpsg_mod_newsletter_imoprtgroups option:selected').length;
+
+			if (nGroups <= 0) 
+			{
+
+				alert('<?php echo __('Bitte mindestens eine Gruppe wählen.', 'wpsg'); ?>');
+				return;
+				
+			}
+
+			if (!confirm('<?php echo __('Die Shop Kunden werden in die ausgewählten Gruppen importiert. Bestehende E-Mail Adressen werden überschrieben.', 'wpsg'); ?>')) return;
+
+			var strGroups = '';
+			jQuery('#wpsg_mod_newsletter_imoprtgroups option:selected').each(function() {
+				strGroups += jQuery(this).attr('value') + ',';
+			} );
+
+			strGroups = strGroups.substring(0, strGroups.length - 1);
+
+			location.href = '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_newsletter&do=import&noheader=1&groups=' + strGroups;
+ 			
+		} // function wpsg_doImport()			
+	
+	/* ]]> */</script>
+		
+<?php } ?>

@@ -1,0 +1,19 @@
+<?php
+	
+	/**
+	 * Template für die Integration in die Verwaltung der Berechtigungen
+	 */
+
+	global $wpdb; $arRoles = get_option($wpdb->prefix."user_roles");
+
+?>
+<tr>
+	<td class="wpsg_col_capname"><?php echo __('Gutscheinverwaltung', 'wpsg'); ?></td>
+	<?php foreach ($arRoles as $role_key => $r) { ?>
+	<td class="wpsg_col_cap">
+		<input type="hidden" name="wpsg_cap[<?php echo $role_key; ?>][wpsg_voucher]" value="0" />
+		<input type="checkbox" <?php echo ((isset($r['capabilities']['wpsg_voucher']) && $r['capabilities']['wpsg_voucher'] == "1")?'checked="checked"':''); ?> name="wpsg_cap[<?php echo $role_key; ?>][wpsg_voucher]" value="1" /> 
+	</td>
+	<?php } ?>
+	<td></td>
+</tr>	

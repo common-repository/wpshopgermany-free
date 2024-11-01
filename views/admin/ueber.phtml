@@ -1,0 +1,206 @@
+<?php
+
+	/**
+	 * Template für den Karteireiter "Über" der Konfiguration
+	 */
+
+?>
+
+<div id="wpsg-bs" >
+	<div class="wpsg_admin_submenu" >
+
+		<div class="list-group" id="wpsg_statistics_tabs">
+			<span class="list-group-head list-group-item"><?php echo __('Auswahl', 'wpsg'); ?></span>
+
+				<a class="list-group-item <?php echo ((!isset($_REQUEST['subaction']))?'active':''); ?>"
+				href="<?php echo wpsg_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=ueber'); ?>"><?php echo __('Über diese Installation', 'wpsg'); ?></a>
+
+				<a class="list-group-item <?php echo ((isset($_REQUEST['subaction']) && $_REQUEST['subaction'] == 'phpinfo')?'active':''); ?>"
+				href="<?php echo wpsg_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=ueber&subaction=phpinfo'); ?>"><?php echo __('PHP-Info', 'wpsg'); ?></a>
+
+				<a class="list-group-item <?php echo ((isset($_REQUEST['subaction']) && $_REQUEST['subaction'] == 'systemcheck')?'active':''); ?>"
+				href="<?php echo wpsg_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=ueber&subaction=systemcheck'); ?>"><?php echo __('Systemcheck', 'wpsg'); ?></a>
+
+				<a class="list-group-item <?php echo ((isset($_REQUEST['subaction']) && $_REQUEST['subaction'] == 'systemlog')?'active':''); ?>"
+				href="<?php echo wpsg_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=ueber&subaction=systemlog'); ?>"><?php echo __('Fehlerprotokoll', 'wpsg'); ?></a>
+
+		</div>
+
+		<div style="clear:both; margin-bottom:10px; margin-left:0px; margin-right:8px;"></div>
+
+	</div>
+</div>
+
+
+<div class="wpsg_admin_content">
+
+
+<?php if (!isset($_REQUEST['subaction'])) { ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Über diese Installation', 'wpsg')); ?>
+
+	<div class="form-horizontal">
+
+	<?php
+	$arModule = array();
+	foreach ($this->arModule as $m_key => $m)
+	{
+
+		$arModule[] = $m_key.((isset($m->version))?' '.$m->version:'');
+
+	}
+	?>
+	<?php 
+	$t1 = ini_get('register_globals');
+	$t2 = ini_get('safe_mode');
+	$t3 = ini_get('max_execution_time');
+	
+	?>
+
+	<?php echo wpsg_drawForm_Text(__('wpShopGermany Version', 'wpsg'), WPSG_VERSION, array('text' => true)); ?>
+	<?php echo wpsg_drawForm_Text(__('aktivierte wpShopGermany-Module', 'wpsg'), implode(', ', $arModule), array('text' => true)); ?>
+	<?php echo wpsg_drawForm_Text(__('WordPress Version', 'wpsg'), get_bloginfo('version'), array('text' => true)); ?>
+	<?php echo wpsg_drawForm_Text(__('PHP Version', 'wpsg'), phpversion(), array('text' => true)); ?>
+	<?php echo wpsg_drawForm_Text(__('php.ini Einstellungen', 'wpsg'), "post_max_size: ". ini_get('post_max_size') . "<br />". "max_input_time: ". ini_get('max_input_time') . "<br />". "max_execution_time: ". ini_get('max_execution_time') . "<br />". "max_input_vars: ". ini_get('max_input_vars') . "<br />". "upload_max_filesize: ". ini_get('upload_max_filesize') . "<br />". "register_globals: ". ini_get('register_globals') . "<br />". "memory_limit: ". ini_get('memory_limit') . "<br />". "safe_mode: ". ini_get('safe_mode') . "<br />". "include_path: ". ini_get('include_path') . "<br />". "soap.wsdl_cache: ". ini_get('soap.wsdl_cache') . "<br />", array('text' => true, 'nohspc' => true)); ?>
+	<?php echo wpsg_drawForm_Text(__('geladene PHP Erweiterungen', 'wpsg'), implode(', ',  get_loaded_extensions()), array('text' => true)); ?>
+
+	<?php wpsg_drawForm_TextStart(); ?>
+			<?php $arPlugins = $this->get_option('active_plugins'); ?>
+				<?php foreach ((array)$arPlugins as $plugin) { $plugin_data = get_plugin_data(WPSG_PATH_CONTENT.'plugins/'.$plugin); ?>
+				<?php echo $plugin_data['Name']; ?> / <?php echo $plugin_data['Version']; ?><br />
+				<?php } ?>
+
+	<?php echo wpsg_drawForm_TextEnd(__('aktive Wordpress Plugins', 'wpsg')); ?>
+
+	<?php wpsg_drawForm_TextStart(); ?>
+				<?php if (wpsg_isSizedArray($this->get_option('wpsg_plugintest_active_plugins'))) { ?>
+				<a href="<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=plugintest_restore&noheader=1'; ?>"><?php echo __('Vormals aktivierte Module wieder herstellen aus Kompatibilitätstest', 'wpsg'); ?></a>
+				<?php } else { ?>
+				<a href="<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=plugintest_disable&noheader=1'; ?>"><?php echo __('Alle Plugins außer wpShopGermany deaktivieren (Kompatibilitätstest)', 'wpsg'); ?></a>
+				<?php } ?>
+	<?php echo wpsg_drawForm_TextEnd(); ?>
+	</div>
+
+	<div class="form-horizontal">
+
+		<?php wpsg_drawForm_TextStart(); ?>
+		<?php echo WPSG_PATH_USERVIEW; ?>
+		<?php echo wpsg_drawForm_TextEnd(__('Template Pfad für Anpassungen', 'wpsg')); ?>
+
+		<?php wpsg_drawForm_TextStart(); ?>
+		<?php echo WPSG_PATH_TRANSLATION; ?>
+		<?php echo wpsg_drawForm_TextEnd(__('Sprachdatei', 'wpsg')); ?>
+
+		<?php if ($this->get_option('wpsg_ignoreuserview') != '1') { ?>
+
+			<?php $arProductTemplates = $this->loadProduktTemplates(false, true, true); ?>
+
+			<?php $arFiles = wpsg_rglob(WPSG_PATH_VIEW.'*.phtml'); $arFiles = array_merge($arFiles, $arProductTemplates); ?>
+			<?php foreach ($arFiles as $k => $f) { $render_file = realpath($this->getTemplatefile($f)); if (!is_file($render_file) || realpath($f) == $render_file) { unset($arFiles[$k]); } else { $arFiles[$k] = $render_file; } } $arFiles = array_unique($arFiles); asort($arFiles); ?>
+
+			<?php if (wpsg_isSizedArray($arFiles)) { ?>
+				<div class="form-group-sm form-group">
+					<div class="form-control-static">
+
+						<label style="font-weight:bold;"><?php echo __('Angepasste Templates', 'wpsg'); ?></label><br /><br />
+
+						<?php foreach($arFiles as $render_file) { ?>
+
+							<?php echo str_replace(realpath(WPSG_PATH_WP), '', $render_file); ?><br />
+
+						<?php } ?>
+
+					</div>
+				</div>
+			<?php } ?>
+
+		<?php } ?>
+
+	</div>
+
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php } ?>
+
+<?php if (isset($_REQUEST['subaction']) && $_REQUEST['subaction'] == 'systemlog') { ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Fehlerprotokoll', 'wpsg'), '', array('style' => 'width:905px;')); ?>
+
+	<?php if (!file_exists($GLOBALS['wpsg_sc']->getStorageRoot().'exception.log')) { ?>
+		<p><?php echo __('Es wurden noch keine Systemfehler aufgezeichnet.', 'wpsg'); ?></p>
+	<?php } else { ?>
+
+		<textarea style="width:875px; overflow-y:scroll; height:500px; font-size:12px; font-family:Courier;"><?php echo file_get_contents($GLOBALS['wpsg_sc']->getStorageRoot().'exception.log'); ?></textarea>
+
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=ueber&subaction=clearSysLog&noheader=1" class="button"><?php echo __('Protokolldatei löschen', 'wpsg'); ?></a>
+
+	<?php } ?>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php } ?>
+
+<?php if (isset($_REQUEST['subaction']) && $_REQUEST['subaction'] == 'phpinfo') { ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('PHP-Info', 'wpsg')); ?>
+	<div id="phpinfo" class="form-horizontal">
+		
+		<style>
+
+			#phpinfo {background-color: #fff; color: #222; font-family: sans-serif;}
+			#phpinfo pre {margin: 0; font-family: monospace;}
+			#phpinfo a:link {color: #009; text-decoration: none; background-color: #fff;}
+			#phpinfo a:hover {text-decoration: underline;}
+			#phpinfo table {border-collapse: collapse; border: 0; width:750px; box-shadow: 1px 2px 3px #ccc;}
+			#phpinfo .center {text-align: center;}
+			#phpinfo .center table {margin: 1em auto; text-align: left;}
+			#phpinfo .center th {text-align: center !important;}
+			#phpinfo td, #phpinfo th {border: 1px solid #666; font-size: 75%; vertical-align: baseline; padding: 4px 5px;}
+			#phpinfo h1 {font-size: 150%;}
+			#phpinfo h2 {font-size: 125%;}
+			#phpinfo .p {text-align: left;}
+			#phpinfo .e {background-color: #ccf; width: 300px; font-weight: bold;}
+			#phpinfo .h {background-color: #99c; font-weight: bold;}
+			#phpinfo .v {background-color: #ddd; max-width: 300px; overflow-x: auto; word-wrap: break-word;}
+			#phpinfo .v i {color: #999;}
+			#phpinfo img {float: right; border: 0;}
+			#phpinfo hr {width: 534px; background-color: #ccc; border: 0; height: 1px;}
+			
+		</style>
+		
+		<?php 
+		
+			ob_start(); 	
+			phpinfo(); $pi = ob_get_contents();
+			ob_end_clean();
+			
+			$pi = preg_replace('/<style(.*)<\/style>/is', '', $pi);
+						
+			echo $pi;
+			 			
+		?>
+		
+	</div>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php } ?>
+
+
+<?php if (isset($_REQUEST['subaction']) && $_REQUEST['subaction'] == 'systemcheck') { ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Systemcheck', 'wpsg')); ?>
+
+	<a class="button" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=resetMessages&noheader=1"><?php echo __('Ausgeblendete Meldungen zurücksetzen', 'wpsg'); ?></a>
+
+	<?php $arData = $this->systemcheck(); ?>
+	<?php if (wpsg_isSizedArray($arData)) { ?>
+		<div class="wpsg_admin_ueber_check_wrap">
+			<?php foreach ($arData as $d) { ?>
+				<p class="wpsg_admin_ueber_check wpsg_admin_ueber_check_<?php echo $d[1]; ?> <?php echo array('bg-info', 'bg-warning', 'bg-danger')[$d[1] - 1]; ?>">
+					<?php echo $d[2]; ?>
+				</p>
+			<?php } ?>
+		</div>
+	<?php } else { ?>
+
+	<?php } ?>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php } ?>
+
+
+</div>

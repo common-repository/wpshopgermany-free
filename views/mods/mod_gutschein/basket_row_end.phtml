@@ -1,0 +1,21 @@
+<?php
+
+	/**
+	 * Template für die Integration der Gutscheineingabe innerhalb des Warenkorbes
+	 */
+
+?>
+<br />
+<div class="basket_sum_row">
+		
+	<div class="codegs">
+		<label class="codegsf" for="wpsg_gutschein_input"><?php echo __('Gutscheincode:', 'wpsg'); ?></label>
+	</div>
+	<div class="codegsl">
+		<input id="wpsg_gutschein_input" class="wpsg_gutschein_input <?php echo ((in_array("gutschein", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg[gutschein]" value="" />
+	</div>
+	<div class="codegsr">
+		<input class="wpsg_button wpsg_gutschein_add" type="submit" name="wpsg_gutschein_add" value="<?php echo '&nbsp;'.__('Einlösen', 'wpsg').'&nbsp;'; ?>" />
+	</div>
+		
+</div>

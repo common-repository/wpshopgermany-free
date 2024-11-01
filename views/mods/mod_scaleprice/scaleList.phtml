@@ -1,0 +1,97 @@
+<?php
+
+	/**
+	 * Template für die Liste der Staffelpreise innerhalb der Produktverwaltung
+	 */
+
+?>
+
+<div class="col-sm-6 control-label" style="font-size:12px; font-weight:bold;">
+<?php echo __('Preisgrenzen', 'wpsg'); ?>
+</div>
+	<?php foreach ((array)$this->view['wpsg_mod_scaleprice']['arScale'] as $k => $scale) { ?>
+	<div class="col-sm-6" style="float:right;">
+		<div class="wpsg_form_field wpsg_mod_scaleprice_row" id="wpsg_mod_scaleprice_row_<?php echo $scale['id']; ?>">
+			<div class="wpsg_form_left">
+				<div class="wpsg_mod_scaleprice_label_scale" style="width:30px; float:left; font-size:12px;"><?php echo __('ab', 'wpsg'); ?></div>
+				<div class="wpsg_editable" style="width:75px; float:left; text-align:right; padding-top:4px" id="wpsg_mod_scaleprice_<?php echo $scale['id']; ?>_scale"><?php echo wpsg_ff($scale['scale']); ?></div>
+				<div class="wpsg_mod_scaleprice_label_value" style="float:left; margin:0 0 0 10px; font-size:12px;">
+					<?php if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_WEIGHT) { ?>
+					<?php echo $this->get_option('wpsg_mod_weight_unit'); ?>
+					<?php } else if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_QUANTITY) { ?>
+					<?php echo $this->get_option('wpsg_mod_scaleprice_unit'); ?>
+					<?php } ?>
+				</div>		
+			</div>
+			<div class="wpsg_form_right">
+				<div style="width:75px; float:left; padding-top:4px; text-align:right;" class="wpsg_editable" id="wpsg_mod_scaleprice_<?php echo $scale['id']; ?>_value"><?php echo wpsg_ff($scale['value']); ?></div>
+				<p style="float:left; margin:0 0 0 10px; font-size:12px;" class="waehrung"><?php echo $this->get_option('wpsg_currency'); ?></p>
+				<a style="float:right; margin-top:4px;" class="wpsg_glyphicon_right glyphicon glyphicon-minus-sign" href="" onclick="return wpsg_mod_scaleprice_remove(<?php echo $scale['id']; ?>);" title=""></a>
+			</div>
+			<div class="wpsg_clear"></div>
+		</div>
+	</div>
+	<div class="wpsg_clear"></div>
+	
+<script type="text/javascript">
+/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_mod_scaleprice_<?php echo $scale['id']; ?>_scale').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_scaleprice&edit_id=<?php echo $this->view['wpsg_mod_scaleprice']['product']['id']; ?>&noheader=1&cmd=inlineEdit', {
+			submitdata: { 
+				field: 'scale',
+				scale_id: '<?php echo $scale['id']; ?>'
+			}, 					
+			submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+			placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+			indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+			tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+		});
+
+		jQuery('#wpsg_mod_scaleprice_<?php echo $scale['id']; ?>_value').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_scaleprice&edit_id=<?php echo $this->view['wpsg_mod_scaleprice']['product']['id']; ?>&noheader=1&cmd=inlineEdit', {
+			submitdata: { 
+				field: 'value',
+				scale_id: '<?php echo $scale['id']; ?>'
+			}, 					
+			submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+			placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+			indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+			tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+		});
+
+		jQuery('#wpsg_mod_scaleprice_scale').bind('blur', wpsg_mod_scaleprice_change);
+		jQuery('#wpsg_mod_scaleprice_value').bind('blur', wpsg_mod_scaleprice_change);
+		
+	} );
+
+/* ]]> */
+</script>
+
+<?php } ?>
+
+<div class="wpsg_clear"></div>
+<div class="col-sm-6 control-label" style="font-size:12px; font-weight:bold; ">
+<?php echo __('Neue Preisgrenze', 'wpsg'); ?>
+</div>
+<div class="col-sm-6">
+	<div class="wpsg_form_field">
+		<div class="wpsg_form_left">									
+			<div class="wpsg_mod_scaleprice_label_scale" style="width:30px; float:left; font-size:12px;"><?php echo __('ab', 'wpsg'); ?></div>
+			<input type="text" class="wpsg_mod_scaleprice_scale" style="width:75px; float:left;" name="wpsg_mod_scaleprice_scale" value="" id="wpsg_mod_scaleprice_scale" />
+			<div class="wpsg_mod_scaleprice_label_value" style="float:left; margin:0 0 0 10px; font-size:12px;">
+				<?php if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_WEIGHT) { ?>
+				<?php echo $this->get_option('wpsg_mod_weight_unit'); ?>
+				<?php } else if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_QUANTITY) { ?>
+				<?php echo $this->get_option('wpsg_mod_scaleprice_unit'); ?>
+				<?php } ?>
+			</div>						
+		</div>
+		<div class="wpsg_form_right">						
+			<input type="text" class="wpsg_mod_scaleprice_value" style="width:75px; float:left;" name="wpsg_mod_scaleprice_value" value="" id="wpsg_mod_scaleprice_value">
+			<p class="waehrung" style="float:left; margin:0 0 0 10px; font-size:12px;"><?php echo $this->get_option('wpsg_currency'); ?></p>
+			<a style="float:right; margin-top:4px;" class="wpsg_glyphicon_right glyphicon glyphicon-plus-sign" href="" onclick="return wpsg_mod_scaleprice_add();" title=""></a>								 
+		</div>
+		<div class="wpsg_clear"></div>
+	</div>	
+</div>

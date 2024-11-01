@@ -1,0 +1,507 @@
+<?php
+	
+	/**
+	 * Template für die Übersicht der Bestellungen
+	 */
+
+?>
+
+<div class="wpsg_order" id="wpsg-bs">
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+                
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+                <a class="glyphicon glyphicon-menu-hamburger wpsg-bs-toggle-nav visible-xs-block" data-toggle="collapse" data-target="#wpsg-bs-headermenu" href="#"></a>
+                
+			</div>
+			<div class="collapse navbar-collapse" id="wpsg-bs-headermenu">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="<?php echo ((!isset($_REQUEST['action']))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order" onclick="return false;"><?php echo __("Bestellübersicht", "wpsg"); ?></a></li>
+					<li role="presentation" class="wpsg_showhide_filter wpsg-order-tab-a <?php echo (($this->view['hasFilter'] === true)?'active':''); ?>" id="wpsg-order-tab-0"><a href="#" onclick="return false;"><span class="glyphicon glyphicon-search"></span><?php echo __("Suche", "wpsg"); ?></a></li>
+                    <?php foreach ($this->view['tabs']['left'] as $k => $tab) { ?>
+                    <li role="presentation" class="wpsg-order-tab-a wpsg-order-tab-mods" id="wpsg-order-tab-<?php echo $k; ?>"><a href="#" onclick="return false;"><span class="<?php echo $tab['tab_icon']; ?>"></span><?php echo $tab['tab_title']; ?></a></li>
+                    <?php } ?>
+                    <li role="presentation" class="wpsg-order-tab-a wpsg-order-tab-mods" id="wpsg-order-tab-add"><a href="#" onclick="return false;"><span class="glyphicon glyphicon-plus"></span><?php echo __("Neue Bestellung", "wpsg"); ?></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+                    <?php foreach ($this->view['tabs']['right'] as $k => $tab) { ?>
+                    <li role="presentation" class="wpsg-order-tab-mods" id="wpsg-order-tab-<?php echo $k; ?>"><a href="#" onclick="return false;"><span class="<?php echo $tab['tab_icon']; ?>"></span><?php echo $tab['tab_title']; ?></a></li>
+                    <?php } ?>
+				</ul>
+			</div>
+		</div>
+
+		<div class="wpsg-filter wpsg-order-tab wpsg-order-tab-0 container-fluid form-horizontal" style="display:<?php echo (($this->view['hasFilter'] === true)?'block':'none'); ?>;">
+			<div class="row">
+				<div class="col-lg-5">
+					<form method="post" id="filter_form" >
+
+						<?php echo wp_nonce_field('wpsg-order-search'); ?>
+						
+						<input id="wpsg_seite" type="hidden" name="seite" value="<?php echo @$this->view['arFilter']['page']; ?>" class="current-page" />
+						<input id="wpsg_order" type="hidden" name="filter[order]" value="<?php echo @$this->view['arFilter']['order']; ?>" />
+						<input id="wpsg_ascdesc" type="hidden" name="filter[ascdesc]" value="<?php echo @$this->view['arFilter']['ascdesc']; ?>" />
+
+						<?php echo wpsg_drawForm_Input('filter[s]', __('Suchfeld', 'wpsg'), wpsg_getStr($this->view['arFilter']['s'])); ?>
+                        <?php echo wpsg_drawForm_Input('filter[k_id]', __('Kunde (ID)', 'wpsg'), wpsg_getStr($this->view['arFilter']['k_id'])); ?>
+						<?php echo wpsg_drawForm_Select('filter[status]', __('Bestellstatus', 'wpsg'), wpsg_array_merge(array('-1' => __('Alle', 'wpsg')), $this->arStatus), @$this->view['arFilter']['status']); ?>
+						
+						<?php /* if ($this->hasMod('wpsg_mod_produktartikel')) { Vorbereitet aber Joins in wpsg_order nach den wp Ktegorien noch nicht umgesetzt! ?>
+							
+							<?php $arCatSelect = []; $arCat = $this->callMod('wpsg_mod_produktartikel', 'getProductcategorySelect'); foreach ($arCat as $cat) $arCatSelect[$cat['term_id']] = $cat['label']; ?>
+							<?php  echo wpsg_drawForm_Select('filter[cat_term_id]', __('Bestellungen mit Produkten aus Kategorie'), ['0' => __('Alle', 'wpsg')] + $arCatSelect, wpsg_getStr($this->view['arFilter']['cat_term_id'])); ?>
+						
+						<?php } */ ?>
+						
+						<?php if ($this->hasMod('wpsg_mod_productgroups') && $this->get_option('wpsg_mod_productgroups_order_filter') === '1') { ?>
+						
+							<?php $arProductgroups = $this->callMod('wpsg_mod_productgroups', 'getAllProductGroups'); ?>
+							<?php  echo wpsg_drawForm_Select('filter[productgroup_id]', __('Bestellungen mit Produkten aus Produktgruppe'), ['0' => __('Alle', 'wpsg')] + $arProductgroups, wpsg_getStr($this->view['arFilter']['productgroup_id'])); ?>
+							
+						<?php } ?>
+						
+                        <?php echo wpsg_drawForm_TextStart(); ?>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <select name="filter[cdate_m]" class="form-control input-sm">
+                                    <option value="-1"><?php echo __("Alle", "wpsg"); ?></option>
+                                    <?php for ($i = 1; $i <= 12; $i ++) { ?>
+                                    <option <?php echo ((wpsg_getStr($this->view['arFilter']['cdate_m']) == $i)?'selected="selected"':''); ?> value="<?php echo str_pad($i, 2, '0', STR_PAD_LEFT); ?>"><?php echo strftime("%B", mktime(0, 0, 0, $i, 1, 2000)); ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <select name="filter[cdate_y]" class="form-control input-sm">
+                                    <option value="-1"><?php echo __("Alle", "wpsg"); ?></option>
+                                    <?php foreach ($this->view['cdate_years'] as $y) { ?>
+                                    <option <?php echo ((wpsg_getStr($this->view['arFilter']['cdate_y']) == $y)?'selected="selected"':''); ?> value="<?php echo $y; ?>"><?php echo $y; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <?php echo wpsg_drawForm_TextEnd(__('Bestelldatum (Monat/Jahr)', 'wpsg'), array('noP' => true)); ?>
+
+                        <?php echo wpsg_drawForm_TextStart(); ?>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <select name="filter[invoicedate_m]" class="form-control input-sm">
+                                    <option value="-1"><?php echo __("Alle", "wpsg"); ?></option>
+                                    <?php for ($i = 1; $i <= 12; $i ++) { ?>
+                                    <option <?php echo ((wpsg_getStr($this->view['arFilter']['invoicedate_m']) == $i)?'selected="selected"':''); ?> value="<?php echo str_pad($i, 2, '0', STR_PAD_LEFT); ?>"><?php echo strftime("%B", mktime(0, 0, 0, $i, 1, 2000)); ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <select name="filter[invoicedate_y]" class="form-control input-sm">
+                                    <option value="-1"><?php echo __("Alle", "wpsg"); ?></option>
+                                    <?php foreach ($this->view['invoicedate_years'] as $y) { ?>
+                                    <option <?php echo ((wpsg_getStr($this->view['arFilter']['invoicedate_y']) == $y)?'selected="selected"':''); ?> value="<?php echo $y; ?>"><?php echo $y; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <?php echo wpsg_drawForm_TextEnd(__('Rechnungsdatum (Monat/Jahr)', 'wpsg'), array('noP' => true)); ?>
+
+    					<br />
+                        
+                        <?php echo wpsg_drawForm_SubmitButton(__('Bestellungen suchen')); ?>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	
+        <?php foreach ($this->view['tabs'] as $tab_positions) { ?>
+        <?php foreach ($tab_positions as $k => $tab) { ?>
+        <div class="wpsg-order-tab-mods-content wpsg-filter-tab wpsg-order-tab-<?php echo $k ?>" style="display:none;"><?php echo $tab['tab_content']; ?></div>
+        <?php } ?>
+        <?php } ?>
+        
+        <div class="wpsg-order-tab-add-content wpsg-order-tab-add" style="display:none;">
+
+            <div class="container-fluid form-horizontal">
+                <div class="row">
+                    <div class="col-lg-4">
+                        
+                        <form method="POST" id="add_form" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&subaction=add&noheader=1">
+	
+							<?php echo wp_nonce_field('wpsg-order-add'); ?>
+							                            
+                            <br />
+                            
+                            <?php echo wpsg_drawForm_Input('search_customer',__('Kunde (E-Mail oder Kundennummer)', 'wpsg'), @$_REQUEST['search_customer']); ?>
+                            
+                            <br />
+							
+                            <?php $arShippingSelect = []; foreach ($this->arShipping as $shipping_id => $shipping) if (!isset($shipping['active']) || $shipping['active'] === '1') $arShippingSelect[$shipping_id] = $shipping['name'].' ('.wpsg_ff(@$shipping['price']).')'; ?>
+                            <?php echo wpsg_drawForm_Select('add_shipping', __('Versandart', 'wpsg'), $arShippingSelect, @$_REQUEST['add_shipping']); ?>
+
+                            <?php $arPaymentSelect = []; foreach ($this->arPayment as $payment_id => $payment) if (!isset($payment['active']) || $payment['active'] === '1')  $arPaymentSelect[$payment_id] = $payment['name'].' ('.wpsg_ff(@$payment['price']).')'; ?>
+                            <?php echo wpsg_drawForm_Select('add_payment', __('Zahlungsart', 'wpsg'), $arPaymentSelect, @$_REQUEST['add_payment']); ?>
+                            
+                            <br /><?php echo wpsg_drawForm_SubmitButton(__('Bestellung anlegen')); ?><br />
+                            
+                            <script>
+                                
+                                jQuery(document).ready(function() {
+                                
+                                    jQuery('#search_customer').autocomplete( {
+                                        source: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&subaction=autocomplete&noheader=1',
+                                        minLength: 2,
+                                        select: function(event, ui) {
+                                            
+                                            jQuery('#search_customer').val(ui.item.id);
+                                            
+                                            return false;
+                                            
+                                        }
+                                    } );
+                                
+                                    jQuery('#add_form').on('submit', function() {
+                                        
+                                        if (jQuery.trim(jQuery('#search_customer').val()) === '') {                                            
+                                            
+                                            alert('<?php echo __('Bitte einen Kunden angeben.', 'wpsg'); ?>');
+                                            
+                                            return false;
+                                            
+                                        }
+                                        
+                                    } );
+                                    
+                                } );
+                                
+                            </script>
+                            
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    
+    </nav>
+    
+    <div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+	
+	<?php if ($this->hasMod('wpsg_mod_productgroups') && $this->get_option('wpsg_mod_productgroups_order_filter') === '1') { $arPG = $this->callMod('wpsg_mod_productgroups', 'getAllProductGroups', [true]); ?>
+
+		<?php if (wpsg_isSizedArray($arPG)) { ?>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="pagination_wrap wpsg_status_link_wrap">
+		
+					<ul class="pagination">
+						<?php foreach ($arPG as $pg_id => $pg_name) { ?>
+							<li class="<?php echo ((wpsg_getStr($this->view['arFilter']['productgroup_id']) == $pg_id)?'active':''); ?>"><a href="#" onclick="return wpsg_setFilterProductgroup('<?php echo $pg_id; ?>');"><?php echo $pg_name; ?></a></li>
+						<?php } ?>
+					</ul>
+		
+				</div>
+			</div>
+		</div>
+		<?php } ?>
+		
+	<?php } ?>
+	
+	<div class="pagination_wrap wpsg_status_link_wrap">
+
+		<ul class="pagination">
+			<?php foreach ($this->view['arStatus'] as $status_key => $status_info) { ?>
+			<li class="<?php echo ((wpsg_getStr($this->view['arFilter']['status']) == $status_key)?'active':''); ?>"><a href="#" onclick="return wpsg_setFilterStatus('<?php echo $status_key; ?>');"><?php echo wpsg_translate(__('#1# <span>(#2#)<span>', 'wpsg'), $status_info['label'], $status_info['count']); ?></a></li>
+			<?php } ?>
+		</ul>
+
+	</div>
+
+	<?php $this->render(WPSG_PATH_VIEW.'/admin/pager.phtml'); ?>
+
+	<div class="wpsg_clear"></div>
+
+	<div class="content">
+		<form method="post" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&noheader=1" enctype="multipart/form-data">
+
+		<?php if (is_array($this->view['arData']) && sizeof($this->view['arData']) > 0) { ?>
+
+            <table class="table table-bordered table-hover table-striped wpsg-table-order">
+                <thead>
+                    <tr>
+                        <th class="col_checkbox"><input type="checkbox" onclick="return wpsg_order_checkAll();" /></th>
+                        <th class="col_nr wpsg_order" data-order="cdate"><?php echo __('Nr', 'wpsg'); ?></th>
+                        <th class="col_customer wpsg_order" data-order="customer"><?php echo __('Kunde', 'wpsg'); ?></th>
+                        <th class="col_payment wpsg_order" data-order="payment"><?php echo __('Bezahlmethode', 'wpsg'); ?></th>
+                        <th class="col_shipping wpsg_order" data-order="shipping"><?php echo __('Versandart', 'wpsg'); ?></th>
+                        <th class="col_products wpsg_order" data-order="products"><?php echo __('Produkte', 'wpsg'); ?></th>
+                        <th class="col_sum wpsg_order" data-order="amount"><?php echo __('Bestellwert', 'wpsg'); ?></th>
+                        <th class="col_state wpsg_order" data-order="state"><?php echo __('Status', 'wpsg'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->view['arData'] as $oOrder) { ?>
+                    <tr>
+                        <td class="col_checkbox">
+
+                            <input class="col_set_checkbox" name="wpsg_multido[<?php echo $oOrder->id; ?>]" type="checkbox" />
+
+                        </td>
+                        <td class="col_nr">
+
+                            <?php echo $oOrder->getNr(); ?> <span class="wpsg_grey"><?php echo wpsg_formatTimestamp(strtotime($oOrder->cdate), false); ?></span><br />
+
+                            <div class="actions">
+                                <span class="view"><a title="<?php echo __("Diese Bestellung ansehen", "wpsg"); ?>" href="<?php
+		
+									echo wpsg_admin_url('Order', 'view', ['edit_id' => $oOrder->getId()]);
+	
+								?>"><?php echo __("Ansehen", "wpsg"); ?></a></span>
+                                |
+                                <span class="storno"><a onclick="return confirm('<?php echo __('Sind Sie sich sicher, dass Sie diese Bestellung stornieren möchten?', 'wpsg'); ?>');" title="<?php echo __("Diese Bestellung stornieren", "wpsg"); ?>" href="<?php 
+										
+									echo wpsg_admin_url('Order', 'storno', ['edit_id' => $oOrder->getId()], ['noheader' => '1']); 
+										
+								?>"><?php echo __("Stornieren", "wpsg"); ?></a></span>
+                                |
+                                <span class="delete"><a onclick="return confirm('<?php echo __('Sind Sie sich sicher, dass Sie diese Bestellung löschen möchten?', 'wpsg'); ?>');" title="<?php echo __('Diese Bestellung löschen', 'wpsg'); ?>" href="<?php
+									
+									echo wpsg_admin_url('Order', 'delete', ['edit_id' => $oOrder->getId()], ['noheader' => '1']);
+									
+								?>"><?php echo __('Löschen', 'wpsg'); ?></a></span>
+                            </div>
+
+                            <?php if (trim($oOrder->admincomment) != "") { ?>
+                            <a title="<?php echo __("Kommentar (Admin): ", "wpsg").htmlspecialchars($oOrder->admincomment); ?>" onclick="return false;" class="glyphicon glyphicon-question-sign admincomment" href="#"></a>
+                            <?php } ?>
+
+                            <?php if (trim($oOrder->comment) != "") { ?>
+                            <a title="<?php echo __("Kommentar (Kunde): ", "wpsg").htmlspecialchars($oOrder->comment); ?>" onclick="return false;" class="glyphicon glyphicon-question-sign customercomment" href="#"></a>
+                            <?php } ?>
+
+                            <?php if ($oOrder->hasShippingAdress()) { ?>
+                            <a title="<?php echo __("Lieferadresse beachten", "wpsg"); ?>" onclick="return false;" class="glyphicon glyphicon-map-marker shippingadress" href="#"></a>
+                            <?php } ?>
+
+                            <?php if ($this->hasMod('wpsg_mod_abo')) { ?>
+
+                                <?php if ($this->callMod('wpsg_mod_abo', 'isAboOrder', array($oOrder->id)) === 1) { ?>
+                                    <?php echo __('Abo Bestellung', 'wpsg'); ?>
+                                <?php } else if ($this->callMod('wpsg_mod_abo', 'isAboOrder', array($oOrder->id)) === 2) { ?>
+                                    
+                                    <?php
+
+                                        $origin_order_id = $this->callMod('wpsg_mod_abo', 'getOriginOrder', array($oOrder->id));
+                                        $origin_order_data = $this->cache->loadOrder($origin_order_id);
+
+                                    ?>
+                                    <?php echo wpsg_translate(__('Verlängerung zu Bestellung <a href="#1#">#2#</a>', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Order&action=view&edit_id='.$origin_order_id, $origin_order_data['onr']); ?>
+                                    
+                                <?php } ?>
+                            
+                            <?php } ?>                            
+
+                        </td>
+                        <td class="col_customer">
+                            <?php $firma = $oOrder->getInvoiceCompany(); if (wpsg_isSizedString($firma)) { ?>
+                            <?php echo $firma; ?><br />
+                            <?php } ?>
+                            <?php echo $oOrder->getInvoiceTitle(); ?> <?php echo $oOrder->getInvoiceFirstname(); ?> <?php echo $oOrder->getInvoiceName(); ?>
+                            <br />
+                            <span class="wpsg_grey"><?php echo $oOrder->getInvoiceStreet(); ?><br />
+                            <?php echo ltrim($oOrder->getInvoiceZip().' '.$oOrder->getInvoiceCity()); ?> <?php echo $oOrder->getInvoiceCountryKuerzel(); ?>
+                            </span>
+                        </td>
+                        <td class="col_payment">
+
+                            <?php /* Bei Crefopay wird die Darstellung der Zahlungsart über das Modul geregelt */ ?>
+                            <?php if ($oOrder->getPaymentID() == 4000 && $this->hasMod('wpsg_mod_crefopay')) { ?>
+                                <?php echo wpsg_hspc($this->callMod('wpsg_mod_crefopay', 'getOrderPaymentName', array($oOrder->id))); ?>
+                            <?php } else { ?>
+                                <?php echo $oOrder->getPaymentLabel(); ?>
+                            <?php } ?>
+
+                            <?php if ($oOrder->getPaymentAmount() > 0) { ?>
+                            &nbsp;-&nbsp;<?php echo wpsg_ff($oOrder->getPaymentAmount(), $this->get_option('wpsg_currency')); ?>
+                            <?php } ?>
+
+                        </td>
+                        <td class="col_shipping">
+
+                            <?php echo $oOrder->getShippingLabel(); ?>
+
+                            <?php if ($oOrder->getShippingAmount() > 0) { ?>
+                            &nbsp;-&nbsp;<?php echo wpsg_ff($oOrder->getShippingAmount(), $this->get_option('wpsg_currency')); ?>
+                            <?php } ?>
+
+                            <?php if ($oOrder->hasShippingAdress()) { ?>
+                                <br />
+                                <?php echo $oOrder->getShippingTitle(); ?> <?php echo $oOrder->getShippingFirstName(); ?> <?php echo $oOrder->getShippingName(); ?><br />
+                                <span class="wpsg_grey">
+                                    <?php echo $oOrder->getShippingStreet(); ?>
+                                    <?php echo $oOrder->getShippingZip(); ?> <?php echo $oOrder->getShippingCity(); ?> <?php echo $oOrder->getShippingCountryKuerzel(); ?><br />
+                            </span>
+                            <?php } ?>
+
+                        </td>
+                        <td class="col_products">
+
+                            <?php $oOrderProducts = $oOrder->getOrderProducts(); ?>
+                            
+                            <?php foreach ($oOrderProducts as $oOrderProduct) { $product_id = $oOrderProduct->getProductId(); ?>
+                            
+                                <?php echo wpsg_translate(__('#1# x <a href="#2#">#3#</a> für je #4#', 'wpsg'),
+                                    $oOrderProduct->getCount(),
+									wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id='.$oOrderProduct->getProductId(), 'wpsg-product-edit-'.wpsg_getInt($product_id)),
+                                    $oOrderProduct->getProductName(),
+                                    wpsg_ff($oOrderProduct->getOneAmount(), $this->get_option('wpsg_currency'))
+                                ); ?><br />
+                                
+                                <?php if ($this->hasMod('wpsg_mod_abo')) { ?>
+
+                                    <?php if (in_array(strval($this->callMod('wpsg_mod_abo', 'isAboOrder', array($oOrder->id))), array(1))) { ?>
+
+                                        <?php $abo_expiration = strtotime($this->callMod('wpsg_mod_abo', 'getOrderAboExpiration', array($oOrder->id, $oOrderProduct->getProductKey()))); ?>
+
+                                        <?php echo __('Abo Laufzeit:', 'wpsg'); ?>
+
+                                        <?php if ($abo_expiration > time()) { ?>
+                                            <span class="wpsg_mod_abo_future_expire"><?php echo wpsg_formatTimestamp($abo_expiration); ?></span>
+                                        <?php } else { ?>
+                                            <span class="wpsg_mod_abo_expired"><?php echo wpsg_formatTimestamp($abo_expiration); ?></span>
+                                        <?php } ?>
+
+                                        <br />
+                                        
+                                    <?php } ?>
+                                    
+                                <?php } ?>
+                            
+                            <?php } ?>
+
+                        </td>
+                        <td class="col_sum">
+                            <?php echo wpsg_ff($oOrder->getAmount(), $this->get_option('wpsg_currency')); ?>
+                        </td>
+                        <td class="col_state">
+                            <?php echo $oOrder->getStateLabel(); ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+            <div class="alignleft actions">
+                <select name="wpsg_action" id="wpsg_action">
+                    <option value="-1"><?php echo __('Aktion wählen', 'wpsg'); ?></option>
+                    <?php foreach ($this->arStatus as $k => $status) { ?>
+                    <option value="<?php echo $k; ?>"><?php echo wpsg_translate(__('Status auf "#1#" setzen.', 'wpsg'), $status); ?></option>
+                    <?php } ?>
+                    <option value="multiDelete"><?php echo __('Bestellungen löschen', 'wpsg'); ?></option>
+                    <?php if ($this->hasMod('wpsg_mod_rechnungen')) { ?>
+                    <option value="writeRechnung"><?php echo __('Rechnung schreiben', 'wpsg'); ?></option>
+                    <option value="showRechnung"><?php echo __('Rechnung ansehen', 'wpsg'); ?></option>
+                    <?php } ?>
+                </select>
+
+                <input onclick="if (jQuery('#wpsg_action').val() == 'multiDelete') { if (!confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>')) return false; }" type="submit" value="<?php echo __('Ausführen', 'wpsg'); ?>" class="button-secondary action" id="doaction" name="wpsg_order_doaction" />
+
+            </div>
+
+            <div style="margin-right:-15px;">
+                <?php $this->render(WPSG_PATH_VIEW.'/admin/pager.phtml'); ?>
+            </div>
+
+            <div class="wpsg_clear"></div>
+
+            <?php $this->callMod('wpsg_mod_export', 'produkt_index_foot'); ?>
+
+		<?php } else { ?>
+
+            <?php echo wpsg_drawForm_AdminboxStart(); ?>
+    		<?php echo __('Keine Bestellungen in der Datenbank.', 'wpsg'); ?>
+            <?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+		<?php } ?>
+		<input id="noheader1" type="hidden" name="noheader1" value="1" />
+		</form>
+	</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+    <?php if (wpsg_isSizedString($this->view['arFilter']['order']) && wpsg_isSizedString($this->view['arFilter']['ascdesc'])) { ?>
+    jQuery('th[data-order="<?php echo @$this->view['arFilter']['order']; ?>"]').addClass('wpsg_order_<?php echo strtolower(@$this->view['arFilter']['ascdesc']); ?>');
+    <?php } ?>
+
+    function wpsg_order_checkAll()
+    {
+
+        jQuery('.col_set_checkbox').each(function() { jQuery(this).prop('checked', !jQuery(this).prop('checked')); } );
+
+    }
+	
+	<?php if ($this->hasMod('wpsg_mod_productgroups') && $this->get_option('wpsg_mod_productgroups_order_filter') === '1') { ?>
+    function wpsg_setFilterProductgroup(pgroup_id) {
+
+		jQuery('#filterproductgroup_id').val(pgroup_id);
+
+		jQuery('#seite').val(1);
+		jQuery('#filter_form').submit();
+
+		return false;
+    	
+	}
+	<?php } ?>
+    
+	function wpsg_setFilterStatus(state)
+	{
+
+		jQuery('#filterstatus').val(state);
+
+		jQuery('#seite').val(1);
+		jQuery('#filter_form').submit();
+
+		return false;
+
+	}
+
+	function goPage(page)
+	{
+
+		//if (page <= 0 || page == <?php echo $this->view['arFilter']['page']; ?> || page > <?php echo wpsg_getStr($this->view['pages'], '0'); ?>) return;
+
+		jQuery('#wpsg_seite').val(page);
+		jQuery('#filter_form').submit();
+
+		return false;
+
+	} // function goPage(page)
+
+    jQuery(document).ready(function() {
+
+        jQuery('.wpsg-order-tab-mods').bind('click', function() {
+
+            if (jQuery(this).hasClass('active'))
+            {
+
+                jQuery(this).removeClass('active');
+                jQuery('.' + jQuery(this).attr("id")).slideUp(250); 
+                
+            }
+            else
+            {
+                
+                jQuery(this).addClass('active');
+                jQuery('.' + jQuery(this).attr("id")).slideDown(250);
+
+                if (jQuery(this).attr("id") === 'wpsg-order-tab-add') jQuery('#search_customer').focus(); 
+                    
+            }
+
+            return false;
+
+        } );
+
+    } );
+
+/* <![CDATA[ */</script>

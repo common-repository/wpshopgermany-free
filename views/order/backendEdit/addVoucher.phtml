@@ -1,0 +1,96 @@
+<?php
+	
+	/**
+	 * User: Daschmi (daschmi@daschmi.de)
+	 * Date: 05.10.2018
+	 * Time: 08:24
+	 */
+	
+	namespace wpsg;
+	
+	/** @var wpsg_calculation $oCalculation */
+	$oCalculation = $this->view['oCalculation'];
+	 
+	if ($this->getBackendTaxView() === WPSG_NETTO) $strBN = 'NETTO';
+	else $strBN = 'BRUTTO';
+	
+	$arCalculation = $oCalculation->getCalculationArray();
+	$voucher = [
+		'code' => '',
+		'id' => 0,
+		'set' => 0,
+		'type' => 'voucher',
+	];
+	
+	//wpsg_debug(array_merge($arCalculation['voucher'], $arCalculation['coupon']));
+	//wpsg_Debug($_REQUEST);
+	
+	// Voucher suchen
+	foreach (array_merge($arCalculation['voucher'], $arCalculation['coupon']) as $v) {
+		
+		if ($v['order_voucher_id'] == $_REQUEST['order_voucher_id']) {
+		
+			$order_voucher_db = $this->db->fetchRow("SELECT * FROM `".WPSG_TBL_ORDER_VOUCHER."` WHERE `id` = '".wpsg_q($_REQUEST['order_voucher_id'])."' ");
+			
+			$voucher = $v;
+			
+			//if ($order_voucher_db['coupon'] === '1') $voucher['type'] = 'coupon';
+						
+		}
+		
+	}
+	  
+	$strVal = ((isset($voucher['set']))?$voucher['set']:0); 
+	
+	if (strpos($strVal, '%') !== false) $strVal = wpsg_ff(abs(wpsg_tf($strVal)), '%');
+	else $strVal = wpsg_ff(abs(wpsg_tf($strVal)), $this->get_option('wpsg_currency'));
+ 	
+?>
+
+<form id="wpsg_be_voucher_form">
+	
+	<input type="hidden" name="order_voucher_id" value="<?php echo wpsg_getInt($_REQUEST['order_voucher_id']); ?>" />
+	
+	<div class="autocomplete_wrap">
+		<?php echo wpsg_drawForm_Input('be_voucher_search', __('Gutscheinsuche', 'wpsg'), ''); ?>
+	</div>
+	
+	<br />
+				
+	<?php echo wpsg_drawForm_Input('be_voucher_code', __('Code (Optional)', 'wpsg'), @$voucher['code']); ?>
+	<?php echo wpsg_drawForm_Input('be_voucher_id', __('Guschein ID', 'wpsg'), @$voucher['id']); ?>
+	<?php echo wpsg_drawForm_Input('be_voucher_amount', wpsg_translate(__('Gutscheinwert in #1# (#2#) oder % ', 'wpsg'), $this->get_option('wpsg_currency'), $strBN), $strVal); ?>
+	<?php echo wpsg_drawForm_Checkbox('be_voucher_coupon', __('Wertgutschein'), (($voucher['type'] === 'coupon')?'1':'0')); ?>
+		
+</form>
+
+<script>
+
+	jQuery('#wpsg_be_voucher_form').on('submit', function() { return false; } );
+	jQuery('#be_voucher_search').focus();
+	
+	jQuery(document).ready(function() {
+
+		jQuery('#be_voucher_search').autocomplete( {
+			source: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=editVoucher&do=search&noheader=1&edit_id=<?php echo $_REQUEST['edit_id']; ?>',
+			minLength: 2,
+			appendTo: ".autocomplete_wrap",
+			select: function(event, ui) {
+
+				jQuery('#be_voucher_code').val(ui.item.code);
+				jQuery('#be_voucher_id').val(ui.item.id);				
+				jQuery('#be_voucher_amount').val(ui.item.gs_value);
+				
+				if (ui.item.coupon === '1') jQuery('#be_voucher_coupon').prop('checked', true);
+				else jQuery('#be_voucher_coupon').prop('checked', false);
+				
+				jQuery('#be_voucher_search').val('');
+				
+				return false;
+
+			}
+		} );
+		
+	} );
+
+</script>

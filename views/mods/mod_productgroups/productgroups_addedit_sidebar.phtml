@@ -1,0 +1,31 @@
+<?php
+
+	/**
+	 * Template für die Lagerverwaltung innerhalb der Einstellungen der Produktgruppe
+	 */
+
+?>
+
+<?php /* Lagerbestand START */ ?>
+<?php if ($this->hasMod('wpsg_mod_stock')) { ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktgruppen Lagerbestand'));  ?>
+
+	<?php echo wpsg_drawForm_Input('wpsg_mod_productgroups[stock_value]', __('Bestand', 'wpsg'), wpsg_hspc(@$this->view['wpsg_mod_productgroups']['data']['stock_value']), array()); ?>
+   <?php echo wpsg_drawForm_Checkbox('wpsg_mod_productgroups[stock_aktiv]', __('Lagerbestand zählen', 'wpsg'), @$this->view['wpsg_mod_productgroups']['data']['stock_aktiv'], array()); ?>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php } ?>
+<?php /* Lagerbestand ENDE */ ?>
+
+<?php /* Rabatt START  ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktgruppen Rabatt'));  ?>
+
+	<div class="inside">
+		<?php echo wpsg_drawForm_Checkbox('wpsg_mod_discount[discount_aktiv]', __('Aktion aktiv', 'wpsg'), $this->view['wpsg_mod_discount']['data'][0]); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_from]', __('Start (TT.MM.JJJJ)', 'wpsg'), wpsg_hspc(wpsg_getStr($this->view['wpsg_mod_discount']['data'][1]))); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_to]', __('Ende (TT.MM.JJJJ)', 'wpsg'), wpsg_hspc(wpsg_getStr($this->view['wpsg_mod_discount']['data'][2]))); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_value]', __('Rabatt', 'wpsg'), wpsg_ff(wpsg_getStr($this->view['wpsg_mod_discount']['data'][3]))); ?>
+	</div>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php  Rabatt ENDE */ ?>

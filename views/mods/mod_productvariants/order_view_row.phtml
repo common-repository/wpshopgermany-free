@@ -1,0 +1,18 @@
+<?php
+
+    /**
+     * Anzeige des Variantennamens in der Bestellverwaltung
+     */
+
+    $i = $this->view['i'];
+
+?>
+
+<tr class="wpsg_<?php echo (($i % 2 == 0)?'odd':'even'); ?>">
+    <td class="wpsg_cell_name">
+        <?php echo __('Variante', 'wpsg'); ?>:
+    </td>
+    <td class="wpsg_cell_gesamtpreis" colspan="<?php echo ((sizeof($this->view['arCalculation']['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?4:3); ?>">
+        <?php echo $this->view['variante']['key']; ?>
+    </td>
+</tr>

@@ -1,0 +1,206 @@
+<?php
+
+	/**
+	 * Template für die Länderverwaltung
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+
+<div class="modal fade" id="Modal_wpsg_country_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel"><?php echo __('Land anlegen/bearbeiten', 'wpsg'); ?></h4>
+			</div>
+			<div class="modal-body">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" onclick="return wpsg_country_save();" data-dismiss="modal"><?php echo __('Speichern und schließen', 'wpsg'); ?></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="wpsg_admin_content">
+
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender&noheader=1'); ?>">
+
+		<?php echo wp_nonce_field('wpsg-admin-laender'); ?>
+		
+		<?php echo wpsg_drawForm_AdminboxStart(__('Länderverwaltung', 'wpsg')); ?>
+
+		<div id="wpsg_country_list">
+
+            <?php echo $this->render(WPSG_PATH_VIEW.'/admin/laender_list.phtml'); ?>
+
+		</div>
+
+		<br />
+
+	</form>
+
+	<a href="#" onclick="return wpsg_country_add();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neues Land anlegen.', 'wpsg'); ?></a><br />
+    <a href="#" onclick="return wpsg_country_import();"><span class="wpsg-glyphicon glyphicon glyphicon-import"></span><?php echo __('Standardländer importieren.', 'wpsg'); ?></a><br />
+     <a href="#" onclick="return wpsg_country_importEU();"><span class="wpsg-glyphicon glyphicon glyphicon-import"></span><?php echo __('EU-Länder importieren.', 'wpsg'); ?></a><br />
+
+    <br />
+
+    <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=vz"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Versandzonenverwaltung', 'wpsg'); ?></a>
+	
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+	<script type="text/javascript">/* <![CDATA[ */
+
+	    function wpsg_country_check_all() { jQuery('td.col_check input').each(function() { jQuery(this).prop('checked', !jQuery(this).prop('checked')); } ); }
+
+		function wpsg_country_remove(land_id) {
+
+			if (!confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>')) return false;
+
+			jQuery.ajax( {
+				url: '<?php 
+					
+					echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender&do=remove&noheader=1', 'wpsg-laender-delete'));
+					
+				?>',
+				data: {
+					land_id: land_id
+				},
+				success: function(data) {
+											 
+					if (data === "1") jQuery('#wpsg_laenderrow_' + land_id).remove();
+					else alert(data);
+					
+				}
+			} );
+			
+			return false;
+
+		}
+
+		function wpsg_country_add()
+		{
+
+			jQuery('#Modal_wpsg_country_edit .modal-body').html('<img src="<?php echo $this->getRessourceURL('gfx/ajax-loader.gif'); ?>" alt="" />');
+			jQuery('#Modal_wpsg_country_edit').modal('show');
+
+			jQuery.ajax( {
+				url: '<?php 
+					
+					echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender&do=add&noheader=1', 'wpsg-laender-add'));
+					
+				?>',				
+				success: function(data) { jQuery('#Modal_wpsg_country_edit .modal-body').html(data); }
+			} );
+			
+			return false;
+
+		} // function wpsg_country_add()
+
+        function wpsg_country_import() {
+
+            if (!confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>')) return false;
+
+            jQuery('#wpsg_country_list').html('<img src="<?php echo $this->getRessourceURL('gfx/ajax-loader.gif'); ?>" alt="" />');
+
+            jQuery.ajax( {
+                url: '<?php 
+					
+					echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender&do=import&noheader=1', 'wpsg-laender-import'));
+					
+				?>',
+                success: function(data) {
+
+                    jQuery('#wpsg_country_list').html(data);
+
+                }
+            } );
+
+            return false;
+
+        } // function wpsg_country_import()
+
+        function wpsg_country_importEU()
+        {
+
+            if (!confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>')) return false;
+
+            jQuery('#wpsg_country_list').html('<img src="<?php echo $this->getRessourceURL('gfx/ajax-loader.gif'); ?>" alt="" />');
+
+            jQuery.ajax( {
+                url: '<?php 
+					
+					echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender&do=eu_import&noheader=1', 'wpsg-laender-eu_import'));
+					
+				?>',
+                success: function(data) {
+
+                    jQuery('#wpsg_country_list').html(data);
+
+                }
+            } );
+
+            return false;
+
+        } // function wpsg_country_importEU()
+
+		function wpsg_country_save()
+		{
+
+			jQuery('#wpsg_country_list').html('<img src="<?php echo $this->getRessourceURL('gfx/ajax-loader.gif'); ?>" alt="" />');
+
+			jQuery.ajax( {
+				url: '<?php
+					 
+					echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender&do=save&noheader=1', 'wpsg-laender-save'));
+					
+				?>',
+				data: {
+					form_data: jQuery('#wpsg_land_edit_form_edit').serialize()
+				},
+				success: function(data) {
+
+					jQuery('#wpsg_country_list').html(data);
+
+				}
+			} );
+
+		} // function wpsg_country_save()
+
+		function wpsg_country_edit(land_id)
+		{
+
+			jQuery('#Modal_wpsg_country_edit .modal-body').html('<img src="<?php echo $this->getRessourceURL('gfx/ajax-loader.gif'); ?>" alt="" />');
+			jQuery('#Modal_wpsg_country_edit').modal('show');
+
+			jQuery.ajax( {
+				url: '<?php 
+					
+					echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=laender&do=edit&noheader=1', 'wpsg-laender-edit'));
+					
+				?>',
+				data: {
+					land_id: land_id
+				},
+				success: function(data) { jQuery('#Modal_wpsg_country_edit .modal-body').html(data); }
+			} );
+
+			return false;
+
+		} // function wpsg_country_edit(edit_id)
+
+	/* ]]> */</script>
+
+</div>

@@ -1,0 +1,81 @@
+<?php
+
+	/**
+	 * Template für das Anlegen/Bearbeiten einer Produktgruppe
+	 */
+
+?>
+
+<div class="wpsg_productgroups" id="wpsg-bs">
+
+    <nav class="navbar navbar-default">
+
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-customer-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="wpsg-customer-tab-a active"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Productgroups&wpsg_mod_action=index"><?php echo __("Produktgruppenverwaltung", "wpsg"); ?></a></li>
+                    <li role="presentation" class="active"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Productgroups&wpsg_mod_action=add"><span class="glyphicon glyphicon-plus"></span><?php echo __("Produktgruppe anlegen/bearbeiten", "wpsg"); ?></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+				</ul>
+			</div>
+		</div>
+
+    </nav>
+
+	<div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+	<div class="wpsg_clear"></div>
+
+    <form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Productgroups&wpsg_mod_action=save&noheader=1" enctype="multipart/form-data">
+		
+		<?php echo \wp_nonce_field('wpsg-productgroup-save-'.wpsg_getInt($_REQUEST['edit_id'])); ?>
+		
+        <div class="content form-horizontal">
+
+            <div class="row">
+                <div class="col-md-8 col-lg-8">
+
+                    <?php echo wpsg_drawForm_AdminboxStart(__('Allgemein', 'wpsg')); ?>
+
+                        <?php echo wpsg_drawForm_Input('name', __('Produktgruppenname', 'wpsg'), $this->view['data']['name']); ?>
+
+                        <?php if (wpsg_isSizedArray($this->view['languages'])) { ?>
+                            <?php foreach ($this->view['languages'] as $l) { if ($l['locale'] != $this->getDefaultLanguageLocale()) { ?>
+
+                                <?php echo wpsg_drawForm_Input(
+                                    'lang['.$l['locale'].'][name]',
+                                    __('Produktgruppenname', 'wpsg').'&nbsp;('.$l['name'].'&nbsp;<img src="'.$this->getFlagURL().$l['flag'].'" alt="'.$l['Name'].'" />)',
+                                    $this->view['data']['lang'][$l['locale']]['name']
+                                ); ?>
+
+                            <?php } } ?>
+                        <?php } ?>
+
+                        <?php echo wpsg_drawForm_Select('template_file', __('Template', 'wpsg'), $this->view['templates'], $this->view['data']['template_file']); ?>
+                        <?php echo wpsg_drawForm_Select('infopage', __('Info Seite', 'wpsg'), $this->view['pages'], $this->view['data']['infopage']); ?>
+
+                    <?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+                </div>
+                <div class="col-md-4 col-lg-4">
+
+                    <?php $this->callMods('wpsg_mod_productgroups_addedit_sidebar', array(&$this->view['data'])); ?>
+
+                </div>
+            </div>
+
+            <input type="submit" value="<?php echo __('Produktgruppe speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" />
+	        <input type="submit" value="<?php echo __('Produktgruppe speichern und zur Übersicht', 'wpsg'); ?>" class="button-primary" id="submit_index" name="submit_index" />
+
+        </div>
+
+        <?php if (isset($this->view['data']['id']) && $this->view['data']['id'] > 0) { ?>
+		<input type="hidden" name="edit_id" value="<?php echo $this->view['data']['id']; ?>" />
+		<?php } ?>
+
+    </form>
+
+</div>

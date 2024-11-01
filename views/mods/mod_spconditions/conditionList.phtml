@@ -1,0 +1,24 @@
+<?php
+
+	/**
+	 * Zeichnet die Liste der bereits definierten Versand- und Zahlungsbedingunen
+	 */
+
+?>
+<?php if (wpsg_isSizedArray($this->view['data'])) { ?>
+	
+	<?php foreach ($this->view['data'] as $k => $v) { ?>
+	
+		<?php echo wpsg_drawForm_Input('', __('Id', 'wpsg'), $v['id'], array('text' => true)); ?>
+		<?php $artemp = Array();
+		foreach ($this->arShipping as $key => $val)
+			$artemp[] = $val['name'];
+		?>
+		<?php echo wpsg_drawForm_Select('shipping_id', __('Versandart', 'wpsg'), wpsg_getArray($artemp), $v['shipping_id']); ?>
+		<hr />
+		
+	<?php } ?>
+	
+<?php } else { ?>
+	<?php echo __('Es sind noch keine Versand- oder Zahlungsbedingungen angelegt.', 'wpsg'); ?>
+<?php } ?>

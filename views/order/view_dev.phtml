@@ -1,0 +1,32 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@daschmi.de)
+     * Date: 07.08.2016
+     * Time: 10:51
+     */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Entwickleroptionen', 'wpsg')); ?>
+
+    <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&wpsg_action=debug_customermail&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>"><?php echo __('Kundenmail simulieren (An Shop Betreiber)', 'wpsg'); ?></a><br />
+    <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&wpsg_action=debug_adminmail&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>"><?php echo __('Adminmail simulieren', 'wpsg'); ?></a><br />
+    <a href="<?php echo $this->getDoneURL($this->view['data']['id']); ?>"><?php echo __('Bestellabschlussseite', 'wpsg'); ?></a><br />
+    <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&wpsg_action=debug_urlbuy&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>"><?php echo __('URL Benachrichtigung (Kauf) auslösen', 'wpsg'); ?></a><br />
+    <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&wpsg_action=debug_urlpay&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>"><?php echo __('URL Benachrichtigung (Bezahlung) auslösen', 'wpsg'); ?></a><br />
+
+    <br />
+
+    <div class="panel panel-default">
+        <div class="panel-heading" data-toggle="collapse" href="#collapse_basket" style="cursor:pointer;">
+            <h4 class="panel-title"><?php echo __('Warenkorbdaten', 'wpsg'); ?></h4>
+        </div>
+        <div id="collapse_basket" class="panel-collapse collapse">
+            <div class="panel-body">
+                <pre><?php wpsg_debug($this->view['basket']); ?></pre>
+            </div>
+        </div>
+    </div>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

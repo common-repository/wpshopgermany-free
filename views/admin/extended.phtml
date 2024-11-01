@@ -1,0 +1,61 @@
+<?php
+
+	/**
+	 * Template für die erweiterten Einstellungen des Shops
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+	
+</div>
+		
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=extended&noheader=1'); ?>">
+		
+		<?php \wp_nonce_field('wpsg-save-admin-extended'); ?>
+		
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Erweiterte Einstellungen', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+	
+				<?php echo wpsg_drawForm_Input('wpsg_salt', __('SALT Schlüssel', 'wpsg'), $this->get_option('wpsg_salt')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_options_nl2br', __('RTE Felder mit nl2br speichern', 'wpsg'), $this->get_option('wpsg_options_nl2br'), array('help' => 'wpsg_options_nl2br')); ?>
+				<br /> 
+				<?php echo wpsg_drawForm_Checkbox('wpsg_debugModus', __('Debug Modus', 'wpsg'), $this->get_option('wpsg_debugModus'), array('help' => 'wpsg_debugModus')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_displayTemplates', __('Verwendete Templates anzeigen (Nur im Frontend)', 'wpsg'), $this->get_option('wpsg_displayTemplates'), array('help' => 'wpsg_displayTemplates')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_displayTemplatesLog', __('Verwendete Templates in Entwicklerkonsole anzeigen', 'wpsg'), $this->get_option('wpsg_displayTemplatesLog'), array('help' => 'wpsg_displayTemplatesLog')); ?>
+				<br />
+								
+				<?php echo wpsg_drawForm_Checkbox('wpsg_referer_requesturi', __('RequestURI als ProduktURL verwenden', 'wpsg'), $this->get_option('wpsg_referer_requesturi'), array('help' => 'wpsg_referer_requesturi')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_ignoreuserview', __('User Views ignorieren', 'wpsg'), $this->get_option('wpsg_ignoreuserview'), array('help' => 'wpsg_ignoreuserview')); ?>		
+				<?php echo wpsg_drawForm_Checkbox('wpsg_classicupload', __('Klassisches Upload Formular', 'wpsg'), $this->get_option('wpsg_classicupload')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_content_filter_direct', __('Ausgaben im Warenkorb direkt ausgeben', 'wpsg'), $this->get_option('wpsg_content_filter_direct')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_options_no_rte_apply_filter', __('ApplyFilter Funktion nicht anwenden', 'wpsg'), $this->get_option('wpsg_options_no_rte_apply_filter')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_options_nl2br_out', __('RTE Felder mit nl2br ausgeben', 'wpsg'), $this->get_option('wpsg_options_nl2br_out'), array('help' => 'wpsg_options_n12br_out')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_impexp_clearlinebreak', __('Zeilenumbrüche im Export entfernen', 'wpsg'), $this->get_option('wpsg_impexp_clearlinebreak'), array('help' => 'wpsg_impexp_clearlinebreak')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_removeWpAutoOp', __('wpautop deaktivieren', 'wpsg'), $this->get_option('wpsg_removeWpAutoOp'), array('help' => 'wpsg_removeWpAutoOp')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_removeWpTrimExcerpt', __('wp_trim_excerpt nicht verwenden', 'wpsg'), $this->get_option('wpsg_removeWpTrimExcerpt'), array('help' => 'wpsg_removeWpTrimExcerpt')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_lockOrderTables', __('Bestellungen nicht mit LOCK TABLES verarbeiten', 'wpsg'), $this->get_option('wpsg_lockOrderTables'), array('help' => 'wpsg_lockOrderTables')); ?>		
+				<?php echo wpsg_drawForm_Checkbox('wpsg_autoraw', __('[raw] und [/raw] um Templates ausgeben (Frontend)', 'wpsg'), $this->get_option('wpsg_autoraw')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_nocache', __('Cachen von dynamischen Shopseiten verhindern', 'wpsg'), $this->get_option('wpsg_nocache'), array('help' => 'wpsg_nocache')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_autolineending', __('MAC Kompatibilität bei Dateiimporten', 'wpsg'), $this->get_option('wpsg_autolineending'), array('help' => 'wpsg_autolineending')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_dontcopymedia', __('Produktbilder nicht kopieren', 'wpsg'), $this->get_option('wpsg_dontcopymedia'), ['help' => 'wpsg_dontcopymedia']); ?>				
+				<?php echo wpsg_drawForm_Checkbox('wpsg_switchtolowestshippingafterproductremove', __('Nach dem entfernen eines Produktes auf die günstigste Zahlungsart wechseln', 'wpsg'), $this->get_option('wpsg_switchtolowestshippingafterproductremove'), ['help' => 'wpsg_switchtolowestshippingafterproductremove']); ?>
+				<?php echo wpsg_drawForm_Select('wpsg_geo_determination', __('Abfrage des Kundenstandortes (EU-Leistungsortregel)', 'wpsg'), $this->view['arGeoMode'], $this->get_option('wpsg_geo_determination'), array('help' => 'wpsg_geo_determination')); ?>
+							
+			</div>
+		</div>
+		
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+	
+	</form>
+</div>

@@ -1,0 +1,33 @@
+<?php
+
+	/**
+	 * Template wird verwendet wenn Meldungen vom Shop nicht ausgegeben werden konnte.
+	 * Beispielsweise wenn Produktvariable auf einem Produkttemplate abgefragt und Pflichtfeld ist 
+	 */
+
+?>
+
+<div id="wpsg_ajax_layer">
+	 
+	<div class="wpsg_ajax_message_content">
+		<?php echo $this->writeFrontendMessage(); $this->clearFrontendMessage(); ?>	
+		<?php echo wpsg_getStr($this->view['content']); ?>
+		<br />
+		<a id="wpsg_basket_messageDialog_closeButton" class="fa fa-times"></a>			
+	</div> 
+					
+	<script type="text/javascript">/* <![CDATA[ */
+	
+		jQuery(document).ready(function() {
+	
+			jQuery('#wpsg_basket_messageDialog_closeButton, #wpsg_ajax_layer').bind('click', function() {
+				 
+				jQuery('#wpsg_ajax_layer').remove();
+				
+			} );
+			
+		} );
+												
+	/* ]]> */</script>
+	
+</div>

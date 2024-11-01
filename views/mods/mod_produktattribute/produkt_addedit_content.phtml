@@ -1,0 +1,38 @@
+<?php
+
+	/**
+	 * Template für die Eingabe der Produktattribute innerhalb der Produktverwaltung
+	 */
+
+?> 
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktattribute', 'wpsg')); ?>
+
+	<?php if (wpsg_isSizedArray($this->view['data']['pa'])) { ?>
+
+		<?php foreach ($this->view['data']['pa'] as $pa) { ?>
+		
+			<?php if ($pa['typ'] == '1') { /* RTE */ ?>
+			<div class="form-horizontal"><div class="form-group-sm"> 
+				<label class="control-label" for="pa_5" style="padding-bottom:5px;"><?php echo wpsg_hspc($pa['name']); ?></label><br />
+				<?php wp_editor($pa['value'], 'pa_'.$pa['id'].''); ?><br />
+			</div></div>
+			<?php } else if ($pa['typ'] == '2') { /* Auswahl */ ?>
+			<?php echo wpsg_drawForm_Select('pa_'.$pa['id'], $pa['name'], (array)explode('|', $pa['auswahl']), $pa['value']);?>
+			<?php } else if ($pa['typ'] == '3') { /* Checkbox */ ?>
+			<?php echo wpsg_drawForm_Checkbox('pa_'.$pa['id'], $pa['name'], $pa['value']); ?>
+			<?php } else { /* Normales Eingabefeld */ ?>
+			<?php echo wpsg_drawForm_Input('pa_'.$pa['id'], $pa['name'], $pa['value']); ?>
+			<?php } ?>		
+				
+		<?php } ?>
+		
+	<?php } else { ?>
+	<p><?php echo __('Bisher wurden keine Attribute im System angelegt.', 'wpsg'); ?></p>
+	<?php } ?>
+	
+	<br />
+	
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_produktattribute"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration der Produktattribute', 'wpsg'); ?></a>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

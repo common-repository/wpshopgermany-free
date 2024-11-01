@@ -1,0 +1,290 @@
+<?php
+
+    /**
+     * Template für die Lizenzverwaltung
+     */
+
+    $wpsg_update_data = wpsg_get_update_data();
+
+    if (!is_array($wpsg_update_data) || !current_user_can('wpsg_lizence') || !wpsg_isSizedInt($wpsg_update_data['returnCode'])) die();
+
+?>
+
+<div class="wpsg_admin" id="wpsg-bs">
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+			 		<li role="presentation" class="<?php echo (($this->view['actionName'] == "index")?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin"><?php echo __("Einstellungen", "wpsg"); ?></a></li>
+					<li role="presentation" class="<?php echo (($this->view['actionName'] == "module")?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=module"><?php echo __("Module", "wpsg"); ?></a></li>
+						
+					<?php if (current_user_can('wpsg_lizence') && is_array($wpsg_update_data)) { ?>			
+					<li role="presentation" class="<?php echo (($this->view['actionName'] == "licence")?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=registrierung"><?php echo __("Lizenzverwaltung", "wpsg"); ?></a></li>
+					<?php } ?>
+					
+					<li role="presentation" class="<?php echo (($this->view['actionName'] == 'news')?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=news">
+						<?php echo __('Aktuelles', 'wpsg'); ?>
+						<?php $wpsg_news_unread = wpsg_news::countUnreadNews(); if (wpsg_isSizedInt($wpsg_news_unread)) { ?>
+						<span class="badge" style="background-color:#D9534F;"><?php echo $wpsg_news_unread; ?></span>
+						<?php } ?>			
+					</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">				
+					<li role="presentation" class="<?php echo (($this->view['actionName'] == "hilfe")?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=hilfe"><?php echo __("Hilfe", "wpsg"); ?></a></li>
+					<li role="presentation" class="<?php echo (($this->view['actionName'] == "ueber")?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;action=ueber"><?php echo __("Über", "wpsg"); ?></a></li>
+			 	</ul>
+			</div>
+		</div>		
+	</nav>
+				  	
+	<div class="wpsg_admin_wrap">
+        
+        <div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+		
+        <div class="wpsg_admin_submenu">
+	
+            <div class="list-group">
+                <span class="list-group-head list-group-item"><?php echo __('Lizenzverwaltung'); ?></span>	 
+                <a class="list-group-item <?php echo (($this->view['subaction'] == 'registerdata')?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&subaction=registerdata"><?php echo __('Registrierungsdaten', 'wpsg'); ?></a>
+                <a class="list-group-item <?php echo (($this->view['subaction'] == 'domaindata')?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&subaction=domaindata"><?php echo __('Domainverwaltung', 'wpsg'); ?></a>
+                <a class="list-group-item <?php echo (($this->view['subaction'] == 'modulactivation')?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&subaction=modulactivation"><?php echo __('Modulaktivierung', 'wpsg'); ?></a>
+            </div> 
+            
+        </div>
+                
+        <div class="wpsg_admin_content form-horizontal">
+             
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title">  
+                        
+                        <?php if ($this->view['subaction'] === 'registerdata') { ?><?php echo __('Registrierungsdaten', 'wpsg'); ?>
+                        <?php } else if ($this->view['subaction'] === 'domaindata') { ?><?php echo __('Domainverwaltung', 'wpsg'); ?>
+                        <?php } else if ($this->view['subaction'] === 'modulactivation') { ?><?php echo __('Modulaktivierung', 'wpsg'); ?><?php } ?>
+                        
+                    </h3>
+                </div>
+                <div class="panel-body">
+            
+                    <?php if ($this->view['subaction'] === 'registerdata') { ?>
+                    
+                        <form method="POST" action="<?php echo WPSG_URL_WP ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=saveRegister">
+                            
+							<?php wp_nonce_field('wpsg-admin-licence-register'); ?>
+							
+                            <?php $strLicenceLabel = ''; ?>
+                            <?php if ($wpsg_update_data['licence_model'] === 'enterprise') { $strLicenceLabel = __('Enterprise', 'wpsg'); ?>
+                            <?php } else if ($wpsg_update_data['licence_model'] === 'pro') { $strLicenceLabel = __('Pro', 'wpsg'); } ?>
+                             
+                            <?php echo wpsg_drawForm_Text(_('Lizenzmodel'), $strLicenceLabel); ?>
+                            
+                            <br />
+                            
+                            <?php echo wpsg_drawForm_Input('register[company]', __('Firma', 'wpsg'), $wpsg_update_data['registerData']['company']); ?>
+                            <?php echo wpsg_drawForm_Input('register[firstname]', __('Vorname', 'wpsg'), $wpsg_update_data['registerData']['firstname']); ?>
+                            <?php echo wpsg_drawForm_Input('register[lastname]', __('Name', 'wpsg'), $wpsg_update_data['registerData']['lastname']); ?>
+                            <?php echo wpsg_drawForm_Input('register[zip]', __('PLZ', 'wpsg'), $wpsg_update_data['registerData']['zip']); ?>
+                            <?php echo wpsg_drawForm_Input('register[city]', __('Ort', 'wpsg'), $wpsg_update_data['registerData']['city']); ?>
+                            <?php echo wpsg_drawForm_Input('register[street]', __('Straße', 'wpsg'), $wpsg_update_data['registerData']['street']); ?>
+                            <?php echo wpsg_drawForm_Select('register[country]', __('Land', 'wpsg'), array(
+                                '1' => __('Deutschland', 'wpsg'),
+                                '2' => __('Österreich', 'wpsg'),
+                                '3' => __('Schweiz', 'wpsg'),
+                                '4' => __('Niederlande', 'wpsg'),
+                                '5' => __('Belgien', 'wpsg')
+                            ), $wpsg_update_data['registerData']['country']); ?>
+                            <?php echo wpsg_drawForm_Input('register[email]', __('E-Mail', 'wpsg'), $wpsg_update_data['registerData']['email']); ?>
+                                       
+                            <br />
+                            
+                            <?php echo wpsg_drawForm_SubmitButton(__('Speichern', 'wpsg')); ?>
+                            
+                        </form>
+                        
+                    <?php } else if ($this->view['subaction'] === 'domaindata') { ?>
+               
+                        <?php if (wpsg_isSizedArray($wpsg_update_data['domainData'])) { ?>
+                              
+                            <table class="table domaintable">
+                                <thead>
+                                    <tr>
+                                        <th class="col_domain"><?php echo __('Domain', 'wpsg'); ?></th>
+                                        <th class="col_action"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($wpsg_update_data['domainData'] as $domain) { ?>
+                                    <tr class="success">
+                                        <td class="col_domain"><?php echo $domain; ?></td>
+                                        <td class="col_action">
+                                            
+                                            <a href="<?php 
+												
+												echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=domainDeRegister', 'wpsg-admin-licence-domainDeRegister');
+												
+											?>" class="btn btn-warning btn-sm"><?php echo __('Registrierung aufheben'); ?></a>
+                                            
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                            
+                        <?php } else { ?>
+                        
+                            <p><?php echo __('Es sind noch keine Domains für diese Lizenz registriert.', 'wpsg'); ?></p>
+                            
+                        <?php } ?>
+                        
+                        <hr />
+                        
+                        <?php if (($wpsg_update_data['licence_model'] === 'enterprise' || sizeof($wpsg_update_data['domainData']) < 1) && !in_array($_SERVER['HTTP_HOST'], $wpsg_update_data['domainData'])) { ?>
+                        
+                            <p class="wpsg_message_ok"><?php echo __('Diese Domain kann noch auf Ihre Lizenz aktiviert werden.', 'wpsg'); ?></p>
+                            
+                            <br />
+                            
+                            <a href="<?php
+								
+								echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=domainRegister', 'wpsg-admin-licence-domainRegister');
+								
+							?>" class="btn btn-primary"><?php echo __('Diese Domain registrieren', 'wpsg'); ?></a>
+                                                    
+                        <?php } else if (in_array($_SERVER['HTTP_HOST'], $wpsg_update_data['domainData'])) { ?>
+                            
+                            <p class="wpsg_message_ok"><?php echo __('Diese Domain ist bereits auf diesen Schlüssel registriert.', 'wpsg'); ?></p>
+                            
+                        <?php } else { ?>
+                            
+                            <p class="error"><?php echo __('Diese Domain kann nicht mehr registriert werden.', 'wpsg'); ?></p>
+                            
+                        <?php } ?>
+                        
+                    <?php } else if ($this->view['subaction'] === 'modulactivation') { ?>
+                    
+                        <?php $this->shop->loadModule(true); ?>
+                        <?php $wpsg_update_data = wpsg_get_update_data(); ?>
+                        
+                        <form method="POST" action="<?php echo WPSG_URL_WP ?>wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=activatemodul&source=licence">
+						
+							<?php echo wp_nonce_field('wpsg-admin-licence-activatemodul'); ?>
+							
+                            <fieldset>
+                                <legend style="padding-top:0px;"><?php echo __('Modulcode aktivieren', 'wpsg'); ?></legend>
+                                                
+                                <div class="row">
+                                    <div class="col-xs-10">
+                                        
+                                        <input required="required" type="text" class="form-control" name="modulcode" id="modulcode" />
+                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        
+                                        <input class="btn btn-primary btn-block" type="submit" class="form-control" value="<?php echo __('Prüfen', 'wpsg'); ?>" />
+                                        
+                                    </div>
+                                </div>
+                            </fieldset>
+                            
+                        </form>
+                        
+                        <br />
+                        
+                        <?php if (wpsg_isSizedArray($wpsg_update_data)) { ?>
+                            <?php // Ich zeige hier nur die Aktiven Module an ?>
+                            <?php foreach ($wpsg_update_data['modulinfo'] as $modul_key => $modul_info) { if ($modul_info['active'] !== true) unset($wpsg_update_data['modulinfo'][$modul_key]); } ?>
+                            
+                            <table class="table modultable">
+                                <thead>
+                                    <tr>
+                                        <th><?php echo __('Modulname', 'wpsg'); ?></th>
+                                        <th><?php echo __('Version', 'wpsg'); ?></th>
+                                        <th><?php echo __('Lizenz', 'wpsg');  ?></th>
+                                        <th><?php echo __('verfügbare Version', 'wpsg'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($wpsg_update_data['modulinfo'] as $modul_key => $modul_info) { ?>
+                                    <tr style="font-style:normal;" class="success">
+                                        <td><?php echo $modul_info['label']; ?></td>
+                                        <td>
+                                            
+                                            <?php if ($this->shop->hasModInstalled($modul_key)) { ?>
+                                                <?php echo $this->shop->arAllModule[$modul_key]->version; ?>
+                                            <?php } ?>
+                                            
+                                        </td>								
+                                        <td>
+                                            
+                                            <?php if ($modul_info['free'] === true) { ?>
+                                                <?php echo __('kostenlos', 'wpsg'); ?>
+                                            <?php } else if ($modul_info['active'] === true) { ?>
+                                                <?php echo __('enthalten', 'wpsg'); ?>
+                                            <?php } else { ?>
+                                                
+                                                <?php if (wpsg_isSizedString($modul_info['shop_url'])) { ?>
+                                                <a href="<?php echo $modul_info['shop_url']; ?>" target="_blank"><?php echo __('Modulcode erwerben', 'wpsg'); ?></a>
+                                                <?php } else { ?>
+                                                <a href="https://shop.maennchen1.de" target="_blank"><?php echo __('Modulcode erwerben', 'wpsg'); ?></a>
+                                                <?php } ?>
+                                                
+                                            <?php } ?>
+                                            
+                                        </td>
+                                        <td><?php 
+                                            
+                                            echo $modul_info['version'];
+                                             
+                                            if ($this->shop->hasModInstalled($modul_key) && $modul_info['version'] === $this->shop->arAllModule[$modul_key]->version)
+                                            {
+                                                
+                                                echo ' - <strong class="wpsg_message_ok">'.__('aktuell', 'wpsg').'</strong>';
+                                                
+                                            }
+                                            else if (version_compare($modul_info['version'], WPSG_VERSION) > 0) 
+                                            {
+                                                
+                                                echo ' - <strong class="wpsg_error">'.__('neue Version verfügbar', 'wpsg').'</strong><br />'.wpsg_translate(__('<a href="#1#">wpShopGermany Update</a> notwendig', 'wpsg'), WPSG_URL_WP.'wp-admin/plugins.php');
+                                                
+                                            }
+                                            else if (version_compare($modul_info['version'], $this->shop->arAllModule[$modul_key]->version) > 0) 
+                                            {
+	
+												if ($this->shop->arAllModule[$modul_key]->version !== null) {
+                                                
+													echo ' - <strong class="wpsg_error">'.__('neue Version verfügbar', 'wpsg').'</strong>';
+													
+												}
+                                                
+                                                if ($modul_info['active'] === true) 
+                                                {
+                                                
+                                                    echo '<br />';
+                                                    echo wpsg_translate(__('<a href="#1#">Version installieren</a>.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=installModul&modul='.$modul_key.'&source=licence');
+                                                                                                        
+                                                }
+                                                
+                                            }
+                                            
+                                        ?></td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                                                
+                        <?php } ?>
+                                                                        
+                    <?php } ?>
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+	</div>
+	
+</div>

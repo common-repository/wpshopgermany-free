@@ -1,0 +1,280 @@
+<?php
+
+	/**
+	 * Template für die Produktübersichtsseite
+	 */
+
+?>
+
+<?php
+
+	remove_filter('the_content', array($GLOBALS['wpsg_sc'], 'content_filter'));
+	the_content();
+	add_filter('the_content', array($GLOBALS['wpsg_sc'], 'content_filter'));
+
+?>
+
+<div class="wpsg_mod_productindex wpsg_mod_productindex_list">
+
+	<form method="get" id="wpsg_mod_productindex_form" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+
+ 		<?php parse_str($_SERVER['QUERY_STRING'], $arGET); if (wpsg_isSizedArray($arGET)) { foreach ($arGET as $key => $value) { if (!wpsg_isSizedArray($value)) { ?>
+ 		<input type="hidden" name="<?php echo $key; ?>" value="<?php echo htmlspecialchars($value); ?>" />
+ 		<?php } } } ?>
+
+		<input type="hidden" id="wpsg_mod_productindex_filter_page" name="wpsg_mod_productindex[filter][page]" value="<?php echo $this->view['wpsg_mod_productindex']['filter']['page']; ?>" />
+		<input type="hidden" id="wpsg_mod_productindex_filter_order" name="wpsg_mod_productindex[filter][order]" value="<?php echo $this->view['wpsg_mod_productindex']['filter']['order']; ?>" />
+		<input type="hidden" id="wpsg_mod_productindex_template" name="wpsg_mod_productindex[template]" value="<?php echo $this->view['wpsg_mod_productindex']['template']; ?>" />
+
+	</form>
+
+	<div class="wpsg_mod_productindex_toolbar wpsg_mod_productindex_toolbar_top">
+
+		<?php if ($this->view['hideOrder'] != '1') { ?>
+		<div class="wpsg_mod_productindex_order">
+			<span><?php echo __('Sortierung:', 'wpsg'); ?></span>
+			<select name="wpsg_mod_productindex[filter][order]" class="wpsg_mod_productindex_filter_order">
+				<option value="price_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'price_asc')?'selected="selected"':''); ?>><?php echo __('Preis (Kleinster zuerst)', 'wpsg'); ?></option>
+				<option value="price_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'price_desc')?'selected="selected"':''); ?>><?php echo __('Preis (Größter zuerst)', 'wpsg'); ?></option>
+				<option value="name_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'name_asc')?'selected="selected"':''); ?>><?php echo __('Name Aufsteigend', 'wpsg'); ?></option>
+				<option value="name_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'name_desc')?'selected="selected"':''); ?>><?php echo __('Name Absteigend', 'wpsg'); ?></option>
+				<option value="pos_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'pos_asc')?'selected="selected"':''); ?>><?php echo __('Position Aufsteigend', 'wpsg'); ?></option>
+				<option value="pos_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'pos_desc')?'selected="selected"':''); ?>><?php echo __('Position Absteigend', 'wpsg'); ?></option>				<option value="cdate_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'cdate_asc')?'selected="selected"':''); ?>><?php echo __('Erstellungsdatum (Älteste zuerst)', 'wpsg'); ?></option>
+				<option value="cdate_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'cdate_desc')?'selected="selected"':''); ?>><?php echo __('Erstellungsdatum (Neueste zuerst)', 'wpsg'); ?></option>
+				<option value="anr_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'anr_asc')?'selected="selected"':''); ?>><?php echo __('Artikelnummer Aufsteigend', 'wpsg'); ?></option>
+				<option value="anr_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'anr_desc')?'selected="selected"':''); ?>><?php echo __('Artikelnummer Absteigend', 'wpsg'); ?></option>
+			</select>
+		</div>
+		<?php } ?>
+
+		<?php if ($this->view['wpsg_mod_productindex']['filter']['pages'] > 1) { ?>
+		<div class="wpsg_mod_productindex_pager">
+			<span><?php echo __('Seite:', 'wpsg'); ?></span>
+			<ul>
+				<?php for ($i = 1; $i <= $this->view['wpsg_mod_productindex']['filter']['pages']; $i ++) { ?>
+				<li>
+					<?php if ($i == $this->view['wpsg_mod_productindex']['filter']['page']) { ?>
+					<span><?php echo $i; ?></span>
+					<?php } else { ?>
+					<a title="<?php echo wpsg_translate(__('Zu Seite #1# wechseln', 'wpsg'), $i); ?>" href="#" onclick="return wpsg_mod_productindex_goPage(<?php echo $i; ?>);"><?php echo $i; ?></a>
+					<?php } ?>
+				</li>
+				<?php } ?>
+			</ul>
+		</div>
+		<?php } ?>
+
+		<?php if ($this->view['hideViewSelect'] != '1') { ?>
+		<div class="wpsg_mod_productindex_viewselect">
+			<a href="#" onclick="return wpsg_mod_productindex_viewselect('grid.phtml');" title="<?php echo __('Zur Gitteransicht wechseln.', 'wpsg'); ?>">
+				<img src="<?php echo $this->getRessourceURL('mods/mod_productindex/gfx/icon_grid.png'); ?>" alt="<?php echo __('Zur Gitteransicht wechseln.', 'wpsg'); ?>" />
+			</a>
+		</div>
+		<?php } ?>
+
+		<div class="wpsg_clear"></div>
+
+	</div>
+
+	<?php if (wpsg_isSizedArray($this->view['arProducts'])) { ?>
+
+		<?php $i = 0; foreach ($this->view['arProducts'] as $p) { $oProduct = wpsg_product::getInstance($p['product_key']); $i ++; ?>
+		<div class="wpsg_mod_productindex_product <?php echo (($i % 2 == 0)?'odd':'even'); ?> <?php echo (($i == sizeof($this->view['arProducts']))?'wpsg_mod_productindex_product_last':''); ?> <?php echo (($i == 1)?'wpsg_mod_productindex_product_first':''); ?>">
+			
+			<a title="<?php echo __('Zur Detailseite des Produktes', 'wpsg'); ?>" href="<?php echo wpsg_url($p['url']); ?>">
+				<?php $attachment_id = $this->imagehandler->getAttachmentID($p['product_key']); ?>
+				<?php echo wp_get_attachment_image($attachment_id, array(800, 600)); ?>
+			</a>
+			
+			<div class="wpsg_mod_productindex_content">
+				<div class="wpsg_mod_productindex_infos">
+					<div class="wpsg_mod_productindex_weight">
+						<?php if ($this->hasMod('wpsg_mod_weight') && $this->get_option('wpsg_mod_weight_showProductindex') == '1') { ?>
+							<?php if (($p['weight']) > '0') { ?>
+								<?php if ($p['min_weight'] == $p['max_weight']) { ?>
+									<?php echo wpsg_translate(__('Gewicht: #1#', 'wpsg'), wpsg_ff($p['weight'], $this->get_option('wpsg_mod_weight_unit'))); ?>
+								<?php } else { ?>
+									<?php echo wpsg_translate(__('Gewicht: ab #1#', 'wpsg'), wpsg_ff($p['min_weight'], $this->get_option('wpsg_mod_weight_unit'))); ?>
+								<?php } ?>
+							<?php } ?>
+						<?php } ?>
+					</div>
+
+					<div class="wpsg_mod_productindex_fmenge">
+						<?php if ($this->hasMod('wpsg_mod_fuellmenge') && $this->get_option('wpsg_mod_fuellmenge_showProductindex_fmenge') == '1') { ?>
+							<?php if (($p['fmenge']) > '0') { ?>
+								<?php echo wpsg_translate(__('Füllmenge: #1#', 'wpsg'), wpsg_ff($p['fmenge'], $p['feinheit'])); ?>
+								<br />
+								<?php if ($this->get_option('wpsg_mod_fuellmenge_showProductindex_grundpreis') == '1') { ?>
+									<?php echo wpsg_translate(__('Grundpreis: #1# / #2#', 'wpsg'),
+										wpsg_ff($p['fmenge_preis'], $this->get_option('wpsg_currency')),
+										wpsg_ff($this->get_option('wpsg_mod_fuellmenge_bezug'), $p['feinheit'])
+									); ?>
+								<?php } ?>
+							<?php } ?>
+						<?php } ?>
+					</div>
+
+					<?php if ($this->hasMod('wpsg_mod_stock') && $this->get_option('wpsg_mod_stock_showProductindex') == '1') { ?>
+						<div class="wpsg_mod_produktindex_stock">
+							<?php echo wpsg_translate(__('Lagerbestand: #1#','wpsg'), $p['stock']);  ?>
+						</div>
+					<?php } ?>
+
+				</div>
+				<div class="wpsg_mod_productindex_title">
+					<a title="<?php echo __('Zur Detailseite des Produkts', 'wpsg'); ?>" href="<?php echo wpsg_url($p['url']); ?>"><?php echo $this->getProductName($this->getProduktID($p['id']), true); ?></a>
+				</div>
+				<div class="wpsg_mod_productindex_description"><?php echo $p['beschreibung']; ?></div>
+
+				<?php /* Abfrage Preisanzeige nur für eingeloggte Benutzer START */?>
+				<?php if ($this->canDisplayPrice()) { ?>
+					<div class="wpsg_mod_productindex_price">
+					
+						<?php /* Rabattierter Preis anzeigen */ ?>
+						<?php if ($this->hasMod('wpsg_mod_discount') && $this->get_option('wpsg_mod_discount_productindex') == '1') { ?>
+							
+							<?php $oldPrice = $oProduct->getOldPrice();  ?>
+                			
+                			<?php if ($oldPrice !== false && $oldPrice != $oProduct->getPrice($this->view['data']['product_key'])) { ?>
+                				<span class="wpsg_mod_productview_newprice wpsg_mod_productview_price wpsg_mod_productview_current"><?php echo wpsg_ff($oProduct->getPrice($this->view['data']['product_key']), $this->get_option('wpsg_currency')); ?></span><br />
+                				<span class="wpsg_mod_productview_oldprice"><?php echo wpsg_ff($oldPrice, $this->get_option('wpsg_currency')); ?></span>
+                			<?php } else { ?>
+                				<span class="wpsg_mod_productview_price"><?php echo wpsg_ff($oProduct->getPrice($this->view['data']['product_key']), $this->get_option('wpsg_currency')); ?></span>
+                			<?php } ?>
+                			
+						<?php }else{?>
+						
+    						<?php if ($p['min_preis'] == $p['max_preis']) { ?>
+    							<?php echo wpsg_ff($p['preis'], $this->get_option('wpsg_currency')); ?>
+    						<?php } else { ?>
+    							<?php echo wpsg_translate(__('ab #1#', 'wpsg'), wpsg_ff($p['min_preis'], $this->get_option('wpsg_currency'))); ?>
+    						<?php } ?>
+						<?php } ?>
+					</div>
+					<?php if ($this->get_option('wpsg_kleinunternehmer')) { /* Kleinunternehmerregelung aktiviert START */ ?>
+					<div class="wpsg_produkt_preishinweis">
+						<?php echo wpsg_translate(__('#2# zzgl. #1#', 'wpsg'), '<a href="'.$this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN).'">'.__('Versandkosten', 'wpsg').'</a>', '<a href="#kkhint" title="'.wpsg_hspc($this->get_option('wpsg_kleinunternehmer_text')).'">Endpreis</a>'); ?>
+					</div>
+					<?php } else { /* Kleinunternehmerregelung aktiviert ENDE */ ?>
+					<div class="wpsg_produkt_preishinweis">
+						<?php if ($this->getFrontendTaxview() == WPSG_NETTO) { /* Frontend = NETTO Preise */ ?>
+						<?php echo wpsg_translate(__('(zzgl. #1#% MwSt. und zzgl. #2#)', 'wpsg'), wpsg_ff($p['mwst_value']), '<a href="'.$this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN).'">'.__('Versandkosten', 'wpsg').'</a>'); ?>
+						<?php } else { /* Frontend = BRUTTO Preise */ ?>
+						<?php echo wpsg_translate(__('(inkl. #1#% MwSt. und zzgl. #2#)', 'wpsg'), wpsg_ff($p['mwst_value']), '<a href="'.$this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN).'">'.__('Versandkosten', 'wpsg').'</a>'); ?>
+						<?php } ?>
+					</div>
+					<?php } ?>
+				<?php }else{?>
+						<?php echo wpsg_translate(__('Preise nur für eingeloggte Benutzer', 'wpsg')); ?>
+				<?php } /* Abfrage Preisanzeige nur für eingeloggte Benutzer ENDE */?>
+
+				<div class="wpsg_mod_productindex_button">
+					<?php //if ($this->hasMod('wpsg_mod_stock') && $this->callMod('wpsg_mod_stock', 'checkBestand', array($this->getProduktID($p['id']), 1)) === false) { ?>
+					<?php if (false) { ?>
+					<span class="wpsg_produkt_soldout"><?php echo __('Produkt ausverkauft', 'wpsg'); ?></span>
+					<?php } else { ?>
+					<a class="wpsg_button" title="<?php echo __('Zur Detailseite des Produkts', 'wpsg'); ?>" href="<?php echo wpsg_url($p['url']); ?>"><?php echo __('Zum Produkt', 'wpsg'); ?></a>
+					<?php } ?>
+				</div>
+
+			</div>
+			<div class="wpsg_clear"></div>
+		</div>
+		<?php } ?>
+
+	<?php } else { ?>
+	<div class="wpsg_mod_productindex_empty"><?php echo __('Keine passenden Produkte gefunden.', 'wpsg'); ?></div>
+	<?php } ?>
+
+	<div class="wpsg_mod_productindex_toolbar wpsg_mod_productindex_toolbar_bottom">
+
+		<?php if ($this->view['hideOrder'] != '1') { ?>
+		<div class="wpsg_mod_productindex_order">
+			<span><?php echo __('Sortierung:', 'wpsg'); ?></span>
+			<select name="wpsg_mod_productindex[filter][order]" class="wpsg_mod_productindex_filter_order">
+				<option value="price_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'price_asc')?'selected="selected"':''); ?>><?php echo __('Preis (Kleinster zuerst)', 'wpsg'); ?></option>
+				<option value="price_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'price_desc')?'selected="selected"':''); ?>><?php echo __('Preis (Größter zuerst)', 'wpsg'); ?></option>
+				<option value="name_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'name_asc')?'selected="selected"':''); ?>><?php echo __('Name Aufsteigend', 'wpsg'); ?></option>
+				<option value="name_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'name_desc')?'selected="selected"':''); ?>><?php echo __('Name Absteigend', 'wpsg'); ?></option>
+				<option value="pos_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'pos_asc')?'selected="selected"':''); ?>><?php echo __('Position Aufsteigend', 'wpsg'); ?></option>
+				<option value="pos_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'pos_desc')?'selected="selected"':''); ?>><?php echo __('Position Absteigend', 'wpsg'); ?></option>				<option value="cdate_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'cdate_asc')?'selected="selected"':''); ?>><?php echo __('Erstellungsdatum (Älteste zuerst)', 'wpsg'); ?></option>
+				<option value="cdate_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'cdate_asc')?'selected="selected"':''); ?>><?php echo __('Erstellungsdatum (Älteste zuerst)', 'wpsg'); ?></option>
+				<option value="cdate_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'cdate_desc')?'selected="selected"':''); ?>><?php echo __('Erstellungsdatum (Neueste zuerst)', 'wpsg'); ?></option>
+				<option value="anr_asc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'anr_asc')?'selected="selected"':''); ?>><?php echo __('Artikelnummer Aufsteigend', 'wpsg'); ?></option>
+				<option value="anr_desc" <?php echo (($this->view['wpsg_mod_productindex']['filter']['order'] == 'anr_desc')?'selected="selected"':''); ?>><?php echo __('Artikelnummer Absteigend', 'wpsg'); ?></option>
+			</select>
+		</div>
+		<?php } ?>
+
+		<?php if ($this->view['wpsg_mod_productindex']['filter']['pages'] > 1) { ?>
+		<div class="wpsg_mod_productindex_pager">
+			<span><?php echo __('Seite:', 'wpsg'); ?></span>
+			<ul>
+				<?php for ($i = 1; $i <= $this->view['wpsg_mod_productindex']['filter']['pages']; $i++) { ?>
+				<li>
+					<?php if ($i == $this->view['wpsg_mod_productindex']['filter']['page']) { ?>
+					<span><?php echo $i; ?></span>
+					<?php } else { ?>
+					<a title="<?php echo wpsg_translate(__('Zu Seite #1# wechseln', 'wpsg'), $i); ?>" href="#" onclick="return wpsg_mod_productindex_goPage(<?php echo $i; ?>);"><?php echo $i; ?></a>
+					<?php } ?>
+				</li>
+				<?php } ?>
+			</ul>
+		</div>
+		<?php } ?>
+
+		<?php if ($this->view['hideViewSelect'] != '1') { ?>
+		<div class="wpsg_mod_productindex_viewselect">
+			<a href="#" onclick="return wpsg_mod_productindex_viewselect('grid.phtml');" title="<?php echo __('Zur Gitteransicht wechseln.', 'wpsg'); ?>">
+				<img src="<?php echo $this->getRessourceURL('mods/mod_productindex/gfx/icon_grid.png'); ?>" alt="<?php echo __('Zur Gitteransicht wechseln.', 'wpsg'); ?>" />
+			</a>
+		</div>
+		<?php } ?>
+
+		<div class="wpsg_clear"></div>
+
+	</div>
+
+	<?php if ($this->get_option('wpsg_kleinunternehmer')) { ?>
+	<a name="kkhint"></a>
+	<div class="wpsg_mod_productindex_kuhint"><?php echo $this->get_option('wpsg_kleinunternehmer_text'); ?></div>
+	<?php } ?>
+
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	function wpsg_mod_productindex_goPage(page)
+	{
+
+		jQuery('#wpsg_mod_productindex_filter_page').val(page);
+		jQuery('#wpsg_mod_productindex_form').submit();
+
+		return false;
+
+	} // function wpsg_mod_productindex_goPage(page)
+
+	function wpsg_mod_productindex_viewselect(template)
+	{
+
+		jQuery('#wpsg_mod_productindex_template').val(template);
+		jQuery('#wpsg_mod_productindex_form').submit();
+
+		return false;
+
+	} // function wpsg_mod_productindex_viewselect(template)
+
+	jQuery(document).ready(function() {
+
+		jQuery('.wpsg_mod_productindex_filter_order').bind('change', function() {
+
+			jQuery('#wpsg_mod_productindex_filter_order').val(jQuery(this).find('option:selected').attr('value'));
+			jQuery('#wpsg_mod_productindex_filter_page').val('1');
+			jQuery('#wpsg_mod_productindex_form').submit();
+
+		} );
+
+	} );
+
+/* ]]> */</script>

@@ -1,0 +1,29 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Warenkorbteaser Moduls
+	 */
+
+?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_basketteaser_show', __('Anzeige', 'wpsg'), array(0 => __('Unter dem Warenkorb', 'wpsg'), 1 => __('Im Warenkorb', 'wpsg')), $this->get_option('wpsg_mod_basketteaser_show'), array('help' => 'wpsg_mod_basketteaser_show')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_basketteaser_template', __('Template für die Produkte im Warenkorb', 'wpsg'), $this->view['templates'], $this->get_option('wpsg_mod_basketteaser_template'), array('help' => 'wpsg_mod_basketteaser_template'))?>
+
+<script type="text/javascript">
+
+	function wpsg_mod_basketteaser_switchshow()
+	{
+
+		if (jQuery('#wpsg_mod_basketteaser_show').val() == '0') jQuery('#wpsg_mod_basketteaser_template').parent().parent().show();
+		else jQuery('#wpsg_mod_basketteaser_template').parent().parent().hide();
+		
+	}
+
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_mod_basketteaser_show').bind('change', function() { wpsg_mod_basketteaser_switchshow(); } );
+		
+		wpsg_mod_basketteaser_switchshow();
+		
+	} );
+
+</script>

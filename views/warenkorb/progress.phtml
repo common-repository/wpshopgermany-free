@@ -1,0 +1,55 @@
+<?php 
+
+	/**
+	 * Fortschrittsbalken
+	 */
+
+?>
+
+<div class="wpsg_progress <?php echo (($this->get_option('wpsg_mod_onepagecheckout') == '')?'':'only3steps'); ?>">
+      
+	<a href="<?php echo $this->getUrl(wpsg_ShopController::URL_BASKET); ?>">      
+		<span class="step step1 <?php echo (($GLOBALS['step'] === 1)?'current':'done'); ?>" title="<?php echo __('Hier gelangen Sie zum Warenkorb', 'wpsg'); ?>"><span class="dot"></span><span class="text"><?php echo __('Warenkorb', 'wpsg'); ?></span></span>
+	</a>
+        
+	<?php if ($this->get_option('wpsg_mod_onepagecheckout') == '') { ?>
+           
+	<?php if ($GLOBALS['step'] > 1) { ?><a href="<?php echo $this->getURL(wpsg_ShopController::URL_CHECKOUT); ?>"><?php } ?>
+	<span class="step step2 <?php echo (($GLOBALS['step'] ===2)?'current':''); ?> <?php echo (($GLOBALS['step'] > 2)?'done':''); ?>" title="<?php echo __('Hier gelangen Sie zum Formular der Kundendaten', 'wpsg'); ?>">
+		<span class="dot"></span><span class="text"><?php echo __('Kundendaten', 'wpsg'); ?></span>
+	</span>            
+	<?php if ($GLOBALS['step'] > 1) { ?></a><?php } ?>
+	
+	<?php if ($GLOBALS['step'] > 2) { ?><a href="<?php echo $this->getURL(wpsg_ShopController::URL_CHECKOUT2); ?>"><?php } ?>
+	<span class="step step3 <?php echo (($GLOBALS['step'] === 3)?'current':''); ?> <?php echo (($GLOBALS['step'] > 3)?'done':''); ?>" title="<?php echo __('Hier gelangen Sie zur Auswahl der Bezahlmethode und der Versandart', 'wpsg'); ?>">
+		<span class="dot"></span><span class="text"><?php echo __('Versand/Zahlung', 'wpsg'); ?></span>
+	</span>            
+	<?php if ($GLOBALS['step'] > 2) { ?></a><?php } ?>
+            
+	<?php if ($GLOBALS['step'] > 3) { ?><a href="<?php echo $this->getURL(wpsg_ShopController::URL_OVERVIEW); ?>"><?php } ?>
+	<span class="step step4 <?php echo (($GLOBALS['step'] === 4)?'current':''); ?> <?php echo (($GLOBALS['step'] > 4)?'done':''); ?>" title="<?php echo __('Hier gelangen Sie zum Bestellübersicht', 'wpsg'); ?>">
+		<span class="dot"></span><span class="text"><?php echo __('Abschluss', 'wpsg'); ?></span>
+	</span>
+	<?php if ($GLOBALS['step'] > 3) { ?></a><?php } ?>
+   
+	<?php } else { ?>
+        	
+		<?php /* Onepagecheckout */ ?>
+		<?php if ($GLOBALS['step'] > 1) { ?><a href="<?php echo $this->getURL(wpsg_ShopController::URL_CHECKOUT); ?>"><?php } ?>
+		<span class="step step2 <?php echo (($GLOBALS['step'] ===2)?'current':''); ?> <?php echo (($GLOBALS['step'] > 2)?'done':''); ?>" title="<?php echo __('Hier gelangen Sie zum Formular der Kundendaten, Bezahlmethode und der Versandart', 'wpsg'); ?>">
+			<span class="dot"></span><span class="text"><?php echo __('Kundendaten / Zahlung  / Versand', 'wpsg'); ?></span>
+		</span>
+		<?php if ($GLOBALS['step'] > 1) { ?></a><?php } ?>
+	
+		<?php if ($GLOBALS['step'] > 2) { ?><a href=""><?php } ?>
+		<span class="step step3 <?php echo (($GLOBALS['step'] === 3)?'current':''); ?> <?php echo (($GLOBALS['step'] > 3)?'done':''); ?>" title="<?php echo __('Hier gelangen Sie zum Bestellübersicht', 'wpsg'); ?>">
+			<span class="dot"></span><span class="text"><?php echo __('Abschluss', 'wpsg'); ?></span>
+		</span>
+		<?php if ($GLOBALS['step'] > 2) { ?></a><?php } ?>
+   
+	<?php } ?>
+
+</div>
+
+<div class="wpsg_clear"></div>
+	

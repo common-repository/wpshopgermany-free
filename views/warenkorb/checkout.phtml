@@ -1,0 +1,379 @@
+<?php
+
+	/**
+	 * Template für den ersten Schritt der Kasse
+	 * Kundendaten etc.
+	 */
+ 
+	//wpsg_debug($this->view);
+?>	
+<script type="text/javascript">/* <![CDATA[ */
+	
+	jQuery(document).ready(function() {
+		
+		<?php if ($this->get_option('wpsg_form_validation') == '1') { ?>
+		
+		if (typeof jQuery.validationEngine == "object")
+		{
+
+			jQuery("#form-step2").validationEngine('attach', {promptPosition : "bottomLeft", scroll: false});
+				
+			jQuery('.wpsg_mod_kundenverwaltung_login').bind('click', function(){
+				jQuery("#form-step2").validationEngine('detach');						
+			});
+
+		}
+		
+		<?php } else if ($this->get_option('wpsg_form_validation') == '2') { ?>
+
+		jQuery.validator.addMethod("cRequired", jQuery.validator.methods.required, "<?php echo __('Dieses Feld ist ein Pflichtfeld.', 'wpsg'); ?>");
+		jQuery.validator.addClassRules('validate[required]', { cRequired: true } );
+		jQuery("#form-step2").validate( { 
+			ignore: '',
+			errorClass: 'wpsg_error',
+			onsubmit: false,
+			showErrors: function(errorMap, errorList) {
+
+				this.defaultShowErrors();	
+
+			}
+		} ); 
+
+		jQuery('#wpsg_checkout2button').bind('click', function() { 
+
+			var bReturn = jQuery('#form-step2').validate().form();
+			if (jQuery('#form-step2 input.wpsg_error').length > 0) jQuery('#form-step2 input.wpsg_error')[0].focus();
+			return bReturn;
+			  
+		} );
+		
+		<?php } ?>
+
+		jQuery('.wpsg_checkout input').bind('keyup keypress', function(e) {
+
+			var jqThis = jQuery(this);
+			
+			// Enter lass ich direkt durch
+			if (jqThis.attr("type") === 'submit') return true;
+			
+			var keyCode = e.keyCode || e.which;
+			
+			if (keyCode == 13) {
+ 		    	
+				if (jqThis.parents('.wpsg_loginform').length > 0) {
+
+					jQuery('input[name="wpsg_mod_kundenverwaltung_login"]').click();
+					
+				} else {
+		        
+					jQuery('#wpsg_checkout2button').click();
+					
+				}
+				
+		    }
+		    
+		} );
+		
+	} );
+
+	<?php /* Copy&Paste für das Eingabefeld "E-Mail-Wiederholung sperren */ ?>
+	window.onload = function() {
+		
+		var email2 = document.getElementById('email2');
+
+		email2.onpaste = function(e) {
+
+			e.preventDefault();
+
+		}
+	}
+		
+/* ]]> */</script>
+
+<div class="wpsg wpsg_checkout">
+
+	<?php echo $this->writeFrontendMessage(); ?>
+		
+	<?php $GLOBALS['step'] = 2; $this->render(WPSG_PATH_VIEW.'/warenkorb/progress.phtml'); ?>
+		
+	<form id="form-step2" method="post" action="<?php echo $this->getURL(wpsg_ShopController::URL_BASKET); ?>" enctype="multipart/form-data">
+
+		<?php /* Einbindung des Logins im Checkout */ ?>	
+		<div class="wpsg_loginform">
+			<?php $this->callMod('wpsg_mod_kundenverwaltung', 'checkout_login'); ?>
+		</div>
+	
+		<div class="wpsg_box" id="wpsg_box_kundendaten">
+			
+			<?php /*Wenn Kunden eingeloggt, oder wenn Kunde nicht eingeloggt */ ?>
+			<?php if ($this->callMod('wpsg_mod_kundenverwaltung', 'isLoggedIn')) { ?>
+				<h2><?php echo __('Bitte überprüfen Sie Ihre Kundendaten','wpsg');?></h2>
+			<?php } else { ?>		
+				<h2><?php echo __('Bitte geben Sie Ihre Kundendaten ein', 'wpsg'); ?></h2>
+			<?php } ?>
+					
+			<div class="wpsg_spacer"></div>
+		
+			<div class="wpsg_inner">
+		
+				<?php if ($this->view['pflicht']['firma'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_firma">
+					<label for="wpsg_firma"><?php echo __("Firma:", "wpsg"); ?>
+					<?php if ($this->view['pflicht']['firma'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="<?php echo (($this->view['pflicht']['firma'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("firma", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="wpsg_firma" name="wpsg[checkout][firma]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['firma'])); ?>" />
+				</div>
+				<?php } ?>
+			
+				<?php if ($this->view['pflicht']['anrede'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_anrede">
+					<label for="wpsg_title"><?php echo __('Anrede:', 'wpsg'); ?>
+					<?php if ($this->view['pflicht']['anrede'] != '1') { ?><span class="wpsg_required">*</span><?php } ?></label>
+					<select class="<?php echo (($this->view['pflicht']['anrede'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("title", (array)$this->view['error']))?'wpsg_error':''); ?>" id="wpsg_title" name="wpsg[checkout][title]">
+						<option value="-1"><?php echo __('Bitte auswählen', 'wpsg'); ?></option>
+						<?php $i=0; foreach (explode("|", $this->view['pflicht']['anrede_auswahl']) as $t) { ?>
+						<option value="<?php echo $i; /*wpsg_hspc($t);*/ ?>" <?php echo (($this->view['basket']['checkout']['title'] == $i)?'selected="selected"':''); ?>><?php echo $t; $i++; ?></option>
+					<?php } ?>						
+					</select>
+				</div>
+				<?php } ?>
+			
+				<?php if ($this->view['pflicht']['vname'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_vorname">
+					<label for="vname" class="wpsg_checkout"><?php echo __("Vorname:", "wpsg"); ?> 
+					<?php if ($this->view['pflicht']['vname'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="<?php echo (($this->view['pflicht']['vname'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("vname", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="vname" name="wpsg[checkout][vname]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['vname'])); ?>" />		
+				</div>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['name'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_name">
+					<label for="name" class="wpsg_checkout"><?php echo __("Name:", "wpsg"); ?>
+					<?php if ($this->view['pflicht']['name'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="<?php echo (($this->view['pflicht']['name'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("name", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="name" name="wpsg[checkout][name]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['name'])); ?>" />
+				</div>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['email'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_email">
+					<label for="email" class="wpsg_checkout"><?php echo __("E-Mail Adresse:", "wpsg"); ?> 
+					<?php if ($this->view['pflicht']['email'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="wpsg_input_text <?php echo (($this->view['pflicht']['email'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("email", (array)$this->view['error']))?'wpsg_error':''); ?>" type="email" id="email" name="wpsg[checkout][email]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['email'])); ?>" />
+				</div>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['email'] != '2') { ?>
+				<?php if (isset($this->view['pflicht']['emailconfirm']) && $this->view['pflicht']['emailconfirm'] == '1') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_email2">
+					<label for="email" class="wpsg_checkout"><?php echo __("E-Mail (Wiederholung:)", "wpsg"); ?> 
+					<?php if ($this->view['pflicht']['email'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="wpsg_input_text <?php echo (($this->view['pflicht']['email'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("email", (array)$this->view['error']))?'wpsg_error':''); ?>" type="email" id="email2" name="wpsg[checkout][email2]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['email2'])); ?>" />
+				</div>
+				<?php } ?>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['geb'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_geburtsdatum">
+					<label for="geb" class="wpsg_checkout"><?php echo __('Geburtsdatum (Format: TT.MM.JJJJ):',"wpsg"); ?>
+					<?php if ($this->view['pflicht']['geb'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="wpsg_input_text <?php echo (($this->view['pflicht']['geb'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("geb", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="geb" name="wpsg[checkout][geb]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['geb'])); ?>" />
+				</div>
+				<?php } ?>
+						
+				<?php if ($this->view['pflicht']['fax'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_fax">
+					<label for="fax" class="wpsg_checkout"><?php echo __("Fax.:", "wpsg"); ?>
+					<?php if ($this->view['pflicht']['fax'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="wpsg_input_text <?php echo (($this->view['pflicht']['fax'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("fax", (array)$this->view['error']))?'wpsg_error':''); ?>" type="tel" id="fax" name="wpsg[checkout][fax]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['fax'])); ?>" />
+				</div>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['tel'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_telefon">
+					<label for="tel" class="wpsg_checkout"><?php echo __("Tel.:", "wpsg"); ?>
+					<?php if ($this->view['pflicht']['tel'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="wpsg_input_text <?php echo (($this->view['pflicht']['tel'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("tel", (array)$this->view['error']))?'wpsg_error':''); ?>" type="tel" id="tel" name="wpsg[checkout][tel]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['tel'])); ?>" />
+				</div>
+				<?php } ?>
+			
+				<?php if ($this->view['pflicht']['strasse'] != '2') { ?>
+									
+					<?php if ($this->view['pflicht']['wpsg_showNr'] === '1') { ?>
+					
+						<div class="wpsg_checkoutblock" id="wpsg_streetnr">
+							<label for="strasse" class="street wpsg_checkout"><?php echo __('Straße:', 'wpsg'); ?>
+								<?php if ($this->view['pflicht']['strasse'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+								<input class="<?php echo (($this->view['pflicht']['strasse'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("strasse", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="strasse" name="wpsg[checkout][strasse]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['strasse'])); ?>" />
+							</label>
+							<label for="nr" class="nr wpsg_checkout"><?php echo __('Nr:', 'wpsg'); ?>
+								<?php if ($this->view['pflicht']['strasse'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+								<input class="<?php echo (($this->view['pflicht']['strasse'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("nr", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="nr" name="wpsg[checkout][nr]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['nr'])); ?>" />							
+							</label>
+						</div>
+						
+					<?php } else { ?>
+
+						<div class="wpsg_checkoutblock" id="wpsg_strasse">
+							<label for="strasse" class="wpsg_checkout"><?php echo __("Straße, Nr.:", "wpsg"); ?>
+								<?php if ($this->view['pflicht']['strasse'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+							</label>
+							<input class="<?php echo (($this->view['pflicht']['strasse'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("strasse", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="strasse" name="wpsg[checkout][strasse]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['strasse'])); ?>" />
+						</div>
+						
+					<?php } ?>
+					
+				<?php } ?>
+			
+				<?php if ($this->view['pflicht']['plz'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_postleitzahl">
+					<label for="plz" class="wpsg_checkout"><?php echo __("Postleitzahl:", "wpsg"); ?> 
+					<?php if ($this->view['pflicht']['plz'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="wpsg_input_text <?php echo (($this->view['pflicht']['plz'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("plz", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="plz" name="wpsg[checkout][plz]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['plz'])); ?>" />
+				</div>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['ort'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_ort">
+					<label for="ort" class="wpsg_checkout"><?php echo __("Ort:", "wpsg"); ?> 
+					<?php if ($this->view['pflicht']['ort'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="<?php echo (($this->view['pflicht']['ort'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("ort", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="ort" name="wpsg[checkout][ort]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['ort'])); ?>" />
+				</div>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['land'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_land">
+					<label for="wpsg_land" class="wpsg_checkout"><?php echo __("Land:", "wpsg"); ?> 
+					<?php if ($this->view['pflicht']['land'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>					
+					<select name="wpsg[checkout][land]" class="<?php echo (($this->view['pflicht']['land'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("land", (array)$this->view['error']))?'wpsg_error':''); ?>" id="wpsg_land">
+						<option value="-1"><?php echo __('Bitte auswählen', 'wpsg'); ?></option>
+						<?php foreach ($this->view['laender'] as $l) { ?>
+						<option value="<?php echo wpsg_hspc($l['id']); ?>" <?php echo (($l['id'] == $this->view['basket']['checkout']['land'])?'selected="selected"':((!wpsg_isSizedInt($this->view['basket']['checkout']['land']) && $this->get_option('wpsg_defaultland') == $l['id'])?'selected="selected"':'')); ?>><?php echo wpsg_hspc(__($l['name'], 'wpsg')); ?></option>
+						<?php } ?>
+					</select>
+				</div>
+				<?php } ?>
+				
+				<?php if ($this->view['pflicht']['ustidnr'] != '2') { ?>
+				<div class="wpsg_checkoutblock" id="wpsg_ustidnr">
+					<label for="wpsg_ustidnr" class="wpshopgermany_checkout"><?php echo __("UStIdNr.:", "wpsg"); ?> 
+					<?php if ($this->view['pflicht']['ustidnr'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+					</label>
+					<input class="<?php echo (($this->view['pflicht']['ustidnr'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("ustidnr", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="wpsg_ustidnr" name="wpsg[checkout][ustidnr]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['basket']['checkout']['ustidnr'])); ?>" />
+				</div>
+				<?php } ?>
+				
+				<?php /* Automatische Einbindung der benutzerdefinierten Felder */ ?>
+				<?php if ($this->get_option('wpsg_kundenvariablen_show') == '1') { ?>
+				<?php foreach ((array)$this->view['pflicht']['custom'] as $c_id => $c) { if ($c['show'] != '2') { ?>
+				<div class="wpsg_checkoutblock">
+					<label class="wpsg_cv wpsg_checkout" for="wpsg_cv_<?php echo $c_id; ?>">
+						<?php echo wpsg_hspc(__($c['name'], 'wpsg')); ?><?php if ($c['show'] == '0') { ?> <span class="wpsg_required">*</span><?php } ?>:
+                    </label>
+                    <?php if ($c['typ'] == '0') { // Textfeld ?>
+                    <input class="<?php echo (($c['show'] == '0')?'validate[required]':''); ?> <?php echo ((in_array("custom_".$c_id, (array)$this->view['error']))?'wpsg_error':''); ?>" name="wpsg[checkout][custom][<?php echo $c_id; ?>]" type="text" value="<?php if (isset($this->view['basket']['checkout']['custom'][$c_id])) echo wpsg_hspc($this->view['basket']['checkout']['custom'][$c_id]); ?>" />
+                    <?php } else if ($c['typ'] == '1') { $arAuswahl = explode("|", $c['auswahl']); // Auswahlfeld ?>
+                    <select class="<?php echo (($c['show'] == '0')?'validate[required]':''); ?> <?php echo ((in_array("custom_".$c_id, (array)$this->view['error']))?'wpsg_error':''); ?>" name="wpsg[checkout][custom][<?php echo $c_id; ?>]">
+                        <option value="-1"><?php echo __('Bitte auswählen', 'wpsg'); ?></option>
+                        <?php foreach ((array)$arAuswahl as $a) { ?>
+                        <option value="<?php echo wpsg_hspc($a); ?>" <?php echo (($a == @$this->view['basket']['checkout']['custom'][$c_id])?'selected="selected"':''); ?>><?php echo wpsg_hspc($a); ?></option>
+                        <?php } ?>
+                    </select>
+                    <?php } else if ($c['typ'] == '2') { // Checkbox ?>
+                    <input type="hidden" name="wpsg[checkout][custom][<?php echo $c_id; ?>]" value="0" />
+                    <input class="<?php echo (($c['show'] == '0')?'validate[required]':''); ?> checkbox" type="checkbox" value="1" name="wpsg[checkout][custom][<?php echo $c_id; ?>]" value="1" <?php if (isset($this->view['basket']['checkout']['custom'][$c_id])) echo wpsg_hspc(($this->view['basket']['checkout']['custom'][$c_id] == '1')?'checked="checked"':''); ?> />
+                    <?php } ?>
+				</div>
+				<?php } } ?>
+				<?php } ?>
+				<?php /* Automatische Einbindung der benutzerdefinierten Kundenfelder ENDE */ ?>
+				<div class="wpsg_clear"></div>
+				
+				<?php /* $this->callMods('checkout_customer_inner'); START */ ?>
+				
+				<?php /* Passwortabfrage für Neuregistrierung */ ?> 
+    			<?php echo $this->callMod('wpsg_mod_kundenverwaltung', 'checkout_customer_inner'); ?>
+       
+				<?php /*echo $this->callMod('wpsg_mod_kundenverwaltung', 'checkout_customer_inner'); */ ?>
+				
+				<?php /* Abfrage Satollo-Newsletter */ ?>
+				<?php echo $this->callMod('wpsg_mod_nlsatolo', 'checkout_customer_inner'); ?>
+				
+				<?php /* Einverständnisabfrage Trusted Shops */ ?>
+				<?php echo $this->callMod('wpsg_mod_trustedshops', 'checkout_customer_inner'); ?>
+				
+				<?php /* $this->callMods('checkout_customer_inner'); ENDE */ ?>
+				
+			</div>
+			
+		</div>
+	 	 		 		 
+		<?php $this->callMods('checkout_inner_prebutton', array(&$this->view)); ?>
+		 		
+		<div class="wpsg_clear"></div>
+		
+		<div class="wpsg_box">
+			
+			<h2><?php echo __('Bestellkommentar', 'wpsg'); ?></h2>
+			
+			<div class="wpsg_spacer"></div>
+			
+			<div class="wpsg_inner wpsg_commentblock">
+				<textarea name="wpsg[checkout][comment]" id="wpsg_checkout_comment"><?php echo wpsg_getStr($this->view['basket']['checkout']['comment']); ?></textarea>				 
+			</div>
+		</div>
+		
+		<div class="wpsg_mandatoryfield_hint">
+			<?php echo wpsg_translate(__('Mit #1# gekennzeichnete Felder sind Pflichtfelder.', 'wpsg'), '<span class="wpsg_required">*</span>'); ?>
+		</div>
+		  
+		<br />
+			 
+		<?php $this->ClearSessionErrors(); ?>
+			 		
+		<input type="submit" onclick="location.href='<?php echo $this->getURL(wpsg_ShopController::URL_BASKET); ?>'; return false;" class="wpsg_button wpsg_basketbutton" value="<?php echo __('zurück zum Warenkorb', 'wpsg'); ?>" name="wpsg_redirect_basket" />
+		<input type="submit" id="wpsg_checkout2button" class="wpsg_button wpsg_checkout2button" value="<?php echo __('weiter', 'wpsg'); ?>" name="wpsg_checkout" />
+		
+		<div class="wpsg_clear"></div>
+	 
+	 	<br />
+	 
+	</form>
+	
+	<script type="text/javascript">/* <![CDATA[ */
+
+		jQuery(document).ready(function() {
+			jQuery('#wpsg_checkout_set_comment').bind('change', function() { 
+				if (jQuery(this).attr('checked') == true || jQuery(this).attr('checked') == "checked") jQuery('#wpsg_checkout_comment').show();
+				else jQuery('#wpsg_checkout_comment').hide();
+			} );
+		} );
+
+			
+		<?php if ($this->hasMod('wpsg_mod_addressvalidation')) { ?>
+			validateAddressBind( { 
+            	Strasse: '#strasse',
+            	Nr: '#nr',
+            	Ort: '#ort',
+            	PLZ: '#plz',
+            	Land: '#wpsg_land',
+            	Key: '<?php echo $this->get_option('wpsg_mod_addressvalidation_apikey');?>',
+            	StorageKey: 'KundenAddress',
+            	MsgTeil1: 'Kundenadresse'
+			} );
+		<?php } ?>
+			
+		//} );
+
+	/* ]]> */</script>
+	
+</div>

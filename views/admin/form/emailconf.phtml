@@ -1,0 +1,125 @@
+
+<?php echo wpsg_drawForm_AdminboxStart($this->view['field_title'], 'wpsg_email_box'); ?>
+
+	<?php echo wpsg_drawForm_Input('wpsg_'.$this->view['field_key'].'_betreff', __('Betreff', 'wpsg'), $this->get_option('wpsg_'.$this->view['field_key'].'_betreff')); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_'.$this->view['field_key'].'_absender', __('Absender', 'wpsg'), $this->get_option('wpsg_'.$this->view['field_key'].'_absender')); ?>
+
+	<?php if ($this->view['field_to'] === true) { ?>
+	<?php echo wpsg_drawForm_Input('wpsg_'.$this->view['field_key'].'_empfaenger', __('Empfänger', 'wpsg'), $GLOBALS['wpsg_sc']->get_option('wpsg_'.$this->view['field_key'].'_empfaenger')); ?>
+	<?php } ?>
+	
+	<?php echo wpsg_drawForm_Input('wpsg_'.$this->view['field_key'].'_cc', __('CC', 'wpsg'), $this->get_option('wpsg_'.$this->view['field_key'].'_cc')); ?>
+	<?php echo wpsg_drawForm_Input('wpsg_'.$this->view['field_key'].'_bcc', __('BCC', 'wpsg'), $this->get_option('wpsg_'.$this->view['field_key'].'_bcc')); ?>	
+	
+    <div class="form-group form-group-sm">
+    
+        <label class="col-sm-6 control-label">
+
+            <input value="<?php echo __('Neuer Anhang', 'wpsg'); ?>" data-key="<?php echo $this->view['field_key']; ?>" class="btnAddAttachment button" type="text" style="text-align:center;" size="10" id="media_<?php echo $this->view['field_key']; ?>" />
+            
+        </label>
+    
+        <div class="col-sm-6">
+    
+            <div class="wpsg_mailattachment" id="wpsg_mailattachment_<?php echo $this->view['field_key']; ?>">
+                <div v-for="a in arAttachment">
+                    
+                    <div class="wpsg_flex wpsg_flex_justify_content_space_between wpsg_flex_align_items_center">
+                        <a target="_blank" v-bind:href="a.url">{{a.filename}}</a>
+                        <a href="" v-bind:data-id="a.id" data-key="<?php echo $this->view['field_key']; ?>" onclick="return wpsg_removeAttachemnt(this);">
+                            <span class="fa fa-trash"></span>
+                        </a>                        
+                    </div>
+                                         
+                </div>
+                <input type="hidden" v-bind:value="getIds" name="wpsg_<?php echo $this->view['field_key']; ?>_mediaattachment" />
+            </div>
+    
+        </div>
+    
+        <div class="clearfix wpsg_clear"></div>
+    
+    </div>
+
+    <hr />
+
+    <p style="font-weight:700;"><?php echo (__('Text unter der E-Mail', 'wpsg')); ?></p>
+
+    <?php
+    
+    // RTE
+    ob_start();
+    wp_editor($this->get_option('wpsg_'.$this->view['field_key'].'_text'), 'wpsg_'.$this->view['field_key'].'_text');
+    $rte_content = ob_get_contents();
+    ob_end_clean();
+    
+    echo $rte_content;
+    
+    ?>
+
+	<br />
+	<?php echo __('* Der restliche E-Mailtext kann nur im Mailtemplate verändert werden', 'wpsg'); ?>	
+	<?php if (wpsg_isSizedString($notice)) { ?>
+
+	<br />
+	<div class="wpsg_hinweis"><?php echo $notice; ?></div>
+
+	<?php } ?>
+	
+	<br />
+
+    <script>
+
+        uploadData['<?php echo $this->view['field_key']; ?>'] = <?php
+                
+            $arAttachment = [];
+            $arAttachmentSet = $this->get_option('wpsg_'.$this->view['field_key'].'_mediaattachment');
+            
+            if (wpsg_isSizedString($arAttachmentSet)) {
+                
+                $arAttachmentSet = explode(',', $arAttachmentSet);
+                
+                foreach ($arAttachmentSet as $a_id) {
+                
+                    $a_file = get_attached_file($a_id);
+                    $a_url = wp_get_attachment_url($a_id);
+                        
+                    $arAttachment[] = [
+                        'id' => $a_id,
+                        'filename' => basename($a_file),
+                        'url' => $a_url
+                    ];
+                    
+                }
+                
+            }
+                
+            echo json_encode($arAttachment);
+                
+        ?>;
+
+        var wpsg_mailattachment_<?php echo $this->view['field_key']; ?> = new Vue( {
+            el: '#wpsg_mailattachment_<?php echo $this->view['field_key']; ?>',
+            data: {
+                arAttachment: uploadData.<?php echo $this->view['field_key']; ?>        
+            },
+            computed: {
+                getIds: function() {
+                    
+                    var arReturn = [];
+                    
+                    for (var i in this.arAttachment) {
+                     
+                        arReturn.push(this.arAttachment[i].id); 
+                        
+                    }
+                    
+                    return arReturn;
+                    
+                }
+            }
+        } );
+        
+    </script>
+		
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

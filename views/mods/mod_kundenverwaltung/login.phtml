@@ -1,0 +1,55 @@
+<?php
+
+	/**
+	 * Dieses Template wird angezeigt, wenn z.B. auf die Profilseite zugegriffen wird und der User nicht eingelogt ist
+	 */
+
+?>
+<div class="wpsg_profil wpsg_checkout wpsg">
+
+	<?php echo $this->writeFrontendMessage(); ?>
+
+	<form method="post" action="<?php echo $this->callMod('wpsg_mod_kundenverwaltung', 'getProfilURL'); ?>">
+		<div class="wpsg_box">
+			
+			<h2><?php echo __('Bereits Kunde? Hier einloggen ...', 'wpsg'); ?></h2>
+			
+			<div class="wpsg_inner wpsg_login">
+			
+				<div class="wpsg_block wpsg_checkoutblock">
+					<label for="wpsg_mod_kundenverwaltung_email"><?php echo __("E-Mail Adresse", "wpsg"); ?>:</label>
+					<input class="wpsg_checkout" type="text" id="wpsg_mod_kundenverwaltung_email" name="wpsg[mod_kundenverwaltung][email]" value="<?php echo wpsg_getStr($this->view['wpsg_mod_kundenverwaltung']['email']); ?>" />
+				</div>
+			
+				<div class="wpsg_block wpsg_checkoutblock">
+					<label for="wpsg_mod_kundenverwaltung_password"><?php echo __("Passwort", "wpsg"); ?>:</label>
+					<input class="wpsg_checkout" type="password" id="wpsg_mod_kundenverwaltung_password" name="wpsg[mod_kundenverwaltung][password]" value="" />
+				</div>
+			 
+			 	<br />
+		
+				<div class="wpsg_checkoutblock">
+					<a class="wpsg_pwdvergessen_link" href="<?php echo $this->callMod('wpsg_mod_kundenverwaltung', 'getPwdVergessenURL'); ?>">Passwort vergessen?</a>
+					<input type="submit" class="wpsg_button wpsg_mod_kundenverwaltung_login" value="<?php echo __('Login', 'wpsg'); ?>" name="wpsg_mod_kundenverwaltung_login" />
+				</div>
+			
+				<div class="wpsg_clearer"></div><br />
+						 
+			</div>
+		</div>
+	</form>
+
+	<?php
+	/*
+		$this->view['data'] = $_SESSION['wpsg']['checkout'];
+		$this->view['error'] = $_SESSION['wpsg']['errorFields'];
+		$this->view['pflicht'] = $this->loadPflichtFeldDaten();
+		$this->view['laender'] = $this->db->fetchAssoc("SELECT * FROM `".WPSG_TBL_LAND."` ORDER BY `name` ASC");
+
+		$this->clearMessages();
+
+		echo $this->render(WPSG_PATH_VIEW.'/mods/mod_kundenverwaltung/register.phtml', false);
+	*/
+	?>
+
+</div>

@@ -1,0 +1,12 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des "TopSeller" Moduls	 
+	 */
+
+?>
+<?php if ($this->hasMod('wpsg_mod_statistics')) { ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_topseller_auto', __('Alle Produkte einbeziehen', 'wpsg'), $this->get_option('wpsg_mod_topseller_auto'), array('help' => 'wpsg_mod_topseller_auto')); ?>
+<?php } ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_topseller_limit', __('Maximale Anzahl (Standard)', 'wpsg'), $this->get_option('wpsg_mod_topseller_limit'), array('help' => 'wpsg_mod_topseller_limit')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_topseller_template', __('Template', 'wpsg'), $this->view['arTemplates'], $this->get_option('wpsg_mod_topseller_template'), array('noIndex' => true, 'help' => 'wpsg_mod_topseller_template')); ?>

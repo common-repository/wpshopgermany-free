@@ -1,0 +1,364 @@
+<?php
+
+	/**
+	 * Alternativtemplate zur Ausgabe der Produktverwaltung
+	 */
+
+?>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	wpsg_product_edit_change = new Array();
+
+	jQuery(document).ready( function() {
+
+		//jQuery('.wpsg_form_help').tipTip();
+
+		jQuery("#normal-sortables, #side-sortables").sortable({
+			connectWith: ".meta-box-sortables",
+			placeholder: 'wpsg_placeholder',
+			dropOnEmpty: true,
+			cursor: 'move',
+			grid: [50, 20],
+			handle: '.wpsg_handlediv',
+			forceHelperSize: true,
+			forcePlaceholderSize: true,
+			opacity: 0.8,
+			stop: function(e,ui) {
+
+				var ser = jQuery("#normal-sortables").sortable("serialize");
+				ser = ser.replace(/\&wpsg\[\]\=/g, ',').replace(/wpsg\[\]\=/g, '');
+
+				jQuery.cookie('wpsg_product_view_normal', ser);
+
+				var ser = jQuery("#side-sortables").sortable("serialize");
+				ser = ser.replace(/\&wpsg\[\]\=/g, ',').replace(/wpsg\[\]\=/g, '');
+
+				jQuery.cookie('wpsg_product_view_side', ser);
+
+			},
+			receive: function(e, ui) {
+			}
+		});
+
+		if (jQuery.cookie('wpsg_product_view_normal') != null)
+		{
+
+			var divs = jQuery.cookie('wpsg_product_view_normal').split(',').reverse();
+
+			for (index in divs)
+			{
+
+				jQuery('#normal-sortables').prepend(jQuery('#wpsg_' + divs[index]));
+
+			}
+
+		}
+
+		if (jQuery.cookie('wpsg_product_view_side') != null)
+		{
+
+			var divs = jQuery.cookie('wpsg_product_view_side').split(',').reverse();
+
+			for (index in divs)
+			{
+
+				jQuery('#side-sortables').prepend(jQuery('#wpsg_' + divs[index]));
+
+			}
+
+		}
+
+		var click_x = false;
+		var click_y = false;
+
+		jQuery('.wpsg_handlediv').bind('click', function(ev) {
+
+			console.log(ev);
+
+			if (Math.abs(click_x - ev.pageX) <= 5 && Math.abs(click_y - ev.pageY) <= 5)
+			{
+
+				jQuery(this).next().toggle();
+
+				var arClose = new Array();
+				jQuery('.wpsg_product_view .postbox .inside:hidden').each(function() {
+					arClose.push(jQuery(this).parent().attr("id"));
+				} );
+
+				jQuery.cookie('wpsg_product_closed', arClose.join(','));
+
+			}
+
+		} );
+
+		jQuery('.wpsg_handlediv').bind('mousedown', function(ev) {
+
+			click_x = ev.pageX;
+			click_y = ev.pageY;
+
+		} );
+
+		if (jQuery.cookie('wpsg_product_closed') != null && jQuery.cookie('wpsg_product_closed') != '')
+		{
+
+			var arClose = jQuery.cookie('wpsg_product_closed').split(',');
+
+			for (index in arClose)
+			{
+
+				jQuery('#' + arClose[index] + ' .inside').hide();
+
+			}
+
+		}
+
+		jQuery('#submit, #submit_index').bind('click', function() {
+
+			if (wpsg_product_edit_change.length > 0)
+			{
+
+				jQuery('.wpsg_change_error').removeClass('wpsg_change_error');
+
+				for (var i = 0; i < wpsg_product_edit_change.length; i++) {
+
+					jQuery('#' + wpsg_product_edit_change[i]).addClass('wpsg_change_error');
+
+				}
+
+				alert('<?php echo __('Bitte überprüfen Sie die rot markierten Felder. Änderungen in diesen Feldern gehen beim Speichern verloren.', 'wpsg'); ?>');
+
+				return false;
+
+			}
+			else
+			{
+
+				return true;
+
+			}
+
+		} );
+
+		// Flaggen für die aktuelle Sprache davorbauen
+		<?php if ($this->isMultiLingual() && isset($_REQUEST['wpsg_lang'])) { $arLang = $this->getStoreLanguages(); $lang = $arLang[$_REQUEST['wpsg_lang']]; ?>
+		jQuery('.wpsg_handlediv').prepend('<img src="<?php echo $this->getFlagURL().$lang['flag']; ?>" alt="<?php echo $lang['name']; ?>" />&nbsp;');
+		<?php } ?>
+
+		$(".addedit_templateV3 .general-panel-ordercondition .col-sm-6").removeClass("col-sm-6 col-sm-offset-6");
+
+		// Position der Section "EU-Leistungsortregeln" korrigieren
+		let leistungsortregelnCheckbox = $("input#euleistungsortregel");
+		let leistungsortregelenContainer = leistungsortregelnCheckbox.parents().eq(3);
+		let laenderverwaltungsLink = leistungsortregelnCheckbox.parents().eq(4).next();
+		let leistungsortregelnPanel = leistungsortregelenContainer.closest('.panel');
+
+		leistungsortregelenContainer.addClass("col-sm-12 col-sm-offset-12 v3Design_leistungsortregelCheckbox");
+
+		leistungsortregelenContainer.css({
+			"padding-left": "15px",
+			"margin-left": "0"
+		});
+
+		laenderverwaltungsLink.css({
+			"padding-left": "15px"
+		});
+
+		// Wenn form-control Element das letzte seiner Art im jeweiligen Elementeblock ist, Klasse hinzufügen
+		let counter = 0;
+		let formControlElements = $(".addedit_templateV3 .form-group");
+
+		$.each(formControlElements, function(key, val) {
+
+			let jQueryObj = jsElTojQueryObj(val, 'form-group');
+
+
+			if(!jQueryObj.next().hasClass("form-group")) {
+				jQueryObj.addClass("last-form-group");
+			}
+
+		});
+
+		// handlediv Klasse allen panel-heading hinzufügen
+		let panelHeadings = $(".panel-heading");
+
+		$.each(panelHeadings, function(key, val) {
+
+			let jQueryObj = jsElTojQueryObj(val, 'panel-heading');
+
+			val.classList.add("handlediv");
+			jQueryObj.wrap("<div class='wpsg_handlediv'></div>");
+
+		});
+
+		// Weist dem gegebenen JS Element eine einzigartige Klasse zu
+		// und gibt das jeweilige Element als jQuery Object zurück
+		function jsElTojQueryObj(jsEl, specificClass) {
+
+			let id = jsEl.id ? `#${jsEl.id}` : "";
+			let classes = "";
+
+			if(typeof jsEl !== "object" || jsEl.length <= 1 && jsEl[0] === "#document")
+				return;
+
+			jsEl.classList.add(`${specificClass}-${counter++}`);
+
+			if(jsEl.classList && jsEl.classList.length > 0) {
+
+				jsEl.classList.forEach(function(className) {
+					if(!classes.includes(`.${className}`)) classes += `.${className}`;
+				});
+
+			}
+
+			return $(`${jsEl.tagName.toLowerCase()}${id}${classes}`);
+
+		} // function jsElTojQueryObj(jsEl, specificClass)
+
+	} );
+
+	/* ]]> */</script>
+
+<div class="wrap columns-2 wpsg_produkt_addedit addedit_templateV3 wpsg_product_view" id="wpsg_product_view">
+
+	<div id="wpsg_relatedproducts_produktauswahl"></div>
+
+	<div class="icon32 icon32-posts-post" id="icon-edit"><br /></div>
+	<h2>
+		<?php if ($_REQUEST['edit_id'] > 0) { ?>
+			<?php echo __('Produkt bearbeiten', 'wpsg'); ?>
+			<?php if (isset($_REQUEST['wpsg_lang'])) { ?>
+				&nbsp;[<?php $arLang = $this->getStoreLanguages(); echo $arLang[$_REQUEST['wpsg_lang']]['name']; ?> <img src="<?php echo $this->getFlagURL().$arLang[$_REQUEST['wpsg_lang']]['flag']; ?>" alt="" />]
+			<?php } ?>
+		<?php } else { ?>
+			<?php echo __('Neues Produkt', 'wpsg'); ?>
+		<?php } ?>
+	</h2>
+	<br />
+
+	<?php echo $this->writeBackendMessage(); ?>
+
+	<form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&amp;action=save&amp;noheader=1" enctype="multipart/form-data">
+		
+		<?php echo wp_nonce_field('wpsg-product-save-'.wpsg_getInt($_REQUEST['edit_id'])); ?>
+		
+		<div id="postbox" class="metabox-holder has-right-sidebar">
+
+			<div id="side-info-column" class="inner-sidebar" style="width:386px;">
+				<div id="side-sortables" class="meta-box-sortables ui-sortable" style="width:380px;">
+
+					<?php if (!isset($_REQUEST['wpsg_lang'])) { ?>
+						<div id="wpsg_preis" class="">
+							<div class="inside panel-price">
+
+								<?php echo $this->view['arSubAction']['price']['content']; ?>
+
+							</div>
+						</div>
+						<div id="wpsg_paymentmethods" class="">
+							<div class="inside panel-payship">
+
+								<?php echo $this->view['arSubAction']['payship']['content']; ?>
+
+							</div>
+						</div>
+					<?php } ?>
+
+					<?php $this->callMods('produkt_edit_sidebar_contentt', array(&$this->view['data'])); ?>
+
+				</div>
+			</div>
+
+			<div id="post-body">
+
+				<div id="titlediv" style="margin-right:400px;">
+					<div id="titlewrap">
+						<input type="text" placeholder="<?php echo __('Produktname', 'wpsg'); ?>" id="title" value="<?php echo wpsg_hspc($this->view['data']['name']); ?>" tabindex="1" size="30" name="name">
+					</div>
+				</div>
+
+				<br />
+
+				<div id="normal-sortables" class="meta-box-sortables" style="margin-right:400px;">
+
+					<div id="wpsg_generally" class="">
+						<div class="inside panel-general">
+
+							<?php echo $this->view['arSubAction']['general']['content']; ?>
+
+						</div>
+					</div>
+
+					<div id="wpsg_description" class="postbox">
+						<h3 class="wpsg_handlediv texte-title">
+							<span title="<?php echo __('Zum Ein/Ausklappen hier klicken', 'wpsg'); ?>" class="handlediv"><br /></span>
+							<span><?php echo __('Beschreibung', 'wpsg'); ?></span>
+						</h3>
+						<div class="inside panel-texte">
+
+							<?php echo $this->view['arSubAction']['texte']['content']; ?>
+
+						</div>
+					</div>
+
+					<div id="wpsg_images" class="">
+						<div class="inside panel-images">
+
+							<?php echo $this->view['arSubAction']['images']['content']; ?>
+
+						</div>
+					</div>
+
+					<div id="wpsg_stock">
+						<div class="inside panel-stock">
+
+							<?php echo $this->view['arSubAction']['stock']['content']; ?>
+
+						</div>
+					</div>
+
+					<div id="wpsg_mods" class="mod-area">
+						<h1>Aktivierte Mods</h1>
+						<?php
+
+							foreach($this->view['arSubAction'] as $index => $subArr)
+							{
+								if(strpos($index, 'wpsg_mod') !== false)
+								{
+
+									$modtitle = $this->view['arSubAction'][$index]['title'];
+
+									echo "<div class='inside mod-$modtitle'>";
+									echo $this->view['arSubAction'][$index]['content'];
+									echo '</div>';
+
+								}
+							}
+
+						?>
+					</div>
+
+					<?php $this->callMods('produkt_edit_content', array(&$this->view['data'])); ?>
+
+				</div>
+
+				<?php if ($_REQUEST['edit_id'] > 0) { ?>
+					<input type="hidden" name="edit_id" value="<?php echo $_REQUEST['edit_id']; ?>" />
+				<?php } ?>
+
+				<?php if (isset($_REQUEST['wpsg_lang'])) { ?>
+					<input type="hidden" name="wpsg_lang" value="<?php echo $_REQUEST['wpsg_lang']; ?>" />
+				<?php } ?>
+
+				<p class="submit">
+					<input type="submit" value="<?php echo __('Produkt speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" />
+					<input type="submit" value="<?php echo __('Produkt speichern und zur Übersicht', 'wpsg'); ?>" class="button-primary" id="submit_index" name="submit_index" />
+				</p>
+
+			</div>
+
+		</div>
+
+	</form>
+
+</div>

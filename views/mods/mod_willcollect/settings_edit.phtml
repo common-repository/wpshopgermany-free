@@ -1,0 +1,25 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen der Versandart "Selbstabholung"
+	 */
+
+?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_willcollect_aktiv', __('Aktiv', 'wpsg'), $this->get_option('wpsg_mod_willcollect_aktiv'), array('help' => 'wpsg_mod_willcollect_aktiv')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_willcollect_bezeichnung', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_willcollect_bezeichnung'), array('help' => 'wpsg_mod_willcollect_bezeichnung')); ?>
+<?php echo wpsg_drawForm_Textarea('wpsg_mod_willcollect_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_willcollect_hint'), array('help' => 'wpsg_mod_willcollect_hint')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_willcollect_paymentneed', __('Selbstabholung erfordert Barzahlung', 'wpsg'), $this->get_option('wpsg_mod_willcollect_paymentneed'), array('help' => 'wpsg_mod_willcollect_paymentneed')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_willcollect_dontMerge', __('Selbstabholung nicht kombinieren', 'wpsg'), $this->get_option('wpsg_mod_willcollect_dontMerge'), array('help' => 'wpsg_mod_willcollect_dontMerge')); ?>
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_willcollect_adress', __('Anschrift', 'wpsg'), $this->get_option('wpsg_mod_willcollect_adress'), array('help' => 'wpsg_mod_willcollect_adress')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_willcollect_street', __('Straße', 'wpsg'), $this->get_option('wpsg_mod_willcollect_street'), array('help' => 'wpsg_mod_willcollect_street')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_willcollect_plzort', __('PLZ/Ort', 'wpsg'), $this->get_option('wpsg_mod_willcollect_plzort'), array('help' => 'wpsg_mod_willcollect_plzort')); ?>
+<br />
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_willcollect_payment', __('Zahlungsart "Barzahlung" aktivieren', 'wpsg'), $this->get_option('wpsg_mod_willcollect_payment'), array('help' => 'wpsg_mod_willcollect_payment')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_willcollect_payment_bezeichnung', __('Bezeichung der Zahlungsart', 'wpsg'), $this->get_option('wpsg_mod_willcollect_payment_bezeichnung'), array('help' => 'wpsg_mod_willcollect_payment_bezeichnung')); ?>
+<?php echo wpsg_drawForm_Textarea('wpsg_mod_willcollect_payment_hint', __('Hinweistext der Zahlungsart', 'wpsg'), $this->get_option('wpsg_mod_willcollect_payment_hint'), array('help' => 'wpsg_mod_willcollect_payment_hint')); ?>
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_willcollect_gebuehr', __('Gebühr/Rabatt (Versandart)', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_willcollect_gebuehr'), true), array('help' => 'wpsg_mod_willcollect_gebuehr','unit' => $this->get_option('wpsg_currency').' / %')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_willcollect_payment_gebuehr', __('Gebühr/Rabatt (Zahlungsart)', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_willcollect_payment_gebuehr'), true), array('help' => 'wpsg_mod_willcollect_payment_gebuehr','unit' => $this->get_option('wpsg_currency').' / %')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_willcollect_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_willcollect_mwst'), array('help' => 'wpsg_mod_willcollect_mwst')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_willcollect_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_willcollect_mwstland'), array('help' => 'wpsg_mod_willcollect_mwstland')); ?>

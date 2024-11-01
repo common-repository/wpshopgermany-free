@@ -1,0 +1,332 @@
+#4.0.0 / 5259
+ - Feature - Produktbilder - Mehrfacher Upload möglich
+ - Feature - Produktbilder - Bilder unter /wpsg verschoben (!)
+ - Feature - Produktbilder - Einzelnes löschen des Bildercaches für ein Produkt
+ - Feature - Produktbilder - in Mediathek gespeichert
+ - Feature - Produktbilder - Mehrfachupload aus Mediathek in Produkt möglich
+ - Feature - Produktbilder - Drag& Drop ermöglicht die Auswahl des Vorschaubildes (erstes Produktbild)
+ - Feature - Produkte können als Entwurf gespeichert (nicht veröffentlicht) werden
+ - Feature - Exportprofile - Export mit Produktbildern möglich
+ - Feature - Vorkasse - QR-Code im Bestellablauf integriert
+ - Feature - Modul Bestellupload realisiert - ermöglicht Upload von Dateien innerhalb des Bestellablaufs
+
+#4.0.0
+- Bugfix - Rechtschreibfehler
+- Bugfix - Bestellverwaltung Füllmenge nicht in WPSG_TBL_ORDERPRODUCT
+- Buffix - PayPal nimmt jezt Daten aus der Versandadresse (shipping_address) und nicht mehr die Rechnungsadresse (billing_address)
+- Feature - Produktname in Produktverwaltung
+- Feature - Anzeige von angepassten Templates auf der "Über" Seite (Wenn Userviews aktiv)
+- Feature - Produkttemplates werden jetzt auch im Child Theme gesucht und verwendet
+- Feature - Darstellung PayPalPlus Bestellbackend
+- Feature - Darstellung Trusted Shops Bestellbackend
+- Feature - Bestelldaten in Kopf der Bestellansicht
+- Feature - Kundenkommentar in Bestallansicht
+
+#4.0.1
+- Feature - Kundenzusammenführung über Kundenverwaltung
+- Feature - Rechnung zeigt Artikelnummer an (vgl. wie Lieferschein)
+- Bugfix - Produkte lassen sich ohne Produktartikelmodul anlegen/speichern
+- Bugfix - Kunden löschen (als gelöscht markieren) nach Kundenzusammenführung
+- Bugfix - Nach Kundenzusammenführung zur Kundenübersicht umleiten
+- Bugfix - PHP7.1 Kompatibilität
+- Bugfix - Sortieroptionen auch in der Produktansicht vorhanden
+- Bugfix - korrekter MwSt.-Anzeige in der Produktview
+- Bugfix - Geburtsdatum wird im Profil ausgefüllt, wenn es im Checkout ebenfalls ausgefüllt wurde
+
+#4.0.2
+- Bugfix - Speichern von Bestellbedingungen wieder möglich
+- Bugfix - Variantenname und Preis im DownloadPlus korrekt dargestellt
+- Bugfix - Korrektur in der Lizenzverwaltung
+- Bugfix - UserViews unter wp-content erlauben
+- Feature - "zusätzliche Informationen" im standard.phtml
+- Feature - Kommentarzähler für Microformat
+
+#4.0.3
+- Bugfix - Wirecard erhält korrektes Lieferland  
+- Bugfix - gloable Lieferzeit wird korrekt genutzt
+- Bugfix - Radio Buttons schalten die Varianten um
+- Bugfix - Warnung bei PDF Erstellung unterbunden
+- Bugfix - Verzeichnis für Girocode anlegen
+- Bugfix - korrekte Darstellung der Warnungen im Checkout bei Kundenvariablen
+- Bugfix - Lieferadressenland im OnePageCheckout wird korrekt angezeigt
+- Bugfix - "Land auf Rechnung verbergen" wird korrekt umgesetzt
+- Bugfix - Anrede bei Lieferanschrift korrekt beschriftet
+- Bugfix - Konverter: Deaktivierte Radioboxen sind nach Konvertierung nicht mehr aktiv
+- Bugfix - Konverter: aktivierte Produktvarianten sind nach der Konvertierung wieder aktiv
+- Bugfix - Link zum Shop korrigiert
+- Bugfix - globale Lieferzeit korrigiert
+- Feature - Reihenfolge synchron zwischen Rechnungs- und Lieferadresse
+- Feature - Alte Daten in URL Benachrichtigung aus Adresstabelle ziehen
+- Feature - Produktartikelmodul stellt jetzt die Kurzbeschreibung an den Anfrang für SEO Texte
+- Feature - "Produktbild als Beitragsbild verwenden" ist standardmäßig aktiv
+- Feature - Suche in Produktverwaltung beachtet auch Varianten (Name und Artikelnummer)
+- Feature - Max-Executive-Time im Konverter für Lieferscheine/Rechnungen erhöht
+
+#4.0.4
+- Bugfix - Cross Site Scripting 
+ 
+#4.0.5
+- Bugfix - Filter in Bestellverwaltung bleibt offen, wenn Bestellungen gefiltert
+- Bugfix - Produktrabatt in Bestellverwaltung kein zweites Mail berechnet 
+- Bugfix - Shop gibt auf geschützten Seiten keinen Inhalt mehr aus
+- Bugfix - Unvollständige Bestellungen nicht im Kundenmenü anzeigen, wenn Option deaktiviert
+- Bugfix - wordpresseigener Passwortschutz für eine Seite greift auch für Produktübersicht
+- Feature - AboProdukte: automatische Verlängerung bei Vorkasse
+- Feature - AboProdukte: Optionaler Versand an Admin, wenn Abo angehalten werden soll
+- Feature - AboProdukte: Aboverwaltung im Kundenprofil (Frontend)
+- Feature - AboProdukte: automatische Aboverlängerung integriert
+- Feature - AboProdukte: Integration separate Aboverwaltung im Backend
+- Feature - Erweiterung des Musterwiderrufsformulares um Telefon, Fax und Mailadresse
+- Feature - Kundendatenabfrage kann partiell ausgeblendet werden
+
+#4.0.6
+- Bugfix: Lagerbestand aus Variantenbestand korrigiert
+- Bugfix: Ausgabekorrektur bei Mehrfachberechnung
+- Bugfix: Korrektur für Kundendatenexport in der Kundenverwaltung
+- Bugfix: Bestellstatusänderung liefert leere Bestellung
+- Bugfix: im Warenkorb wurde kein Löschen-Button pro Produkt angezeigt
+- Bugfix: Aktivierungsprobleme in Multiblogumgebung
+- Bugfix: Beschränkung des Pathkeys (ProduktArtikel) auf 20 Zeichen
+- Bugfix: Maskierung für Sonderzeichen 
+- Feature: Erweiterung der Sprachdateien aufgrund von Modulerweiterungen
+- Feature: Urlaubsdarstellung in Lieferzeitmodul integriert
+- Feature: UPS-Logo integrieren
+
+#4.0.7
+- Bugfix: Löschen von Bestellungen wieder möglich (Problem bei fehlendem AboProdukte Modul)
+- Bugfix: Darstellung der Lizenzeingabe
+- Bugfix: Fehler bei fehlender SSL-Verschlüsselung entfernt
+- Bugfix: Konverter verschiebt PDF-Dokumente (DownloadProdukte) unter uploads
+- Bugfix: Kein Abbruch wenn es keine Administrator-Rolle gibt
+- Feature: mehrzeilige Eingabe von Fußtexten
+
+#4.0.8
+- Bugfix: doppelter Pfad in Multiblog
+- Bugfix: URL der News angepasst
+- Feature: IP Anonymisierung (DSGVO)
+- Feature: Downloadlink für Gutschein
+- Feature: Modul (Füllmenge, Gewicht, ...) aktiv und keine Eingabe in Produktbackend, wird keine Darstellung im Produktfrontend
+- Feature: Grundpreis in Füllmenge separat ausgewiesen
+- Feature: optionale Integration der Kontaktdaten des Datenschutzbeauftragten
+- Feature: Integration eines EU-Vertreters für Shops mit Hauptsitz außerhalb der EU
+
+#4.0.9
+- Bugfix: Produktbewertung mittels globale Kommentarfunktion aktivierbar
+- Bugfix: Gutscheinprodukte sind jetzt zu den erstellten PDFs im Backend verlinkt
+- Bugfix: Sicherheitsbugfix (Nur noch phtml Dateien unterhalb wp-content möglich)
+- Bugfix: Sicherheitsbugfix (XSS Lücke im Modul Produktübersichten)
+- Bugfix: Girocode löscht die Einstellungen für die Erfolgsseiten icht mehr bei Modulaktivierung/Update
+- Feature: Produktvarianten - Export von Produktname / Produktartikelnummer über Exportprofile möglich
+- Feature: Lagerbestand - Export vom Lagerbestand / Mindestlagerbestand über Exportprofile möglich
+- Feature: Aboprodukte - Export von Abo Startzeit, Abo Laufzeit, Abo Kosten Verlängerung und Abo Dauer (Tage) über Exportprofile möglich
+- Feature: Kundenverwaltung - Suche nach Kundengruppen möglich
+- Feature: Gutscheine lassen sich bearbeiten
+- Feature: Die für die Statistik benötigte GoogleMaps API Bibliothek kann jetzt optional deaktiviert werden
+
+#4.0.10
+- Bugfix: PDF Dokumente im Backend nur verlinkt wenn auch aus einem GutscheinProdukt erstellt
+- Bugfix: Start- und Enddatum der Gutscheine aus Gutscheinprodukt in der korrekten Zeitzone erstellt
+- Bugfix: Template für die Listeansicht in Produktartikeln kann jetzt definiert werden 
+- Bugfix: Konverter aktiviert das neue Produktvariantenmodul bei Bedarf um die benötigten Tabellen anzulegen
+- Bugfix: PHP Warnung bei Produktbewertungen
+- Bugfix: Paypal-Schnittstellenanpassung 
+- Bugfix: Mögliche Sicherheitslücke beim Upload von Widerrufsbelehrungen verhindert
+
+#4.0.11
+- Bugfix: mögliche Sicherheitslücke beim Upload von Widerrufsbelehrungen verhindert
+
+#4.1.0
+- Bugfix: Abfrage, ob Column bei Import schon vorhanden ist
+- Bugfix: Produktvarianten - Lagerbestand der aktuell ausgewählten Variante wird jetzt im Produkttemplate angezeigt 
+- Bugfix: Unter bestimmten Umständen lässt sich der Bewertungsreiter in der Produktverwaltung nicht mehr öffnen
+- Bugfix: Produktbild bei Auswahl aus Mediathek wird nur die ID übergeben
+- Bugfix: Bug gefixt, bei dem die Seite "Bestellübersicht" im Frontend nur Fehler ausgegeben hat
+- Bugfix: Bestellvariable werden im Checkout wieder dargestellt
+- Bugfix: Anrede wird nach Änderung im Profil (Frontend) nicht dargestellt 
+- Bugfix: Speicherprobleme bei Profildaten (Frontend) behoben
+- Bugfix: Paypal: WebHook-Log vor allen anderen Einstellungen (Bestellstatusänderung spezifiziert)
+- Bugfix: GiroPay überarbeitet
+- Bugfix: Paypal: Module erst aufrufen, wenn der Bestellstatus sich nicht ändert 
+- Bugfix: Ländern ohne Steuern wird der korrekte Steuersatz des Standardlandes abgezogen 
+- Bugfix: Darstellungsfehler bei Versandart "Versandkostenfrei" behoben
+- Bugfix: Kundendatenoption "nicht anzeigen" greift auf Overview
+- Bugfix: Produktkategoriedarstellung optimiert
+- Bugfix: Versand per Mail wird nicht mehr von Versandkostenfrei und Selbstabholung unterdrückt
+- Bugfix: E-Mailkonfiguration - Verlinkungen werden wieder gespeichert
+- Bugfix: Exportprofil: Probleme bei Übermittlung von Content-Length gelöst
+- Bugfix: htaccess für Apache 2.2 und 2.4 optimiert
+- Bugfix: Optimierung Paypal für php7.2 - Übertragungsprobleme gelöst
+- Bugfix: Betreffzeile in Vorkasse korrigiert
+- Bugfix: Berechtigungsprobleme für unterschiedliche Rollen korrigiert
+- Bugfix: DownloadPlus: Korrektur Ersetzungsfunktion bei der Individualisierung mit Produktvarianten
+- Bugfix: fehlender Warenkorbbutton im Widget, nachdem ein Produkt in den Warenkorb gelegt wurde
+- Bugfix: Sortierung nach Preis von Produkten in Produktansichten beachtet nun Variantenpreis
+- Bugfix: Integration der Sprachen in WP-Language-Ordner
+- Bugfix: Problem der sporadische Löschung der Lizenz aus der Pluginverwaltung im Multiblog behoben
+- Bugfix: fehlerhafte Übernahme der Dateianhänge in Mediathek
+- Bugfix: automatisch versendete Rechnungen stellen den Status automatisch auf "Rechnung geschrieben"
+- Bugfix: CSS W3C Validität hergestellt
+- Bugfix: Beim ändern der Lieferadresse ist nicht mehr das Land der Rechnungsadresse ausgewählt
+- Bugfix: Neuer Platzhalter %kunde_anrede% für die Kundenanrede 
+- Bugfix: Produktkategorien enthalten alle zugeordneten Produkte
+- Feature: Satolo Newsletter-Registrierung mittels Double-OptIn
+- Feature: Copy&Paste für die E-Mailwiederholung im Frontend gesperrt - händische Eingabe beider Mailadresse erzwungen
+- Feature: Darstellungsoptimierung Staffelpreise
+- Feature: Exportprofil - Weiterleiten nach Musterimport
+- Feature: Einstellungen importieren führt eine automatische Datenbankaktualisierung durch
+- Feature: Satolo Newsletter-Abonnenten in gewählte Liste integrieren
+- Feature: Vorauswahl der Trackinganbieter (bei aktiviertem Paketverfolgungsmoduls) in Versandart auswählbar
+- Feature: Erweiterung der Platzhalter für Produktvarianten innerhalb des GutscheinProduktes
+- Feature: Export von Variationen von Varianten als einzelne Spalten
+- Feature: Rechnungsmodul - Ausrichtung des Logos auf den Rechnungen integriert
+- Feature: Lieferscheinmodul - Ausrichtung des Logos auf den Lieferscheinen integriert
+- Feature: Integration und Ausrichtung eines Logos auf allen Shop-E-Mails möglich
+- Feature: Lagerbestandsmodul - Mail bei Erreichen des Minimallagerbestandes einer Variante möglich
+- Feature: Exportprofil- Erweiterung der Datenfelder zur Erstellung eines GoogleShopping-Profils (Zustand, Bildlink, Versand)
+- Feature: Produktattribute: optionale Darstellung im Produkt-, Warenkorb-, Bestellübersichts- und Mailtemplate
+- Feature: DownloadProdukte: Versandart "Versand per Mail" deaktivierbar
+- Feature: AboProdukte: optionale Informationsmail vor Ablauf des Abos (Zeitspanne variable konfigurierbar) möglich
+- Feature: reCaptcha für Kundenregistrierung ermöglicht
+- Feature: individuelle Anhänge an Mails ermöglicht
+- Feature: zeitlich planbare Löschfunktion der Kundendatensätze (DSGVO) im Datenschutzreiter integriert
+- Feature: Kooperationsfähigkeit mit dem neuen WordPresseigene Pagebuilder "Gutenberg" sichergestellt
+- Feature: Gutscheinintegration optional deaktivierbar, wenn ein Rabatt aktiv ist
+- Feature: Übergabe der Rechnungs- und Lieferadressen an Paypal Plus
+- Feature: Bestellung können im Backend vollständig angelegt werden
+- Feature: Anrede in Kundenmails wird jetzt angezeigt und ist übersetzbar
+- Feature: Integration SMS-Versand als Kundenkontakt im Modul "Kundenkontakt" im Bestellbackend möglich
+- Feature: Integration der Daten für eine Zweigstelle (Shopinfo) möglich
+
+# 4.1.1
+- Bugfix: Hausnummerdarstellung (separate Hausnummererfassung) auf Rechnungen behoben
+- Bugfix: Hausnummerdarstellung (separate Hausnummererfassung) auf Lieferung behoben
+- Bugfix: Fehler bei alten Bestellungen mit Varianten behoben
+- Bugfix: Variantenpreise schalten im Produkttemplate wieder um
+- Bugfix: Ausrichtung des Betreffs bei Vorkasse ist wieder rechtsbündig
+- Bugfix: Bestellkommentare werden gespeichert
+- Bugfix: Lieferadresse in Bestellmails sichtbar
+- Bugfix: Staffelpreise zeigen wieder den korrekten Preis an
+- Bugfix: Kurzanzeige der MwSt. angepasst (kein MwSt-Satz anzeigen)
+- Bugfix: Speichern von Daten bei Bankeinzug
+- Bugfix: QR-Code für Vorkasse wird korrekt in Mails angezeigt
+
+# 4.1.2
+- Bugfix: Platzhalterprobleme behoben
+- Bugfix: Lagerbestand zählt wieder korrekt
+- Bugfix: negativer Rechnungsbetrag durch Gutscheine nicht möglich
+- Bugfix: Bestellung anlegen, damit die Platzhalter an PayPal ersetzt werden können
+- Bugfix: Alte Berechnung Versand- und Zahlungskosten entfernt
+- Bugfix: pdf_parser aktualisiert (FPDF Version 1.81, FPDI Version 2.2.0, FpdiProtection 2)
+- Bugfix: Paypal Platzhalter erweitert
+- Bugfix: prozentuale Gebühren/Rabatte im Paypal Plus werden gespeichert
+- Bugfix: ProduktArtikel - Kategorieaufbau wird ohne Warnung durchgeführt
+- Feature: Erweiterung der englischen Sprachdatei
+- Feature: DSGVO-Löschfunktion kann entweder alle Kundendaten oder nur Gastkundendaten löschen
+
+#4.1.3
+- Bugfix: Kostenschlüssel korrigiert
+- Bugfix: Rechnungskorrekturen werden wieder vollständig ausgefüllt
+- Bugfix: Gutscheine werden vollständig auf Rechnungen eingetragen
+- Bugfix: Kundenverwaltung vergleicht die E-Mailadresse aus der Datenbank (eingeloggter User) mit dem aktuell bestellenden Kundendatensatz
+- Feature: "Weiter shoppen"-Seite kann über die Seitenkonfiguration zugeordnet werden
+- Feature: Optionale Darstellung des Produktgewichtes in der Produktverwaltung
+- Feature: Optionale Darstellung der Füllmenge in der Produktverwaltung
+- Feature: Optionale Darstellung der EAN und GTIN in der Produktverwaltung
+- Feature: Optionale Darstellung der Lieferzeit in der Produktverwaltung
+- Feature: Optionale Darstellung des Lagerbestandes in der Produktverwaltung
+- Feature: Optionale Darstellung der Produktgruppe in der Produktverwaltung
+
+#4.1.4
+- Bugfix: Zahlvarianten sind wieder löschbar
+- Bugfix: Versandkostenstaffelung beachtet Gewicht wieder ordnungsgemäß für das Bestellbackend und der Rechnung
+- Bugfix: Paypal-Express gibt kein Land mehr mit
+- Bugfix: Produktvariable im Bestellbackend ist wieder editierbar
+- Bugfix: Behebung möglicher Sicherheits-Schwachstellen
+- Bugfix: Gutscheine können wieder mehrfach verwendbar sein
+- Bugfix: Cache verhindert Rechnungsversand 
+- Bugfix: Produktvariable wird wieder im Mailtemplate dargestellt
+- Bugfix: Kein Eingabezwang bei deaktivierter Kreditkartenzahlung
+- Bugfix: Korrekturen Versand von Mindestlagerbestandsmengen
+- Bugfix: PHP-Problem im Kreditkartenmodul behoben
+- Bugfix: Kostenberechnung für kombinierte Versandkosten wieder korrekt
+- Bugfix: Gesamtgewicht im Overview wird korrekt angezeigt
+- Bugfix: Korrektur bei der Filterung von Typ/Betrag bei Versandarten
+- Bugfix: unrabattierter Preis wird als "OldPrice" dargestellt und überschreibt im Produkt-hinterlegten "alten Preis"
+- Bugfix: Gutscheinwert wird nicht mehr addiert, sondern vom Warenkorbwert abgezogen
+- Bugfix: Probleme beim erstmaligen aktivieren in einem Multiblog behoben
+- Bugfix: Paketverfolgung erzeugt wieder einen Link in der Statusmail bei Änderung
+- Feature: KundenID in Kundenverwaltung sortierbar
+- Feature: Neue Option "Wertgutschein", auch als Gutscheinprodukt
+- Feature: optionale Darstellung des rabattierten Preises in der Produktübersicht
+- Feature: Textintegration für unterschiOrdedliche Statusmeldungen in Statusmail an Besteller möglich 
+- Feature: neues Produtktemplate mit Minigallerie der Produktbilder als Slider 
+
+#4.1.5
+- Bugfix: Korrekte Nounce Überprüfung beim Sprung von der Bestellübersicht in ein Produkt
+- Bugfix: Preisanzeige an, wenn Kundenverwaltung inaktiv, egal wie es vorher eingestellt war / Task #685
+- Bugfix: Nounce Fehler Backend Rechnungsverwaltung, Lieferschein, PayPal PLUS Stornierung/Statusaktualisierung / Task #687  
+- Feature: Produktartikel - Positionsspalte in Backend sichtbar und sortierbar
+
+#4.1.6
+- Bugfix: Mögliches Problem beim Update Prozess behoben
+- Bugfix: Nounce Absicherung beim aktualisieren der Zahlung im Modul "PayPal"
+- Bugfix: Bereits gezahlte PayPal Bestellungen zeigen dies jetzt auf der Bestellabschlußseite an
+- Bugfix: Das Standard Löschen Icon für Wertgutscheine wird im Warenkob angezeigt
+- Bugfix: Verlinkung im Backend zum Produkt mit Nounce geschützt
+- Bugfix: Korrektur Preisanzeige Produkttemplate ohne Kundenverwaltung
+- Feature: Gutscheinprodukte - Preis für den Gutschein kann vom Kunden frei definiert werden
+- Feature: Gutscheinprodukte - Optionale Mindest- und Maximalschranken für den Flexiblen Preis
+
+#4.1.7
+- Bugfix: Beim kopieren von Bildern wird die Bildzuordnung nicht mehr zerstört
+- Feature: Produktbilder können beim kopieren optional ausgeschlossen werden
+
+#4.1.8  
+- Bugfix: WordPress zeigt keine Aktualisierungen an, wenn wpShopGermany aktiv
+- Bugfix: PayPal Zahlung konnte nicht gestartet werden nach Bestellabschluß
+- Bugfix: Spalte Artikelnummer im Produktbackend ist wieder sichtbar
+- Bugfix: Zeilenabstand vor Fußtexten in Mails eingebaut
+- Bugfix: Speicherung von Fußtexten mit HTML möglich
+- Bugfix: Textvereinfachung bei flexiblen Preis Gutscheinprodukt
+- Bugfix: Doppelter Downloadlink bei Gutscheinprodukt raus
+- Bugfix: Speichern von Feldern im Rechnungsmodul wieder möglich
+- Bugfix: Gutscheinprodukt und flexibler Preis arbeitet mit "Mehrfach mit Menge 1"
+- Bugfix: Speichern im alternatives Design in der Produktverwaltung wieder möglich / Ticket #700
+- Bugfix: Speichern von Produktattributen RTE mit Links wieder möglich / Ticket #699
+- Bugfix: Speichern des Fonts in DownloadPlus wieder möglich / Ticket #698
+- Bugfix: Warnungen reduziert / Ticket #702
+- Bugfix: Produkte mit gleichen Originaldokumenten (DownloadPLUS) können jetzt zusammen bestellt und direkt individualisiert werden
+- Bugfix: Paketverfolgungslink wird direkt beim wechsel auf "Ware versendet" versendet.
+- Bugfix: Darstellungsanpassungen Wordpress Version 5.3
+- Bugfix: Artikelnummmerüberprüfung nicht mehr für Übersetzungen
+- Bugfix: Verlinkung zum Kunden in Statistik / Bestellverwaltung wiederhergestellt
+- Bugfix: wpNewsletterGermany beim Import werden bestehende Abonnenten nicht wieder auf aktiv gesetzt
+- Bugfix: Rechnungen - Links auf Briefpapier/Logo und Vorschaulinks korrigiert
+- Feature: URL Benachrichtigung sendet einen User Agent und Referer mit (Wordfence Regel) 
+- Feature: Shop rechnet jetzt mit gerundeten Einzelpreisen (Altes Verhalten optional)
+- Feature: Lieferadresse lässt sich zu einer Bestellung nachträglich anlegen und auch löschen
+- Feature: Beim kopieren/speichern von Produkten kann der Bestand innerhalb einer Produktgruppe automatisch ermittelt werden (Optional)
+ 
+#4.2.0
+- Bugfix: Exportprofile (MwSt Wert) / Task #705
+- Bugfix: Export von verwendeten Gutscheinnummern / Task #705
+- Bugfix: Linküberprüfung in Abonverwaltung / Task #707
+- Bugfix: Keine Warnung wenn News nicht geladen wurden
+- Bugfix: News werden jetzt wieder korrekt zwischengespeichert 
+- Bugfix: Es wird nicht mehr in der Lizenzverwaltung "Es ist eine neue Version verfügbar" angezeigt wenn noch keine Version des Moduls installiert ist
+- Bugfix: Kundenverwaltung Haken "Alle markieren" lädt die Seite nicht mehr neu
+- Bugfix: Zusammengefasste/gelöschte Kunden verschwinden aus der Bestellverwaltung
+- Bugfix: Bricht man die PayPal Zahlung bei PayPal (PayPal Plus) ab und hat die Zahlung über den Warenkorb gestartet, wird man in den Warenkorb zurückgeleitet
+- Bugfix: Zahlungsart fällt durch Länderauswahl im Checkout weg, ist aber Kundenvoreinstellung. -> Overview ist korrekt beim ersten laden
+- Bugfix: Link in Paketverfolgung geht in neuem Fenster auf
+- Bugfix: Korrektur beim schreiben eines Fehlers im PayPal Modul bei Stornierung
+- Bugfix: Ausweisung von Anteilig bei Versand- und Zahlungskosten in Rechnung/Gutschrift
+- Bugfix: Produktoption "Bewertungspunkte" lässt sich mit Wert "Aus Kommentarbewertung" speichern
+- Bugfix: Auswahl der Zahl- und Versandarten im Produkt funktioniert zuverlässig (PayPal Plus + Zahlvariante) / Task #708
+- Bugfix: Speichern von Rabatt % Werten in Kundengruppen/Produktgruppen und Produkten korrigiert
+- Feature: Zahlungsart "Kostenfrei" für Bestellungen die mit 0,- durchgeführt werden / Task  #709
+- Feature: Füllmengen überarbeitet (Bezugseinheit und Umrechnung im Produkt unterschiedlich und definierbar) 
+
+#4.2.1
+- Feature: Option "Nach dem entfernen eines Produktes auf die günstigste Zahlungsart wechseln" hinzugefügt
+- Bugfix: Verlinkung aus Produktgruppenübersicht über Link "Zur Produktliste" funktioniert wieder

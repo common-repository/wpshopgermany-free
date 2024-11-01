@@ -1,0 +1,30 @@
+<?php
+    
+    /**
+     * Template für das Bearbeiten eines Rabattes im Backend
+     */
+  
+    namespace wpsg;
+    
+    /** @var wpsg_calculation $oCalculation */
+    $oCalculation = $this->view['oCalculation'];
+    
+    if ($this->getBackendTaxView() === WPSG_NETTO) $strBN = 'NETTO';
+    else $strBN = 'BRUTTO';
+    
+    $arCalculation = $oCalculation->getCalculationArray();
+    
+?>
+
+<form id="wpsg_be_discount_form">
+
+    <?php echo wpsg_drawForm_Input('be_discount_amount', wpsg_translate(__('Rabattwert in #1# (#2#) oder % ', 'wpsg'), $this->get_option('wpsg_currency'), $strBN), @$arCalculation['discount'][0]['set']); ?>
+    
+</form>
+
+<script>
+    
+    jQuery('#wpsg_be_discount_form').on('submit', function() { return false; } );
+    jQuery('#be_discount_amount').focus();
+    
+</script>

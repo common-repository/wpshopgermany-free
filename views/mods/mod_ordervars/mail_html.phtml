@@ -1,0 +1,18 @@
+<?php
+
+	/**
+	 * Template für die Integration der Bestellvariablen in die HTML Mails
+	 * dieses Template wird für die Adminmail, Kundenmail und Auftragsbestätigung verwendet
+	 */
+
+?> 
+<h2><?php echo __('Bestellvariablen', 'wpsg'); ?>:</h2> 
+
+<table style="width:100%;">
+	<?php foreach ($this->view['wpsg_mod_ordervars']['data'] as $ov) { ?>
+	<tr>
+		<td style="padding-right:15px; text-align:left;"><?php echo __($ov['name'], 'wpsg'); ?>:</td>
+		<td style=""><?php echo $ov['value']; ?></td>
+	</tr> 
+	<?php } ?>
+</table> 

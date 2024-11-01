@@ -1,0 +1,386 @@
+<?php
+
+	/**
+	 * Template für die Registrierungsseite
+	 */
+
+?>
+<?php //wpsg_debug($this->view['error']) ?>
+<script type="text/javascript">
+
+	jQuery(document).ready(function() {
+
+		<?php if ($this->get_option('wpsg_form_validation') == '1') { ?>
+
+		if (typeof jQuery.validationEngine == "object")
+		{
+		
+			jQuery("#form-step2").validationEngine('attach', {promptPosition : "centerRight", scroll: false});
+				
+			jQuery('.wpsg_mod_kundenverwaltung_login').bind('click', function(){
+				jQuery("#form-step2").validationEngine('detach');		
+			});
+
+		}
+		
+		<?php } else if ($this->get_option('wpsg_form_validation') == '2') { ?>
+
+		jQuery.validator.addMethod("cRequired", jQuery.validator.methods.required, "<?php echo __('Dieses Feld ist ein Pflichtfeld.', 'wpsg'); ?>");
+		jQuery.validator.addClassRules('validate[required]', { cRequired: true } );
+		jQuery("#form-step2").validate( { 
+			ignore: '',
+			errorClass: 'wpsg_error',
+			onsubmit: false,
+			showErrors: function(errorMap, errorList) {
+
+				this.defaultShowErrors();	
+
+			}
+		} ); 
+
+		jQuery('.wpsg_registerButton').bind('click', function() { 
+
+			var bReturn = jQuery('#form-step2').validate().form();
+			if (jQuery('#form-step2 input.wpsg_error').length > 0) jQuery('#form-step2 input.wpsg_error')[0].focus();
+			return bReturn;
+			  
+		} );
+		
+		<?php } ?>
+		
+
+// Visualisierung der Passwortstärke 
+
+		jQuery('input[type=password]').keyup(function(){
+
+			var password = jQuery(this).val();
+			
+			if (password.length < 6) {
+				
+				jQuery('#wpsg_pwd_length').removeClass('valid').addClass('invalid');
+
+			}else{
+
+				jQuery('#wpsg_pwd_length').removeClass('invalid').addClass('valid');
+	
+			}
+
+			if (password.match(/([a-z])/)) {
+				
+				jQuery('#wpsg_pwd_letter').removeClass('invalid').addClass('valid');
+
+			}else{
+
+				jQuery('#wpsg_pwd_letter').removeClass('valid').addClass('invalid');
+	
+			}
+
+			if (password.match(/([A-Z])/)) {
+				
+				jQuery('#wpsg_pwd_capital').removeClass('invalid').addClass('valid');
+
+			}else{
+
+				jQuery('#wpsg_pwd_capital').removeClass('valid').addClass('invalid');
+	
+			}
+			
+			if (password.match(/([0-9])/)) {
+				
+				jQuery('#wpsg_pwd_number').removeClass('invalid').addClass('valid');
+
+			}else{
+
+				jQuery('#wpsg_pwd_number').removeClass('valid').addClass('invalid');
+	
+			}
+
+			if (password.match(/([~,!,%,@,&,#,°,^,$,?,_,*,§])/)) {
+				
+				jQuery('#wpsg_pwd_speziell').removeClass('invalid').addClass('valid');
+
+			}else{
+
+				jQuery('#wpsg_pwd_speziell').removeClass('valid').addClass('invalid');
+	
+			}
+			
+
+			jQuery('#wpsg_pwd_info').show(); 
+
+
+			jQuery(this).blur(function(){
+
+				jQuery('#wpsg_pwd_info').hide(); 
+				
+			});
+			
+		});
+
+		
+// Validierung Spam	
+	<?php
+	if (isset($_GET["wpsg_spam_email"]) && $_GET["wpsg_spam_email"] != "") {
+	     		echo "<p>Sie haben ein Feld ausgefüllt, das frei bleiben muss.</p>";
+	     		exit;
+	  		}
+	?>
+
+	});	
+
+	<?php /* Copy&Paste für das Eingabefeld "E-Mail-Wiederholung sperren */ ?>
+	window.onload = function() {
+		
+		var email2 = document.getElementById('email2');
+
+		email2.onpaste = function(e) {
+
+			e.preventDefault();
+
+		}
+	}
+	
+</script>
+
+<div class="wpsg wpsg_checkout wpsg_register">
+	
+	<?php echo $this->writeFrontendMessage(); ?>
+	
+	<form id="form-step2" method="post" action="<?php echo $this->callMod('wpsg_mod_kundenverwaltung', 'getRegisterURL'); ?>">
+	
+		<?php if ($this->view['pflicht']['firma'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="wpsg_firma"><?php echo __("Firma", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['firma'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="<?php echo (($this->view['pflicht']['firma'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("firma", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="wpsg_firma" name="wpsg[register][firma]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['firma'])); ?>" />
+		</div>
+		<?php } ?>
+	
+		<?php if ($this->view['pflicht']['anrede'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="wpsg_title"><?php echo __('Anrede', 'wpsg'); ?>
+			<?php if ($this->view['pflicht']['anrede'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:</label>
+			<select class="<?php echo (($this->view['pflicht']['anrede'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("title", (array)$this->view['error']))?'wpsg_error':''); ?>" id="wpsg_title" name="wpsg[register][title]">
+				<option value="-1"><?php echo __('Bitte auswählen', 'wpsg'); ?></option>
+				<?php $i=0; foreach (explode("|", $this->view['pflicht']['anrede_auswahl']) as $t) { ?>
+				<option value="<?php echo $i; /*wpsg_hspc($t);*/ $i++; ?>" <?php echo (($this->view['data']['title'] == $t)?'selected="selected"':''); ?>><?php echo $t; ?></option>
+			<?php } ?>						
+			</select>
+		</div>
+		<?php } ?>
+	
+		<?php if ($this->view['pflicht']['vname'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="vname" class="wpsg_register"><?php echo __("Vorname", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['vname'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="<?php echo (($this->view['pflicht']['vname'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("vname", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="vname" name="wpsg[register][vname]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['vname'])); ?>" />		
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['name'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="name" class="wpsg_register"><?php echo __("Name", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['name'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="<?php echo (($this->view['pflicht']['name'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("name", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="name" name="wpsg[register][name]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['name'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['email'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="email" class="wpsg_register"><?php echo __("E-Mail Adresse", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['email'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="wpsg_input_text <?php echo (($this->view['pflicht']['email'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("email", (array)$this->view['error']))?'wpsg_error':''); ?>" type="email" id="email" name="wpsg[register][email]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['email'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['email'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="email" class="wpsg_register"><?php echo __("E-Mail Adresse (Wiederholung)", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['email'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="wpsg_input_text <?php echo (($this->view['pflicht']['email'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("email", (array)$this->view['error']))?'wpsg_error':''); ?>" type="email" id="email2" name="wpsg[register][email2]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['register']['email2'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<div class="wpsg_checkoutblock">
+			<label for="pwd1" class="wpsg_register"><?php echo __("Passwort", "wpsg"); ?>
+			<?php if (wpsg_getStr($this->view['pflicht']['pwd1']) != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="<?php echo ((wpsg_getStr($this->view['pflicht']['pwd1']) != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("mod_kundenverwaltung_pwd1", (array)$this->view['error']))?'wpsg_error':''); ?>" type="password" id="pwd1" name="wpsg[register][register_pwd1]" value="" /><span id="wpsg_checkoutblock_password_result"></span>
+		</div>
+		
+		<div class="wpsg_checkoutblock">
+			<label for="pwd2" class="wpsg_register"><?php echo __("Passwort (Wiederholung)", "wpsg"); ?>
+			<?php if (wpsg_getStr($this->view['pflicht']['pwd2']) != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="<?php echo ((wpsg_getStr($this->view['pflicht']['pwd2']) != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("mod_kundenverwaltung_pwd2", (array)$this->view['error']))?'wpsg_error':''); ?>" type="password" id="pwd2" name="wpsg[register][register_pwd2]" value="" />
+		</div>
+		
+		<div id="wpsg_pwd_info"> 
+			<h4><?php echo __('Passwort sollte folgende Regeln befolgen:','wpsg') ?></h4>
+			<ul>
+				<li id="wpsg_pwd_length" class="invalid"><?php echo __('Mit mindestens 8 Zeichen wird das Passwort noch sicherer','wpsg')?></li>
+				<li id="wpsg_pwd_letter" class="invalid"><?php echo __('Mit mindestens einem Kleinbuchstaben wird das Passwort noch sicherer','wpsg') ?></li>
+				<li id="wpsg_pwd_capital" class="invalid"><?php echo __('Mit mindestens einem Großbuchstaben wird das Passwort noch sicherer','wpsg') ?></li>
+				<li id="wpsg_pwd_number" class="invalid"><?php echo __('Mit mindestens einer Zahl wird das Passwort noch sicherer','wpsg') ?></li>
+				<li id="wpsg_pwd_speziell" class="invalid"><?php echo __('Mit mindestens einem Sonderzeichen wird das Passwort noch sicherer','wpsg') ?></li>
+			</ul>
+		</div>
+		
+		<?php if ($this->view['pflicht']['geb'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="geb" class="wpsg_register"><?php echo __('Geburtsdatum (Format: TT.MM.JJJJ)', 'wpsg'); ?>
+			<?php if ($this->view['pflicht']['geb'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="wpsg_input_text <?php echo (($this->view['pflicht']['geb'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("geb", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="geb" name="wpsg[register][geb]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['geb'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['fax'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="fax" class="wpsg_register"><?php echo __("Fax.", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['fax'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="wpsg_input_text <?php echo (($this->view['pflicht']['fax'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("fax", (array)$this->view['error']))?'wpsg_error':''); ?>" type="tel" id="fax" name="wpsg[register][fax]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['fax'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['tel'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="tel" class="wpsg_register"><?php echo __("Tel.", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['tel'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="wpsg_input_text <?php echo (($this->view['pflicht']['tel'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("tel", (array)$this->view['error']))?'wpsg_error':''); ?>" type="tel" id="tel" name="wpsg[register][tel]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['tel'])); ?>" />
+		</div>
+		<?php } ?>
+	
+		<?php if ($this->view['pflicht']['strasse'] != '2') { ?>
+			
+			<?php if ($this->view['pflicht']['wpsg_showNr'] === '1') { ?>
+
+				<div class="wpsg_checkoutblock" id="wpsg_streetnr">
+					<label for="strasse" class="street wpsg_checkout"><?php echo __('Straße:', 'wpsg'); ?>
+						<?php if ($this->view['pflicht']['strasse'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+						<input class="<?php echo (($this->view['pflicht']['strasse'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("strasse", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="strasse" name="wpsg[register][strasse]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['strasse'])); ?>" />
+					</label>
+					<label for="nr" class="nr wpsg_checkout"><?php echo __('Nr:', 'wpsg'); ?>
+						<?php if ($this->view['pflicht']['strasse'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>
+						<input class="<?php echo (($this->view['pflicht']['strasse'] != '1')?'validate[required]':''); ?> wpsg_checkout <?php echo ((in_array("nr", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="nr" name="wpsg[register][nr]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['nr'])); ?>" />
+					</label>
+				</div>
+			
+			<?php } else { ?>
+
+				<div class="wpsg_checkoutblock">
+					<label for="strasse" class="wpsg_register"><?php echo __("Straße Nr.", "wpsg"); ?>
+						<?php if ($this->view['pflicht']['strasse'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+					</label>
+					<input class="<?php echo (($this->view['pflicht']['strasse'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("strasse", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="strasse" name="wpsg[register][strasse]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['strasse'])); ?>" />
+				</div>
+			
+			<?php } ?>
+			
+		<?php } ?>
+	
+		<?php if ($this->view['pflicht']['plz'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="plz" class="wpsg_register"><?php echo __("Postleitzahl", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['plz'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="wpsg_input_text <?php echo (($this->view['pflicht']['plz'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("plz", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="plz" name="wpsg[register][plz]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['plz'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['ort'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="ort" class="wpsg_register"><?php echo __("Ort", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['ort'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="<?php echo (($this->view['pflicht']['ort'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("ort", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="ort" name="wpsg[register][ort]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['ort'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['land'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="wpsg_land" class="wpsg_register"><?php echo __("Land", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['land'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>					
+			<select name="wpsg[register][land]" class="<?php echo (($this->view['pflicht']['land'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("land", (array)$this->view['error']))?'wpsg_error':''); ?>" id="wpsg_land">
+				<option value="-1"><?php echo __('Bitte auswählen', 'wpsg'); ?></option>
+				<?php foreach ($this->view['laender'] as $l) { ?>
+				<option value="<?php echo $l['id']; ?>" <?php echo (($l['id'] == $this->view['data']['land'])?'selected="selected"':(($this->get_option('wpsg_defaultland') == $l['id'])?'selected="selected"':'')); ?>><?php echo wpsg_hspc($l['name']); ?></option>
+				<?php } ?>
+			</select>
+		</div>
+		<?php } ?>
+		
+		<?php if ($this->view['pflicht']['ustidnr'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label for="wpsg_ustidnr" class="wpsg_register"><?php echo __("UStIdNr.", "wpsg"); ?>
+			<?php if ($this->view['pflicht']['ustidnr'] != '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+			</label>
+			<input class="<?php echo (($this->view['pflicht']['ustidnr'] != '1')?'validate[required]':''); ?> wpsg_register <?php echo ((in_array("ustidnr", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="wpsg_ustidnr" name="wpsg[register][ustidnr]" value="<?php echo htmlspecialchars(wpsg_getStr($this->view['data']['ustidnr'])); ?>" />
+		</div>
+		<?php } ?>
+		
+		<?php /* Automatische Einbindung der benutzerdefinierten Felder */ ?>
+		<?php if ($this->get_option('wpsg_kundenvariablen_show') == '1') { ?>
+		<?php foreach ((array)$this->view['pflicht']['custom'] as $c_id => $c) { if ($c['show'] != '2') { ?>
+		<div class="wpsg_checkoutblock">
+			<label class="wpsg_cv" for="wpsg_cv_<?php echo $c_id; ?>">
+				<?php echo wpsg_hspc(__($c['name'], 'wpsg')); ?><?php if ($c['show'] == '0') { ?> <span class="wpsg_required">*</span><?php } ?>:
+				<?php if ($c['typ'] == '0') { // Textfeld ?>
+				<input class="<?php echo (($c['show'] == '0')?'validate[required]':''); ?> <?php echo ((in_array("custom_".$c_id, (array)$this->view['error']))?'wpsg_error':''); ?>" name="wpsg[register][custom][<?php echo $c_id; ?>]" type="text" value="<?php echo wpsg_hspc(@$this->view['data']['custom'][$c_id]); ?>" />
+				<?php } else if ($c['typ'] == '1') { $arAuswahl = explode("|", $c['auswahl']); // Auswahlfeld ?>
+				<select class="<?php echo (($c['show'] == '0')?'validate[required]':''); ?> <?php echo ((in_array("custom_".$c_id, (array)$this->view['error']))?'wpsg_error':''); ?>" name="wpsg[register][custom][<?php echo $c_id; ?>]">
+					<option value="-1"><?php echo __('Bitte Auswählen', 'wpsg'); ?></option>
+					<?php foreach ((array)$arAuswahl as $a) { ?>
+					<option value="<?php echo wpsg_hspc($a); ?>" <?php echo (($a == wpsg_getStr($this->view['data']['custom'][$c_id]))?'selected="selected"':''); ?>><?php echo wpsg_hspc($a); ?></option>
+					<?php } ?>
+				</select>
+				<?php } else if ($c['typ'] == '2') { // Checkbox ?>
+				<input type="hidden" name="wpsg[register][custom][<?php echo $c_id; ?>]" value="0" />
+				<input id="wpsg_cv_<?php echo $c_id; ?>" class="<?php echo (($c['show'] == '0')?'validate[required]':''); ?> checkbox" type="checkbox" value="1" name="wpsg[register][custom][<?php echo $c_id; ?>]" value="1" <?php echo wpsg_hspc((@$this->view['data']['custom'][$c_id] == '1')?'checked="checked"':''); ?> />
+				<span class="wpsg_clear"></span> 
+				<?php } ?>
+			</label>
+		</div>
+		<?php } } ?>
+		<?php } ?>
+		<?php /* Automatische Einbindung der benutzerdefinierten Kundenfelder ENDE */ ?>
+		<div class="wpsg_clear"></div>
+
+        <?php if ($this->get_option('wpsg_mod_kundenverwaltung_recaptcha_register') === '1') { ?>
+            <div class="wpsg_checkoutblock">
+                <label>
+                    <?php echo __('SPAM Schutz Abfrage'); ?> <span class="wpsg_required">*</span>:
+                    <div class="g-recaptcha" data-sitekey="<?php echo $this->get_option('wpsg_mod_kundenveraltung_recaptcha_key'); ?>"></div>
+                </label>
+            </div>
+            <div class="wpsg_clear"></div>
+        <?php } ?>
+        
+		<div class="wpsg_mandatoryfield_hint">
+			<?php echo wpsg_translate(__('Mit #1# gekennzeichnete Felder sind Pflichtfelder.', 'wpsg'), '<span class="wpsg_required">*</span>'); ?>
+		</div>
+		
+		<?php /* versteckte Sicherheitsabfrage als Bot-Schutz START*/ ?>
+			<span style="display:none">
+   				<label for="wpsg_spam_email">Das Feld muss frei bleiben:</label>
+   				<input type="text" name="wpsg_spam_email" id="wpsg_spam_email" title=" dieses Feld muss frei bleiben " />
+			</span> 
+		<?php /* versteckte Sicherheitsabfrage als Bot-Schutz ENDE*/ ?>
+		        
+		<br />		
+		
+		<input type="submit" class="wpsg_button wpsg_registerButton" value="<?php echo __('Registrieren', 'wpsg'); ?>" name="wpsg_mod_kundenverwaltung_register" />
+		
+		<?php $this->ClearSessionErrors(); ?>
+		
+		<div class="wpsg_clear"></div>
+	</form>
+</div>

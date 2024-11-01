@@ -1,0 +1,21 @@
+<?php
+
+	/**
+	 * Template für die Rabattkonfiguration innerhalb der Produktverwaltung
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktrabatt', 'wpsg')); ?>
+
+	<div class="inside">	
+		<?php echo wpsg_drawForm_Checkbox('wpsg_mod_discount[discount_aktiv]', __('Aktion aktiv', 'wpsg'), $this->view['wpsg_mod_discount']['data'][0]); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_from]', __('Start (TT.MM.JJJJ)', 'wpsg'), wpsg_hspc(wpsg_getStr($this->view['wpsg_mod_discount']['data'][1]))); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_to]', __('Ende (TT.MM.JJJJ)', 'wpsg'), wpsg_hspc(wpsg_getStr($this->view['wpsg_mod_discount']['data'][2]))); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_value]', __('Rabatt', 'wpsg'), wpsg_ff(wpsg_getStr($this->view['wpsg_mod_discount']['data'][3]))); ?>
+				
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_discount"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration der Rabatte', 'wpsg'); ?></a>
+	
+	</div>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

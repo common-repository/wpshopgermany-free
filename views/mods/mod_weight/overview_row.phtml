@@ -1,0 +1,15 @@
+<?php
+
+	/**
+	 * Template für die Integration des Produktgewichts in die Bestellzusammenfassung
+	 */
+
+?>
+<div class="product_info">
+	<div 
+		<?php if ($this->view['$bPicture'] == true) { ?>class="titlep"><?php } else { ?>class="title"><?php } ?>
+		<span class="fa  fa-balance-scale"></span>
+		<?php echo __("Gewicht", "wpsg"); ?>:
+		<strong><?php echo wpsg_ff($this->view['weight'], $this->get_option('wpsg_mod_weight_unit')); ?></strong>
+	</div> 
+</div>

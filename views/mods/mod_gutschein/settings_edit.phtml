@@ -1,0 +1,10 @@
+<?php
+	
+	/**
+	 * Template für die Einstellungen des Gutscheinmoduls
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_size', __('Länge der Gutscheincodes', 'wpsg'), $this->get_option('wpsg_mod_gutschein_size'), array ('help' => 'wpsg_mod_gutschein_size')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_gutschein_perPage', __('Gutscheine pro Seite (Backend)', 'wpsg'), $this->get_option('wpsg_mod_gutschein_perPage'), array ('help' => 'wpsg_mod_gutschein_perPage')); ?>
+

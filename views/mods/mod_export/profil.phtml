@@ -1,0 +1,271 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen eines Profils
+	 */
+
+	$inlineEdit_url = WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=inlinedit&noheader=1&profil_id='.$this->view['profil']['id'];    
+	$upload_url = WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=musterupload&noheader=1&profil_id='.$this->view['profil']['id'];
+    $download_url = WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=save&noheader=1&profil_id='.$this->view['profil']['id'];
+
+?>
+
+<div id="wpsg_mod_export_profil_tab">	
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#tab1" aria-controls="home" role="tab" data-toggle="tab"><?php echo __('Profiloptionen', 'wpsg'); ?></a></li>
+        <li role="presentation"><a href="#tab2" aria-controls="profile" role="tab" data-toggle="tab"><?php echo __('Feldkonfiguration', 'wpsg'); ?></a></li>
+        <li role="presentation"><a href="#tab3" aria-controls="cron" role="tab" data-toggle="tab"><?php echo __('Automatische Ausführung', 'wpsg'); ?></a></li>
+    </ul>
+	<div class="tab-content">
+		<div id="tab1" role="tabpanel" class="tab-pane active">
+            
+            <?php echo wpsg_drawForm_Text(__('Profilname', 'wpsg'), $this->view['profil']['name'], 'name', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+            <?php echo wpsg_drawForm_Text(__('Dateiname', 'wpsg'), $this->view['profil']['filename'], 'filename', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+            <?php echo wpsg_drawForm_Text(__('Encoding', 'wpsg'), $this->view['arFileEncoding'][$this->view['profil']['file_encoding']], 'file_encoding', array('inlineEdit' => true, 'inlineEdit_type' => 'select', 'inlineEdit_source' => $this->view['arFileEncoding'], 'inlineEdit_url' => $inlineEdit_url)); ?>
+            <?php echo wpsg_drawForm_Text(__('Dateiformat', 'wpsg'), $this->view['arExportFormats'][$this->view['profil']['format']], 'format', array('inlineEdit' => true, 'inlineEdit_type' => 'select', 'inlineEdit_source' => $this->view['arExportFormats'], 'inlineEdit_url' => $inlineEdit_url)); ?>
+            
+            <?php /* CSV */ ?>
+            <div class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_CSV; ?>" style="display:<?php echo (($this->view['profil']['format'] == wpsg_mod_export::FORMAT_CSV)?'block':'none'); ?>;">
+                
+                <?php echo wpsg_drawForm_Text('Feld-Trennzeichen', $this->view['profil']['field_delimiter'], 'field_delimiter', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                <?php echo wpsg_drawForm_Text('Feld-Begrenzung', $this->view['profil']['field_enclosure'], 'field_enclosure', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                <?php echo wpsg_drawForm_Text('Maskierungs-Zeichen', $this->view['profil']['field_escape'], 'field_escape', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                
+            </div>
+            
+            <?php /* XML */ ?>
+            <div class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_XML; ?>" style="display:<?php echo (($this->view['profil']['format'] == wpsg_mod_export::FORMAT_XML)?'block':'none'); ?>;">
+            
+                <?php echo wpsg_drawForm_Text('Root-Tagname', $this->view['profil']['xml_roottag'], 'xml_roottag', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                
+                <?php if ($this->view['profil']['export_type'] === wpsg_mod_export::TYPE_ORDER) { ?>
+                    <?php echo wpsg_drawForm_Text('Bestellung-Tagname', $this->view['profil']['xml_ordertag'], 'xml_ordertag', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                    <?php echo wpsg_drawForm_Text('Produkt-Root-Tagname', $this->view['profil']['xml_productroottag'], 'xml_productroottag', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                <?php } ?>
+                
+                <?php if ($this->view['profil']['export_type'] === wpsg_mod_export::TYPE_CUSTOMER) { ?>
+                    <?php echo wpsg_drawForm_Text('Kunden-Tagname', $this->view['profil']['xml_customertag'], 'xml_customertag', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                <?php } else { ?>
+                    <?php echo wpsg_drawForm_Text('Produkt-Tagname', $this->view['profil']['xml_producttag'], 'xml_producttag', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                <?php } ?>
+                
+            </div>
+            
+            <div class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_CSV; ?>" style="display:<?php echo (($this->view['profil']['format'] == wpsg_mod_export::FORMAT_CSV)?'block':'none'); ?>">
+                <?php echo wpsg_drawForm_Upload('samplefile', __('Muster Vorlage', 'wpsg'), false, '50', '100000', array('ajax_upload' => true, 'ajax_upload_url' => $upload_url, 'ajax_success' => 'samplefile_success')); ?>                
+            </div>
+                        
+            <br />
+    
+            <?php if ($this->view['profil']['export_type'] === wpsg_mod_export::TYPE_ORDER) { ?>              
+                
+                <?php echo wpsg_drawForm_Checkbox('order_onetime', __('Bestellungen nur einmalig exportieren', 'wpsg'), $this->view['profil']['order_onetime'], array('label' => __('Optionen', 'wpsg'), 'inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                
+                <div class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_CSV; ?>" style="display:<?php echo (($this->view['profil']['format'] == wpsg_mod_export::FORMAT_CSV)?'block':'none'); ?>">
+                <?php echo wpsg_drawForm_Checkbox('order_online', __('Eine Zeile pro Bestellung', 'wpsg'), $this->view['profil']['order_online'], array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                </div>
+            
+            <?php } ?>
+                
+            <div class="wpsg_mod_export_format wpsg_mod_export_format_<?php echo wpsg_mod_export::FORMAT_CSV; ?>" style="display:<?php echo (($this->view['profil']['format'] == wpsg_mod_export::FORMAT_CSV)?'block':'none'); ?>">
+                
+                <?php echo wpsg_drawForm_Checkbox('csv_fieldnames', __('Spaltennamen in erster Zeile', 'wpsg'), $this->view['profil']['csv_fieldnames'], array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                
+            </div>
+            
+        </div>
+        
+        <div id="tab2" role="tabpanel" class="tab-pane">
+            
+            <div id="wpsg_mod_export_fields"><?php echo $this->view['strFields']; ?></div>
+            
+        </div>
+        
+        <div id="tab3" role="tabpanel" class="tab-pane">
+             
+            <?php echo wpsg_drawForm_Text(__('Automatische Ausführung aktivieren', 'wpsg'), $this->view['arCronTypes'][$this->view['profil']['cron_interval']], 'cron_interval', array('inlineEdit' => true, 'inlineEdit_callback' => 'switchCronType', 'inlineEdit_url' => $inlineEdit_url, 'inlineEdit_type' => 'select', 'inlineEdit_source' => wpsg_prepare_for_inlineEdit($this->view['arCronTypes']))); ?>
+                                    
+            <div class="cron_interval cron_interval_1" style="<?php echo (($this->view['profil']['cron_interval'] == '0')?'display:none;':''); ?>">
+                 
+                <?php echo wpsg_drawForm_Text(__('Pfad', 'wpsg'), $this->view['profil']['cron_path'], 'cron_path', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>                
+                <?php echo wpsg_drawForm_Text(__('Letzte Ausführung', 'wpsg'), (($this->view['profil']['cron_lastrun'] == '0000-00-00')?__('Noch nie', 'wpsg'):wpsg_formatTimestamp($this->view['profil']['cron_lastrun'], true)), false, array('noP' => false)); ?>
+				<?php echo wpsg_drawForm_Text(__('Cron URL', 'wpsg'), '<a href="'.site_url().'/?wpsg_cron=1">'.site_url().'/?wpsg_cron=1</a>', false, array('noP' => false)); ?>
+                
+                <?php if ($this->view['profil']['export_type'] === wpsg_mod_export::TYPE_ORDER) { ?>
+                <fieldset id="wpsg_mod_export_orderfilter">                                                
+                    
+                    <legend><div class="col-sm-offset-6"><?php echo __('Bestellfilter', 'wpsg'); ?></div></legend>
+                    
+                    <form id="wpsg_mod_export_searchfilter">
+                        
+                        <?php echo wpsg_drawForm_Text(__('Suchfeld', 'wpsg'), wpsg_getStr($this->view['profil']['orderfilter']['s']), 'orderfilter_s', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>                    
+                        <?php echo wpsg_drawForm_Text(__('Kunde (ID)', 'wpsg'), wpsg_getStr($this->view['profil']['orderfilter']['k_id']), 'orderfilter_k_id', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                        
+                        <?php $arOrderStatus = wpsg_array_merge(array('-1' => __('Alle', 'wpsg')), $this->arStatus); ?>
+                        <?php echo wpsg_drawForm_Text(__('Bestellstatus', 'wpsg'), $arOrderStatus[wpsg_getStr($this->view['profil']['orderfilter']['status'], '-1')], 'orderfilter_status', array('inlineEdit' => true, 'inlineEdit_type' => 'select', 'inlineEdit_url' => $inlineEdit_url, 'inlineEdit_source' => $arOrderStatus)); ?>
+                                            
+                        <?php $arMonth = array('-1' => __('Alle', 'wpsg')); ?>
+                        <?php for ($i = 1; $i <= 12; $i ++) { $arMonth[str_pad($i, 2, '0', STR_PAD_LEFT)] = strftime("%B", mktime(0, 0, 0, $i, 1, 2000)); } ?>
+                        
+                        <?php $arYearCdate = array('-1' => __('Alle', 'wpsg')); ?>
+                        <?php foreach ($this->view['cdate_years'] as $y) { $arYearCdate[$y] = $y; } ?>
+                        
+                        <?php $arYearInvoice = array('-1' => __('Alle', 'wpsg')); ?>
+                        <?php foreach ($this->view['invoicedate_years'] as $y) { $arYearInvoice[$y] = $y; } ?>
+                        
+                        <?php echo wpsg_drawForm_TextStart(); ?>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p id="orderfilter_cdate_m" class="form-control-static"><?php echo $arMonth[wpsg_getStr($this->view['profil']['orderfilter']['cdate_m'], '-1')]; ?></p>
+                                <script type="text/javascript">/* <![CDATA[ */
+                                
+                                    jQuery(document).ready(function() {
+                                        
+                                        jQuery('#orderfilter_cdate_m').wpsg_editable('<?php echo $inlineEdit_url; ?>', {
+                                            'test': '1', 'placement': 'bottom', 'type': 'select',  'data': <?php echo wpsg_prepare_for_inlineEdit($arMonth); ?>
+                                        } );
+                                        
+                                    } );
+                                
+                                /* ]]> */</script>
+                            </div>
+                            <div class="col-lg-6">
+                                <p id="orderfilter_cdate_y" class="form-control-static"><?php echo $arYearCdate[wpsg_getStr($this->view['profil']['orderfilter']['cdate_y'], '-1')]; ?></p>
+                                <script type="text/javascript">/* <![CDATA[ */
+                                
+                                    jQuery(document).ready(function() {
+                                        
+                                        jQuery('#orderfilter_cdate_y').wpsg_editable('<?php echo $inlineEdit_url; ?>', {
+                                            'placement': 'bottom', 'type': 'select',  'data': <?php echo wpsg_prepare_for_inlineEdit($arYearCdate); ?>
+                                        } );
+                                        
+                                    } );
+                                
+                                /* ]]> */</script>
+                            </div>
+                        </div>
+                        <?php echo wpsg_drawForm_TextEnd(__('Bestelldatum (Monat/Jahr)', 'wpsg'), array('noP' => true)); ?>
+                        
+                        <?php if ($this->hasMod('wpsg_mod_rechnungen')) { ?>
+                        <?php echo wpsg_drawForm_TextStart(); ?>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p id="orderfilter_invoicedate_m" class="form-control-static"><?php echo $arMonth[wpsg_getStr($this->view['profil']['orderfilter']['invoicedate_m'], '-1')]; ?></p>                            
+                                <script type="text/javascript">/* <![CDATA[ */
+                                
+                                    jQuery(document).ready(function() {
+                                        
+                                        jQuery('#orderfilter_invoicedate_m').wpsg_editable('<?php echo $inlineEdit_url; ?>', {
+                                            'placement': 'bottom', 'type': 'select',  'data': <?php echo wpsg_prepare_for_inlineEdit($arMonth); ?>
+                                        } );
+                                        
+                                    } );
+                                
+                                /* ]]> */</script>
+                            </div>
+                            <div class="col-lg-6">
+                                <p id="orderfilter_invoicedate_y" class="form-control-static"><?php echo $arYearInvoice[wpsg_getStr($this->view['profil']['orderfilter']['invoicedate_y'], '-1')]; ?></p>                            
+                                <script type="text/javascript">/* <![CDATA[ */
+                                
+                                    jQuery(document).ready(function() {
+                                        
+                                        jQuery('#orderfilter_invoicedate_y').wpsg_editable('<?php echo $inlineEdit_url; ?>', {
+                                            'placement': 'bottom', 'type': 'select',  'data': <?php echo wpsg_prepare_for_inlineEdit($arYearInvoice); ?>
+                                        } );
+                                        
+                                    } );
+                                
+                                /* ]]> */</script>
+                            </div>
+                        </div>
+                        <?php echo wpsg_drawForm_TextEnd(__('Rechnungsdatum (Monat/Jahr)', 'wpsg'), array('noP' => true)); ?>
+                        <?php } ?>
+                        
+                    </form>
+                    
+                </fieldset>
+                <?php } else if ($this->view['profil']['export_type'] === wpsg_mod_export::TYPE_PRODUCT) { ?>
+                <fieldset id="wpsg_mod_export_productfilter">                                                
+                    
+                    <legend><div class="col-sm-offset-6"><?php echo __('Produktfilter', 'wpsg'); ?></div></legend>
+                    
+                    <form id="wpsg_mod_export_searchfilter">
+                                         
+                        <?php echo wpsg_drawForm_Text(__('Suchfeld', 'wpsg'), wpsg_getStr($this->view['profil']['orderfilter']['s']), 'orderfilter_s', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                        
+                        <?php if ($this->hasMod('wpsg_mod_productgroups')) { $arProductGroupSelect = array('-1' => __('Alle Produktgruppen', 'wpsg')) + wpsg_productgroup::getProductgroupSelect(); ?>                        
+                        <?php echo wpsg_drawForm_Text(__('Produktgruppe', 'wpsg'), $arProductGroupSelect[wpsg_getStr($this->view['profil']['orderfilter']['productgroup_ids'], '-1')], 'orderfilter_productgroup_ids', array('inlineEdit' => true, 'inlineEdit_type' => 'select', 'inlineEdit_url' => $inlineEdit_url, 'inlineEdit_source' => $arProductGroupSelect)); ?>
+                        <?php } ?>
+                        
+                        <?php if ($this->hasMod('wpsg_mod_produktartikel')) { $temp = $this->callMod('wpsg_mod_produktartikel', 'getProductcategorySelect', array()); ?>
+                        <?php $arProductCategorySelect = array(); foreach ($temp as $k => $v) $arProductCategorySelect[$v['term_id']] = $v['label']; ?>
+                        <?php echo wpsg_drawForm_Text(__('Produktkategorie', 'wpsg'), $arProductCategorySelect[wpsg_getStr($this->view['profil']['orderfilter']['productcategory_ids'], '-1')], 'orderfilter_productcategory_ids', array('inlineEdit' => true, 'inlineEdit_type' => 'select', 'inlineEdit_url' => $inlineEdit_url, 'inlineEdit_source' => $arProductCategorySelect)); ?>
+                        <?php } ?>
+                                                
+                    </form>
+                    
+                </fieldset>
+                <?php } else if ($this->view['profil']['export_type'] === wpsg_mod_export::TYPE_CUSTOMER) { ?>
+                <fieldset id="wpsg_mod_export_productfilter">
+                    
+                    <legend><div class="col-sm-offset-6"><?php echo __('Kundenfilter', 'wpsg'); ?></div></legend>
+                    
+                    <form id="wpsg_mod_export_searchfilter">
+                        
+                        <?php echo wpsg_drawForm_Text(__('Suchfeld', 'wpsg'), wpsg_getStr($this->view['profil']['orderfilter']['s']), 'orderfilter_s', array('inlineEdit' => true, 'inlineEdit_url' => $inlineEdit_url)); ?>
+                        
+                    </form>
+                    
+                </fieldset>
+                <?php } ?>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+<br />
+
+<a onclick="return wpsg_mod_export_removeProfil(<?php echo $this->view['profil']['id']; ?>);" href="#"><span class="glyphicon glyphicon-trash wpsg-glyphicon"></span><?php echo __('Profil löschen', 'wpsg'); ?></a><br />
+<a href="<?php echo $download_url; ?>"><span class="glyphicon glyphicon-save wpsg-glyphicon"></span><?php echo __('Profil speichern', 'wpsg'); ?></a>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+    function switchCronType(response, newValue)
+    {
+       
+        if (newValue != "0") jQuery('.cron_interval_1').show();
+        else jQuery('.cron_interval_1').hide();
+        
+    }
+    
+    function samplefile_success(data)
+    {
+        
+        jQuery('#wpsg_mod_export_fields').html(data);
+        jQuery('#samplefile').val('');
+
+        jQuery('#wpsg_mod_export_profil_tab .nav-tabs a[href="#tab2"]').tab('show');
+        
+    }
+    
+    jQuery(document).ready(function() {
+		        
+		jQuery('#format').on('save', function(e, params) {
+
+			jQuery('.wpsg_mod_export_format').hide();
+			jQuery('.wpsg_mod_export_format_' + params.newValue).show();
+
+		} );
+        
+        jQuery('#name').on('save', function(e, params) {
+
+            jQuery('#wpsg_mod_export_profil option[value="<?php echo $this->view['profil']['id']; ?>"]').text(params.newValue);
+
+		} );
+		
+	} );
+
+/* ]]> */</script>

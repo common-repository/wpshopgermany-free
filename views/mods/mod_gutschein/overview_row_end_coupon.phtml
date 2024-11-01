@@ -1,0 +1,52 @@
+<?php
+	
+	declare(strict_types=1);
+	
+	/**
+	 * User: Daschmi (daschmi@daschmi.de)
+	 * Date: 20.07.2019
+	 * Time: 16:11
+	 */ 
+    
+	$arCalculation = &$this->view['basket']['arCalculation'];
+	
+	if ($this->getFrontendTaxView() === WPSG_BRUTTO) $display_brutto_netto = 'brutto';
+	else $display_brutto_netto = 'netto';
+	
+?>
+
+<?php if (wpsg_isSizedArray($arCalculation['coupon'])) { ?>
+	
+	<?php foreach ($arCalculation['coupon'] as $gs) { ?>
+		
+		<div class="overview_sum_row">
+			<div class="title">
+				<?php echo __('Wertgutschein', 'wpsg'); ?> <?php echo ($gs['code'] != '')? '('.$gs['code'].')':'' ?>
+			</div>
+			<div class="value"><?php
+					
+					echo wpsg_ff($gs[$display_brutto_netto], $this->get_option('wpsg_currency'));
+					
+					if (strpos($gs['set'], '%') !== false) {
+						
+						echo '<span class="procent_payship">('.wpsg_ff(wpsg_tf($gs['set']), '%').')</span>';
+						
+					}
+				
+				?></div>
+		</div>
+	
+	<?php } ?>
+
+<?php } ?>
+
+<div class="wpsg_spacer"></div>
+<div class="overview_sum_row">
+	<div class="title2">
+		<?php echo __('Zu zahlen', 'wpsg'); ?>:
+	</div>
+	<div class="sum">
+		<?php echo wpsg_ff($arCalculation['sum']['topay_'.$display_brutto_netto], $this->get_option('wpsg_currency')); ?>
+	</div>
+</div>
+<div class="wpsg_spacer"></div>

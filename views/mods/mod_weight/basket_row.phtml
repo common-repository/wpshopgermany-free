@@ -1,0 +1,14 @@
+<?php
+
+	/**
+	 * Template für die Anzeige des Produktgewichts im Warenkorb
+	 */
+	//wpsg_debug($this->view);
+?>
+<div class="product_info">
+	<div class="title">
+		<span class="fa  fa-balance-scale"></span>
+		<?php echo __("Gewicht", "wpsg"); ?>:
+		<strong><?php echo wpsg_ff($this->view['weight'], $this->get_option('wpsg_mod_weight_unit')); ?></strong>
+	</div> 
+</div>

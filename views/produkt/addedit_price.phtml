@@ -1,0 +1,16 @@
+<?php
+
+	/**
+	 * Template für die Integration der Preiseinstellungen in die Produktverwaltung
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Preis / Steuer', 'wpsg')); ?>
+	<?php echo wpsg_drawForm_Select('mwst_key', __('Steuergruppe', 'wpsg'), wpsg_tax_groups(true), @$this->view['data']['mwst_key']); ?>								
+	<?php echo wpsg_drawForm_Input('preis', wpsg_translate(__('Preis (#1#)', 'wpsg'), (($this->getBackendTaxview() === WPSG_NETTO)?'NETTO':'BRUTTO')), wpsg_ff($this->view['data']['preis'])); ?>
+	<?php echo wpsg_drawForm_Input('oldprice', wpsg_translate(__('Alter Preis (#1#)', 'wpsg'), (($this->getBackendTaxview() === WPSG_NETTO)?'NETTO':'BRUTTO')), wpsg_ff($this->view['data']['oldprice'])); ?>
+	<?php echo wpsg_drawForm_Text(__('Steueranteil', 'wpsg'), wpsg_ff(@$this->view['data']['tax_sum_value'], $this->get_option('wpsg_currency')).' / '.$this->getDefaultCountry()->kuerzel, array('text' => true)); ?>
+	<?php echo wpsg_drawForm_Checkbox('euleistungsortregel', __('Produkt unterliegt den EU-Leistungsortregeln', 'wpsg'), @$this->view['data']['euleistungsortregel'], array('fullrow' => true, 'help' => 'EU-Leistungsortregel')); ?>
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=laender"><span class="glyphicon glyphicon-globe wpsg-glyphicon"></span><?php echo __('Länderverwaltung', 'wpsg'); ?></a>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

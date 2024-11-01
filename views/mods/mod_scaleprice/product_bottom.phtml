@@ -1,0 +1,55 @@
+<?php
+
+	/**
+	 * Template für die Integration der Staffelanzeige in das Produkttemplate
+	 * Muss in den Darstellungsoptionen aktiviert werden
+	 */
+
+?>
+<div class="wpsg_mod_scaleprice_producttemplate">
+	<?php /* Abfrage Preisanzeige nur für eingeloggte Benutzer START */?>
+	<?php if ($this->canDisplayPrice()) { ?>			
+	
+		<?php if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_QUANTITY) { ?>
+			<?php echo __('Das Produkt hat einen gestaffelten Preis, dieser ergibt sich Anhand der Menge wie folgt:', 'wpsg'); ?><br />
+		<?php } else if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_WEIGHT) { ?>
+			<?php echo __('Das Produkt hat einen gestaffelten Preis, dieser ergibt sich Anhand des Gewichts wie folgt:', 'wpsg'); ?><br />
+		<?php } ?>
+		<ul>	
+			
+			<?php if ($this->view['wpsg_mod_scaleprice']['typ'] != wpsg_mod_scaleprice::TYP_QUANTITY || $this->view['wpsg_mod_scaleprice']['scale'][0]['scale'] != '1') { ?>
+			<li>
+				<?php echo __('Bis ', 'wpsg'); ?>
+				<?php if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_QUANTITY) { ?>
+					<?php echo wpsg_ff($this->view['wpsg_mod_scaleprice']['scale'][0]['scale'], $this->get_option('wpsg_mod_scaleprice_unit')); ?>
+				<?php } else if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_WEIGHT) { ?>
+					<?php echo wpsg_ff($this->view['wpsg_mod_scaleprice']['scale'][0]['scale'], $this->get_option('wpsg_mod_weight_unit')); ?>
+				<?php } ?>
+				<?php echo __(' kostet das Produkt ', 'wpsg'); ?>
+				<?php echo wpsg_ff($this->view['wpsg_mod_scaleprice']['base'], $this->get_option('wpsg_currency')); ?> <?php // echo $this->get_option('wpsg_mod_scaleprice_unit'); ?>
+				<?php $this->callMod('wpsg_mod_fuellmenge', 'renderPriceInfo', array($this->view['wpsg_mod_scaleprice']['base'], $this->view['data']['fmenge'], $this->view['data']['id'])); ?>			
+			</li>
+			<?php } ?>
+			
+			<?php foreach ((array)$this->view['wpsg_mod_scaleprice']['scale'] as $scale) { ?>
+			<li>		
+				<?php echo __('Ab ', 'wpsg'); ?>
+				<?php if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_QUANTITY) { ?>
+					<?php echo wpsg_ff($scale['scale'], $this->get_option('wpsg_mod_scaleprice_unit')); ?>
+				<?php } else if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_WEIGHT) { ?>
+					<?php echo wpsg_ff($scale['scale'], $this->get_option('wpsg_mod_weight_unit')); ?>
+				<?php } ?>
+				<?php echo __(' kostet das Produkt ', 'wpsg'); ?>
+				<?php echo wpsg_ff($scale['value'], $this->get_option('wpsg_currency')); ?> <?php //echo $this->get_option('wpsg_mod_scaleprice_unit'); ?>
+				<?php $this->callMod('wpsg_mod_fuellmenge', 'renderPriceInfo', array($scale['value'], $this->view['data']['fmenge'] , $this->view['data']['id'])); ?>
+			</li>
+			<?php } ?>
+		</ul>
+	<?php }else{?>
+		<?php if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_QUANTITY) { ?>
+			<?php echo __('Das Produkt hat einen gestaffelten Preis, dieser ergibt sich Anhand der Menge. Für weitere Informationen loggen Sie sich bitte ein.', 'wpsg'); ?><br />
+		<?php } else if ($this->view['wpsg_mod_scaleprice']['typ'] == wpsg_mod_scaleprice::TYP_WEIGHT) { ?>
+			<?php echo __('Das Produkt hat einen gestaffelten Preis, dieser ergibt sich Anhand des Gewichts. Für weitere Informationen loggen Sie sich bitte ein.', 'wpsg'); ?><br />
+		<?php } ?>
+	<?php } /* Abfrage Preisanzeige nur für eingeloggte Benutzer ENDE */?>
+</div>

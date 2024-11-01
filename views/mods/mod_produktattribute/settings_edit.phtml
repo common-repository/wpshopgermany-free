@@ -1,0 +1,127 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Moduls "Produktattribute"
+	 */
+
+	
+
+?>
+<script type="text/javascript">/* <![CDATA[ */
+ 
+	/**
+	 * Wird beim wechsel des Typs von der Selectbox aufgerufen
+	 */
+	function wpsg_mod_produktattribute_changeTyp(pa_id)
+	{
+        //alert('changetyp1: ' + jQuery('#typ_' + pa_id).val());
+        //alert('changetyp1: ' + jQuery('#typ_' + pa_id).attr('data-value'));
+
+		//typ = jQuery('#typ_' + pa_id).val();
+		typ = jQuery('#typ_' + pa_id).attr('data-value');
+		
+		if (typ == '2')
+		{
+			jQuery('.auswahlrow_' + pa_id).show();
+		}
+		else
+		{
+			jQuery('.auswahlrow_' + pa_id).hide();
+		}
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=module&modul=wpsg_mod_produktattribute&do=inlinedit&noheader=1',
+			data: {
+				field: 'typ',
+				xvalue: jQuery('#typ_' + pa_id).attr('data-value'),
+				pa_id: pa_id
+			},
+			success: function(data) {
+				if (data != "1") alert(data);
+			}
+		} );
+		
+	} // function wpsg_mod_produktattribute_changeTyp(pa_id)
+
+	/**
+	 * Wird beim hinzufügen eines neuen Produktattributes aufgerufen
+	 */
+	function wpsg_addPA()
+	{
+
+		jQuery('#wpsg_pa_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=module&modul=wpsg_mod_produktattribute&do=add&noheader=1',
+			success: function(data) {
+				jQuery('#wpsg_pa_list').html(data);
+			}
+		} );
+
+		return false;
+		
+	} // function wpsg_addPA()
+
+	/**
+	 * Zeigt den HTML Code, der das gewählte Produktattribute im Produkttemplate einbindet
+	 */
+	function wpsg_genPACode(pa_id)
+	{
+
+		jQuery('#wpsg_code_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery('#wpsg_code_dialog').modal( { } )
+		
+		jQuery.ajax( {
+			url: 'admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_produktattribute&do=genPACode&noheader=1',
+			data: { 'pa_id': pa_id },
+			success: function(data) { jQuery('#wpsg_code_dialog .modal-body').html(data); }
+    	} );
+ 		
+		return false;
+		
+	} // function wpsg_genPACode(pa_id)
+	
+/* ]]> */</script>
+
+<br />
+
+<div>
+	<ul class="nav nav-tabs">
+  		<li role="presentation" class="active"><a href="#tab1" role="tab" data-toggle="tab"><?php echo __('Globale Produktattribute', 'wpsg'); ?></a></li>
+  		<li role="presentation"><a href="#tab2" role="tab" data-toggle="tab"><?php echo __('Einstellungen', 'wpsg'); ?></a></li>  
+	</ul>
+	<div class="tab-content">
+		<div id="tab1" role="tabpanel" class="tab-pane active">
+			<!-- Modal für Codeanzeige -->
+			<div class="modal fade" id="wpsg_code_dialog" tabindex="-1" role="dialog">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel"><?php echo __('HTML Code Block', 'wpsg'); ?></h4>
+			      </div>
+			      <div class="modal-body"></div>
+			      <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal"><?php echo __('Schließen', 'wpsg'); ?></button></div>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class="content" id="wpsg_pa_list"><?php $this->mod->pa_listAction(); ?></div>
+			
+			<div class="clear"></div>
+			
+			<br />
+			
+			<a href="#" onclick="return wpsg_addPA();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neues Produktattribut anlegen', 'wpsg'); ?></a>
+		</div>
+		<div id="tab2" role="tabpanel" class="tab-pane">
+			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_produktattribute_showProduct', __('Produktattribut(e) im Produkttemplate anzeigen', 'wpsg'), $this->get_option('wpsg_mod_produktattribute_showProduct'), array('help' => 'wpsg_mod_produktattribute_showProduct')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_produktattribute_showBasket', __('Produktattribut(e) im Warenkorbtemplate anzeigen', 'wpsg'), $this->get_option('wpsg_mod_produktattribute_showBasket'), array('help' => 'wpsg_mod_produktattribute_showBasket')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_produktattribute_showOverview', __('Produktattribut(e) im Bestellübersichtstemplate anzeigen', 'wpsg'), $this->get_option('wpsg_mod_produktattribute_showOverview'), array('help' => 'wpsg_mod_produktattribute_showOverview')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_produktattribute_showMail', __('Produktattribut(e) in Mailemplates anzeigen', 'wpsg'), $this->get_option('wpsg_mod_produktattribute_showMail'), array('help' => 'wpsg_mod_produktattribute_showMail')); ?>	
+		
+		</div>
+	</div>
+</div>

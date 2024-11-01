@@ -1,0 +1,48 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@daschmi.de)
+     * Date: 01.06.2017
+     * Time: 13:53
+     */
+
+    namespace wpsg;
+
+?>
+
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+	
+</div>
+		
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=wpml&noheader=1'); ?>">
+	
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('WPML Einstellungen', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+                
+                <?php /* ?>
+                <?php echo wpsg_drawForm_Checkbox('clear', __('Nicht verwendete String-Übersetzungen entfernen', 'wpsg'), false, array('fullWidth' => true)); ?>
+                
+                <br /> */ ?>
+				
+				<p class="info"><?php echo __('Fügt dynamische Inhalte wie Ländernamen, Namen von Varianten etc. zu den String-Übersetzungen von WPML hinzu und ermöglicht unter WPML -> String-Übersetzung die Übersetzung von diesen Inhalten.', 'wpsg'); ?></p>
+                
+                <input type="submit" name="wpsg_set_string_translation" class="button" value="<?php echo __('String-Übersetzung füllen'); ?>" />
+                                
+            </div>
+        </div>
+        
+    </form>
+</div>
+            
+                

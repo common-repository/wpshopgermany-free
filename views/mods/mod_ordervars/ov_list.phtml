@@ -1,0 +1,167 @@
+<?php
+
+	/**
+	 * Template für die Liste der Bestellvariablen
+	 */
+
+?>
+<?php if (is_array($this->view['data']) && sizeof($this->view['data']) > 0) { ?>
+<table class="wpsg_ov_table table table-body-striped">
+    <thead>
+        <tr>
+            <th><?php echo __('ID', 'wpsg'); ?></th>
+            <th class="wpsg_label"><?php echo __('Name', 'wpsg'); ?></th>
+            <th class="wpsg_typ"><?php echo __('Typ', 'wpsg'); ?></th>
+            <th class="wpsg_pflicht"><?php echo __('Pflicht', 'wpsg'); ?></th>
+            <th class="wpsg_delcol"></th>
+        </tr>
+    </thead>
+  	<?php $i = 0; foreach ($this->view['data'] as $ov) { $i ++; ?>
+    <tbody id="ov_<?php echo $ov['id']; ?>">
+        <tr class="wpsg_table wpsg_tablerow <?php echo (($i % 2 == 0)?'odd':'even'); ?>">
+            <td class="wpsg_id"><?php echo $ov['id']; ?></td>
+            <td><span id="wpsg_ov_name_<?php echo $ov['id']; ?>"><?php echo wpsg_hspc(__($ov['name'], 'wpsg')); ?></span></td>
+            <td><span id="wpsg_ov_typ_<?php echo $ov['id']; ?>"><?php echo $this->mod->arTypen[$ov['typ']]; ?></span></td>
+            <td class="wpsg_pflicht"><input type="checkbox" <?php echo (($ov['pflicht'] == '1')?'checked="checked"':''); ?> id="wpsg_ov_pflicht_<?php echo $ov['id']; ?>" /></td>
+            <td class="wpsg_delcol">
+
+                <a class="" href="#" title="<?php echo __('Bestellvariable löschen', 'wpsg'); ?>" onclick="return wpsg_removeOV(<?php echo $ov['id']; ?>);">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+
+                <script type="text/javascript">
+
+                    jQuery('#wpsg_ov_name_<?php echo $ov['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordervars&do=inlinedit&noheader=1', {
+                        submitdata: {
+                            field: 'name',
+                            ov_id: '<?php echo $ov['id']; ?>'
+                        },
+                        submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+                        placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+                        indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+                        tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+                    });
+
+                    jQuery('#wpsg_ov_pflicht_<?php echo $ov['id']; ?>').bind('change', function() {
+
+                        jQuery.ajax( {
+                            url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordervars&noheader=1&do=inlinedit',
+                            data: {
+                                field: 'pflicht',
+                                ov_id: '<?php echo $ov['id']; ?>',
+                                value: ((jQuery(this).attr("checked") == "checked")?'1':'0')
+                            }
+                        } );
+
+                    } );
+
+                    jQuery('#wpsg_ov_typ_<?php echo $ov['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordervars&do=inlinedit&noheader=1', {
+                        submitdata: {
+                            field: 'typ',
+                            ov_id: '<?php echo $ov['id']; ?>'
+                        },
+                        submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+                        data: <?php echo wpsg_prepare_for_inlineEdit($this->mod->arTypen); ?>,
+                        type: 'select',
+                        placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+                        indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+                        tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+                        callback: function(el) {
+                            if (el == '<?php echo __('Auswahl', 'wpsg'); ?>')
+                            {
+                                jQuery('#wpsg_ov_auswahlrow_<?php echo $ov['id']; ?>').show();
+                            }
+                            else
+                            {
+                                jQuery('#wpsg_ov_auswahlrow_<?php echo $ov['id']; ?>').hide();
+                            }
+                        }
+                    });
+
+                    function wpsg_removeOV(id)
+                    {
+
+                        if (!confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>')) return false;
+
+                        jQuery('#wpsg_ov_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+                        jQuery.ajax( {
+                            url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordervars&noheader=1&do=del',
+                            data: {
+                                ov_id: id
+                            },
+                            success: function(data) {
+
+                                jQuery('#wpsg_ov_list').html(data);
+
+                            }
+                        } );
+
+                        return false;
+
+                    }
+
+                </script>
+
+            </td>
+        </tr>
+        <tr class="wpsg_tablerow <?php echo (($i % 2 == 0)?'odd':'even'); ?>" id="wpsg_ov_auswahlrow_<?php echo $ov['id']; ?>" style="<?php echo (($ov['typ'] != '1')?'display:none;':''); ?>">
+            <td	class="wpsg_id"></td>
+            <td class="wpsg_select" colspan="4">
+                <?php echo __('Auswahl', 'wpsg'); ?>:
+                <span class="wpsg_editable" id="wpsg_ov_auswahl_<?php echo $ov['id']; ?>"><?php echo wpsg_hspc($ov['auswahl']); ?></span>
+                <script type="text/javascript">
+
+                    jQuery('#wpsg_ov_auswahl_<?php echo $ov['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordervars&do=inlinedit&noheader=1', {
+                        submitdata: {
+                            field: 'auswahl',
+                            ov_id: '<?php echo $ov['id']; ?>'
+                        },
+                        submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+                        placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+                        indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+                        tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+                    });
+
+                </script>
+            </td>
+        </tr>
+    </tbody>
+	<?php } ?>
+</table>
+<p class="wpsg_hinweis"><?php echo __('Die Reihenfolge lässt sich mittels Drag&Drop verändern.', 'wpsg'); ?>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('.wpsg_ov_table').sortable( {
+			helper: wpsg_Tablefix,
+			items: 'tbody',
+			handler: '.wpsg_id',
+			update: function(event, ui) {
+
+				var wpsg_reorder = jQuery(this).sortable('serialize');
+
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_ordervars&noheader=1&do=reorder',
+					data: { 
+						wpsg_reorder: wpsg_reorder
+					},
+					success: function(data) {
+
+						if (data !== "1") alert(data);
+						
+					}
+				} );
+				
+			}
+		} );
+		
+	} );
+			
+/* ]]> */</script>
+
+<?php } else { ?>
+<?php echo __('Bisher noch keine Bestellvariablen angelegt.', 'wpsg'); ?>
+<?php } ?>

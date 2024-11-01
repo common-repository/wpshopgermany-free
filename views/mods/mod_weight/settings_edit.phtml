@@ -1,0 +1,27 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Gewichtsmoduls
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_weight_unit', __('Gewichtseinheit', 'wpsg'), $this->get_option('wpsg_mod_weight_unit'), array('help' => 'wpsg_mod_weight_unit')); ?>
+<br />
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showProduct', __('Im Produkt anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showProduct'), array('help' => 'wpsg_mod_weight_showProduct')); ?>
+<br />
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showBasket', __('Gesamtgewicht im Warenkorbs anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showBasket'), array('help' => 'wpsg_mod_weight_showBasket')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showAjaxDialog', __('In der Warenkorb-Lightbox anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showAjaxDialog'), array('help' => 'wpsg_mod_weight_showAjaxDialog')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showBasketProduct', __('Im Warenkorb im Produkt anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showBasketProduct'), array('help' => 'wpsg_mod_weight_showBasketProduct')); ?>
+<br />
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showOverview', __('Gesamtgewicht in Zusammenfassung anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showOverview'), array('help' => 'wpsg_mod_weight_showOverview')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showOverviewProduct', __('In Zusammenfassung im Produkt anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showOverviewProduct'), array('help' => 'wpsg_mod_weight_showOverviewProduct')); ?>
+<br />
+<?php if ($this->hasMod('wpsg_mod_productindex')) { ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showProductindex', __('Auf Produktübersichtsseiten (Frontend) anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showProductindex'), array('help' => 'wpsg_mod_weight_showProductindex')); ?>
+<?php } ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showProductindexBackend', __('In Produktübersicht (Backend) anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showProductindexBackend'), array('help' => 'wpsg_mod_weight_showProductindexBackend')); ?>
+<br />
+<?php if ($this->hasMod('wpsg_mod_request')) { ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showRequestPage', __('Gesamtgewicht der vollständigen Anfrage auf Anfrageseite anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showRequestPage'), array('help' => 'wpsg_mod_weight_showRequestPage')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_weight_showRequestPageProduct', __('Auf Anfrageseite im Produkt anzeigen', 'wpsg'), $this->get_option('wpsg_mod_weight_showRequestPageProduct'), array('help' => 'wpsg_mod_weight_showRequestPageProduct')); ?>
+<?php } ?>

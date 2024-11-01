@@ -1,0 +1,123 @@
+<?php
+	
+	/**
+	 * Template für das Produkt Anlegen/Bearbeiten Formular
+	 * Hier sollten keine Anpassungen vorgenommen werden
+	 */
+
+?>
+
+<div class="wpsg_products" id="wpsg-bs">
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="active"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt"><?php echo __("Produktübersicht", "wpsg"); ?></a></li>
+					<li role="presentation" class="wpsg_showhide_filter active"><a href="#" onclick="return false;"><?php echo __("Produkte anlegen/bearbeiten", "wpsg"); ?></a></li>
+					<?php if (wpsg_isSizedInt($this->view['data']['id'])) { ?>
+					<li role="presentation" class="wpsg_top_extend">
+						<?php echo $this->view['oProduct']->getProductName(); ?>
+					</li>
+					<?php } ?>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	
+	<div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+				
+	<form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=save&noheader=1" enctype="multipart/form-data">
+	
+		<?php echo wp_nonce_field('wpsg-product-save-'.wpsg_getInt($_REQUEST['edit_id'])); ?>
+		
+		<div class="wpsg_admin_submenu">
+		 
+			<div class="list-group" id="wpsg_product_tabs">		
+			
+				<?php if (wpsg_isSizedInt($this->view['data']['id'])) { ?>
+				<span class="list-group-head list-group-item"><?php echo wpsg_translate(
+					__('Produkt ID:#1# <span style="float:right;"><a href="#2#" title="Produkt im Frontend ansehen" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a></span>', 'wpsg'),
+					$this->view['data']['id'],
+					$this->view['oProduct']->getProductURL(((isset($_REQUEST['wpsg_lang']))?$_REQUEST['wpsg_lang']:false))
+				); ?></span>
+				<?php } else { ?>
+				<span class="list-group-head list-group-item"><?php echo __('Neues Produkt', 'wpsg'); ?></span>
+				<?php } ?>
+				
+				<?php $i = 0; foreach ($this->view['arSubAction'] as $k => $v) { $i ++; ?>		 
+				<a class="list-group-item <?php echo ((wpsg_getStr($_COOKIE['wpsg_product_addedit_tab'], 'general') === $k)?'active':''); ?>" wpsg-data-target="<?php echo $k; ?>" href="#"><?php echo $v['title']; ?></a>		
+				<?php } ?>								
+			</div>
+									
+			<?php if (wpsg_isSizedString($_REQUEST['action'], 'add')) { ?>
+				<div class="info"><?php echo __('Nach dem erstmaligen Speichern können weitere Einstellungen (Preisangaben, Produktbilder, ...) vorgenommen werden.', 'wpsg'); ?></div>
+				<br />
+			<?php } ?>
+			
+			<br />
+			
+			<?php if (wpsg_isSizedString($_REQUEST['edit_id'])) { ?>
+			<input type="hidden" name="edit_id" value="<?php echo $_REQUEST['edit_id']; ?>" />
+			<?php } ?>
+			
+			<?php if (isset($_REQUEST['wpsg_lang'])) { ?>
+			<input type="hidden" name="wpsg_lang" value="<?php echo $_REQUEST['wpsg_lang']; ?>" />
+			<?php } ?>
+			
+			<input type="submit" value="<?php echo __('Speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" />			
+			<input type="submit" value="<?php echo __('Speichern / zur Übersicht', 'wpsg'); ?>" class="button-primary" id="submit_index" name="submit_index" />
+						
+		</div>
+		
+		<div class="wpsg_admin_content form-horizontal">
+
+			<?php $i = 0; foreach ($this->view['arSubAction'] as $k => $v) { $i ++; ?>
+			<div id="<?php echo $k; ?>" style="display:<?php echo ((wpsg_getStr($_COOKIE['wpsg_product_addedit_tab'], 'general') === $k)?'block':'none'); ?>;" class="wpsg_product_tab_content">
+				
+				<?php echo $v['content']; ?>
+				
+			</div>		
+			<?php } ?>
+		
+		</div>
+		
+	</form>
+			 
+	<script type="text/javascript">/* <![CDATA[ */
+
+		jQuery(document).ready(function() {
+			    
+			jQuery('#wpsg_product_tabs a.list-group-item').bind('click', function() {
+	        
+				jQuery('#wpsg_product_tabs a').removeClass('active');
+				jQuery('.wpsg_product_tab_content').hide();
+				
+				jQuery(this).addClass('active');
+				jQuery('#' + jQuery(this).attr('wpsg-data-target')).show();
+                
+				jQuery.cookie('wpsg_product_addedit_tab', jQuery(this).attr('wpsg-data-target'));
+				jQuery(this).blur();				
+				
+			} );
+            
+			//Anzahl aktive ermitteln
+			//alert( jQuery('#wpsg_product_tabs a.list-group-item.active').length );
+			
+			//Erstes anklicken
+			//jQuery('#wpsg_product_tabs a.list-group-item').first().click();
+            
+		    if (jQuery('#wpsg_product_tabs a.list-group-item.active').length < 1) { 
+		    	
+				jQuery('#wpsg_product_tabs a.list-group-item').first().click();
+
+			}
+
+		} );		
+    
+	/* ]]> */</script> 
+			 
+</div>

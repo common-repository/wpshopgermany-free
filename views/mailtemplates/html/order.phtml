@@ -1,0 +1,202 @@
+<?php
+	
+	if ($this->getFrontendTaxView() === WPSG_BRUTTO) $display_brutto_netto = 'brutto';
+	else $display_brutto_netto = 'netto';
+	
+?><div class="baskettable_wrap">
+	<table class="baskettable" cellpadding="2" cellspacing="0" style="cell-padding:4px;">
+		<tr class="head">
+			<th valign="middle" style="cell-padding:4px; padding:4px; line-height:100%; vertical-align:middle;" class="col_pos"><?php echo __('Pos', 'wpsg'); ?></th>
+			<th valign="middle" style="cell-padding:4px; padding:4px; line-height:100%; vertical-align:middle;" class="col_name"><?php echo __('Produkt', 'wpsg'); ?></th>
+			<th valign="middle" style="cell-padding:4px; padding:4px; line-height:100%; vertical-align:middle;" class="col_price"><?php echo __('Stückpreis', 'wpsg'); ?></th>
+			<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<th valign="middle" style="cell-padding:4px; padding:4px; line-height:100%; min-width:50px; width:50px; vertical-align:middle;" class="col_mwst"><?php echo __('MwSt.', 'wpsg'); ?></th>
+			<?php } ?>
+			<th valign="middle" style="cell-padding:4px; padding:4px; line-height:100%; vertical-align:middle;" class="col_amount"><?php echo __('Anzahl', 'wpsg'); ?></th>
+			<th valign="middle" style="cell-padding:4px; padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php echo __('Summe', 'wpsg'); ?></th>		
+		</tr>
+		<?php $i = 0; foreach ((array)$this->view['basket']['produkte'] as $p) { $i ++; ?>
+		<tr class="productrow <?php echo ((($i % 2) == 0)?'productrow_odd':'productrow_even'); ?>">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos td_bt"><?php echo $i; ?>.</td>
+			<td style="padding:0px; vertical-align:middle;" class="col_name td_bt">
+								
+				<table cellpadding="0" cellspacing="0">
+					<tr>
+						<td style="padding:0px; ">
+							<?php if (wpsg_isSizedInt($this->get_option('wpsg_imagehandler_overviewimage'))) {
+
+								if (isset($p['product_key'])) {
+									$bild = $this->imagehandler->getAttachmentID($p['product_key']);
+								} else {
+									$arBilder = $this->imagehandler->getAttachmentIDs($this->getProduktId($p['id']));
+									$bild = $arBilder[0];
+								}
+							?>
+							<?php if (wpsg_isSizedString($bild)) { ?>  				
+							<a style="width:50px; width:50px; margin-right:10px; float:left;" href="<?php echo $this->getProduktLink($this->getProduktId($p['id'])); ?>" title="<?php echo wpsg_hspc(((wpsg_isSizedString($p['detailname'])?$p['detailname']:$p['name']))); ?>">
+								
+								<?php echo wp_get_attachment_image($bild, Array(50, 50)); ?>
+							</a>
+							<?php } ?>
+							<?php } ?>			
+						</td>
+						<td valign="middle" style="padding:4px; line-height:125%; vertical-align:middle; min-height:50px;">
+							<a href="<?php echo $this->getProduktLink($this->getProduktId($p['id'])); ?>" title="<?php echo wpsg_hspc(((wpsg_isSizedString($p['detailname'])?$p['detailname']:$p['name']))); ?>"><?php echo wpsg_hspc(((wpsg_isSizedString($p['detailname'])?$p['detailname']:$p['name']))); ?></a>
+						</td>
+					</tr>
+				</table>
+				
+			</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price td_bt"><?php echo wpsg_ff($p['preis'], $this->get_option('wpsg_currency')); ?></td>
+			<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst td_bt"><?php echo wpsg_ff($p['mwst_value'], '%'); ?></td>
+			<?php } ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount td_bt"><?php echo $p['menge']; ?></td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum td_bt"><?php echo wpsg_ff($p['preis'] * $p['menge'], $this->get_option('wpsg_currency')); ?></td>
+		</tr>
+		<tr class="productrow productrow2 <?php echo ((($i % 2) == 0)?'productrow_odd':'productrow_even'); ?>">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name"><?php echo __('Art. Nr.', 'wpsg'); ?>:</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="<?php echo ((sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?'4':'3'); ?>">
+				<?php echo wpsg_hspc($p['anr']); ?>
+			</td> 
+		</tr>
+		<?php $this->view['i'] = $i; $this->callMods('mail_row', array($i, $p)); ?>
+		<?php if (wpsg_isSizedArray($p['order_allowedshipping'])) { ?>
+		<tr class="productrow productrow2 <?php echo ((($this->view['i'] % 2) == 0)?'productrow_odd':'productrow_even'); ?>">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name"><?php echo __('Mögliche Versandarten', 'wpsg'); ?>:</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_productvars_value">
+				<?php $j = 0; foreach ($p['order_allowedshipping'] as $shipping) { $j ++; ?>
+				<?php echo $this->getShippingName($shipping); ?><?php if ($j < sizeof($p['order_allowedshipping'])) { ?>, <?php } ?>
+				<?php } ?>
+			</td>
+		</tr>
+		<?php } ?>
+		<?php } ?>
+		<?php if (wpsg_isSizedArray($this->view['basket']['arCalculation']['voucher'])) { $bLine = true; ?>		
+			<?php foreach ($this->view['basket']['arCalculation']['voucher'] as $gs) { ?>
+				<tr class="voucherrow">
+					<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos"> </td>
+					<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name"><?php echo wpsg_translate(__('Gutschein (#1#)', 'wpsg'), $gs['code']); ?></td>
+					<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price"><?php echo wpsg_ff($gs['set'], ((strpos($gs['set'], '%') !== false)?'%':$this->get_option('wpsg_currency'))); ?></td>
+					<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+						<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst"><?php echo __('Anteilig', 'wpsg'); ?></td>
+					<?php } ?>
+					<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">1</td>
+					<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php echo wpsg_ff($gs[$display_brutto_netto], $this->get_option('wpsg_currency')); ?></td>
+				</tr>
+			<?php } ?>
+		<?php } ?>		
+		<tr class="spacer">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="td_bt" colspan="<?php echo ((sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?'6':'5'); ?>">&nbsp;</td>
+		</tr>
+	 	<?php if (isset($this->view['basket']['sum']['preis_rabatt']) && $this->view['basket']['sum']['preis_rabatt'] > 0) { ?>
+	  <tr class="discountrow">
+	    <td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="2"><?php echo __('Abzüglich Rabatt', 'wpsg'); ?>:</td>
+	    <td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price">&nbsp;</td>
+	    <?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst">&nbsp;</td>		
+			<?php } ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php echo wpsg_ff($this->view['basket']['sum']['preis_rabatt'], $this->get_option('wpsg_currency')); ?></td>
+		</tr> 
+		<?php } ?>
+		<tr class="subtotalrow">
+	    <td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="2"><?php echo __('Zwischensumme', 'wpsg'); ?>:</td>
+	    <td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price">&nbsp;</td>
+	    <?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst"></td>		
+			<?php } ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php echo wpsg_ff($this->view['basket']['sum']['preis'], $this->get_option('wpsg_currency')); ?></td>
+		</tr> 
+		<tr class="shippingtotalrow">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="2"><?php echo __('Versandkosten', 'wpsg'); ?>:</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price">&nbsp;</td>
+			<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst">
+				<?php if (!wpsg_isSizedInt($this->arShipping[$this->view['basket']['checkout']['payment']]['mwst'])) { ?>
+				<?php echo __('Anteilig', 'wpsg'); ?>
+				<?php } else { ?>
+				<?php echo wpsg_ff($this->arShipping[$this->view['basket']['checkout']['shipping']]['mwst_value'], '% '); ?>
+				<?php } ?>
+			</td>
+			<?php } ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php echo wpsg_ff($this->view['basket']['sum']['preis_shipping'], $this->get_option('wpsg_currency')); ?></td>
+		</tr>
+		<?php if (wpsg_isSizedArray($this->view['basket']['shipping']['methods'])) { ?>
+		<?php foreach ($this->view['basket']['shipping']['methods'] as $shipping) { ?>
+		<tr class="shippingtotalrow shippingsubrow">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" colspan="2" class="col_name"><?php echo wpsg_hspc($this->getShippingName($shipping)); ?></td>
+			<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst">
+				<?php if ($this->view['basket']['shipping'][$shipping]['tax_rata'] == 1) { ?>
+				<?php echo __('Anteilig', 'wpsg'); ?>
+				<?php } else { ?>
+				<?php echo wpsg_ff($this->view['basket']['shipping'][$shipping]['mwst'], '%'); ?>
+				<?php } ?>
+			</td>			
+			<?php } ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum">
+				<?php if ($this->get_option('wpsg_preisangaben_frontend') == WPSG_NETTO) { ?>
+				<?php echo wpsg_ff($this->view['basket']['shipping'][$shipping]['preis_shipping_netto'], $this->get_option('wpsg_currency')); ?>
+				<?php } else { ?>
+				<?php echo wpsg_ff($this->view['basket']['shipping'][$shipping]['preis_shipping_brutto'], $this->get_option('wpsg_currency')); ?>
+				<?php } ?> 
+			</td>
+		</tr>
+		<?php } ?>
+		<?php } ?>
+		<tr class="paymenttotalrow">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="2"><?php echo __('Zahlungskosten', 'wpsg'); ?>:</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price">&nbsp;</td>
+			<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst">
+				<?php if (!wpsg_isSizedInt($this->arPayment[$this->view['basket']['checkout']['payment']]['mwst'])) { ?>
+				<?php echo __('Anteilig', 'wpsg'); ?>
+				<?php } else { ?>
+				<?php echo wpsg_ff($this->arPayment[$this->view['basket']['checkout']['payment']]['mwst_value'], '% '); ?>
+				<?php } ?>
+			</td>
+			<?php } ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php echo wpsg_ff($this->view['basket']['sum']['preis_payment'], $this->get_option('wpsg_currency')); ?></td>
+		</tr>
+		<?php if ($this->get_option('wpsg_kleinunternehmer') == '1') { ?>
+		<tr class="smallbuisnessrulerow">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" colspan="<?php echo ((sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') === '1')?'6':'5'); ?>">
+				<?php echo $this->get_option('wpsg_kleinunternehmer_text'); ?>
+			</td>
+		</tr>	
+		<?php } else { ?>
+		<?php foreach ($this->view['basket']['mwst'] as $mwst_id => $mwst) { ?>
+		<tr class="taxrow">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="<?php echo ((sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?'5':'4'); ?>">
+				<?php if ($this->getFrontendTaxview() == WPSG_NETTO) { ?>
+				<?php echo wpsg_translate(__('zuzüglich MwSt. (#1#)', 'wpsg'), $mwst['name']); ?>
+				<?php } else { ?>
+				<?php echo wpsg_translate(__('darin enthaltene MwSt. (#1#)', 'wpsg'), $mwst['name']); ?>
+				<?php } ?>:
+			</td>		
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><?php echo wpsg_ff($mwst['sum'], $this->get_option('wpsg_currency')); ?></td>
+		</tr>
+		<?php } ?>
+		<?php } ?>
+		<tr class="totalrow">
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="2"><?php echo __('Gesamtpreis', 'wpsg'); ?>:</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_price">&nbsp;</td>
+			<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_mwst"></td>
+			<?php } ?>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_amount">&nbsp;</td>
+			<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_sum"><strong><?php echo wpsg_ff($this->view['basket']['sum']['preis_gesamt_brutto'], $this->get_option('wpsg_currency')); ?></strong></td>
+		</tr>
+		<?php $this->callMods('mail_order_end', [&$this->view['basket']['arCalculation'], true]); ?>	
+	</table>
+</div>
+	
+<br />

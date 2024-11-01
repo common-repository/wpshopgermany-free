@@ -1,0 +1,61 @@
+<?php
+
+	/**
+	 * Diese Mail wird an den Kunden geschickt, wenn er die Registrierung erfolgreich beendet hat (HTML)
+	 */
+
+?>
+<p><?php echo wpsg_translate(__('Hallo #1# #2#,', 'wpsg'), $this->view['kunde']['vname'], $this->view['kunde']['name']); ?></p>  
+ 
+<p><?php echo __('Sie haben sich mit folgenden Daten bei uns registriert.', 'wpsg'); ?></p> 
+
+<table style="width:100%;">
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Firma', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['firma']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Vorname', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['vname']); ?></td>
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Name', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['name']); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('E-Mail', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['email']); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Telefon', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['tel']); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Fax', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['fax']); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Straße', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['strasse'].rtrim(' '.$this->view['kunde']['nr'])); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('PLZ', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['plz']); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Ort', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['ort']); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('Land', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['land']); ?></td>	
+	</tr>
+	<tr>
+		<td style="padding-right:15px;"><?php echo __('UStIdNr.', 'wpsg'); ?>:</td>
+		<td><?php echo wpsg_hspc($this->view['kunde']['ustidnr']); ?></td>	
+	</tr>
+</table>
+
+<p><?php echo __('Viele Grüße', 'wpsg'); ?></p> 
+ 
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p> 

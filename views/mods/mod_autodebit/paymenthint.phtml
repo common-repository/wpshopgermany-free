@@ -1,0 +1,128 @@
+<?php
+
+	/**
+	 * Template für die Integration der Kundeneingaben für das Modul "Bankeinzug" in den Checkout2
+	 */
+ 
+?>
+<br /><br />
+<div class="wpsg_mod_autodebit">
+	
+	<div class="wpsg_mod_autodebit_inhaber wpsg_mod_autodebit_field">
+		<label>
+			<?php echo __('Inhaber', 'wpsg'); ?><span class="wpsg_required">*</span>:
+			<input class="<?php echo ((in_array("mod_autodebit_inhaber", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg_mod_autodebit[inhaber]" value="<?php echo wpsg_hspc($this->view['wpsg_mod_autodebit']['inhaber']); ?>" />
+		</label>
+	</div>
+	<div class="wpsg_clear"></div>
+	
+	<?php if ($this->get_option('wpsg_mod_autodebit_iban') == '1') { ?>
+	<div class="wpsg_mod_autodebit_bic wpsg_mod_autodebit_field">
+		<label>
+			<?php echo __('BIC', 'wpsg'); ?><span class="wpsg_required">*</span>:
+			<input class="<?php echo ((in_array("mod_autodebit_bic", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg_mod_autodebit[bic]" value="<?php echo wpsg_hspc($this->view['wpsg_mod_autodebit']['bic']); ?>" />
+		</label>
+	</div>
+	<div class="wpsg_clear"></div>
+	<?php } else { ?>
+	<div class="wpsg_mod_autodebit_blz wpsg_mod_autodebit_field">
+		<label>
+			<?php echo __('Bankleitzahl', 'wpsg'); ?><span class="wpsg_required">*</span>:
+			<input class="<?php echo ((in_array("mod_autodebit_blz", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg_mod_autodebit[blz]" value="<?php echo wpsg_hspc($this->view['wpsg_mod_autodebit']['blz']); ?>" />
+		</label>
+	</div>
+	<div class="wpsg_clear"></div>
+	<?php } ?>
+	
+	<?php if ($this->get_option('wpsg_mod_autodebit_iban') == '1') { ?>
+	<div class="wpsg_mod_autodebit_iban wpsg_mod_autodebit_field">
+		<label>
+			<?php echo __('IBAN', 'wpsg'); ?><span class="wpsg_required">*</span>:
+			<input class="<?php echo ((in_array("mod_autodebit_iban", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg_mod_autodebit[iban]" id="wpsg_mod_autodebit_iban" value="<?php echo wpsg_hspc($this->view['wpsg_mod_autodebit']['iban']); ?>" />
+		</label>
+	</div>
+	<div class="wpsg_clear"></div>
+	<?php } else { ?>
+	<div class="wpsg_mod_autodebit_knr wpsg_mod_autodebit_field">
+		<label>
+			<?php echo __('Kontonummer', 'wpsg'); ?><span class="wpsg_required">*</span>:
+			<input class="<?php echo ((in_array("mod_autodebit_knr", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg_mod_autodebit[knr]" value="<?php echo wpsg_hspc($this->view['wpsg_mod_autodebit']['knr']); ?>" />
+		</label>
+	</div>
+	<div class="wpsg_clear"></div>
+	<?php } ?>	
+
+	<div class="wpsg_mod_autodebit_name wpsg_mod_autodebit_field">
+		<label>
+			<?php echo __('Name der Bank', 'wpsg'); ?><span class="wpsg_required">*</span>:
+			<input class="<?php echo ((in_array("mod_autodebit_name", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" name="wpsg_mod_autodebit[name]" value="<?php echo wpsg_hspc($this->view['wpsg_mod_autodebit']['name']); ?>" />
+		</label>
+	</div>
+	<div class="wpsg_clear"></div>
+	
+	<div class="wpsg_mandatoryfield_hint">
+		<?php echo wpsg_translate(__('Mit #1# gekennzeichnete Felder sind Pflichtfelder.', 'wpsg'), '<span class="wpsg_required">*</span>'); ?>
+	</div>
+	
+</div>
+
+<script>
+
+//id="wpsg_mod_autodebit_iban"
+jQuery("#wpsg_mod_autodebit_iban").on("input", function () {
+	var
+		iban,
+		a1,
+		bb = true,
+		sum = 0,
+		csum,
+		i;
+
+	//alert("oninput");
+	iban = jQuery('#wpsg_mod_autodebit_iban').val();
+	iban = iban.replace(/ /g, "");
+	// 2 + 2 + 8 + 10
+	// DE 22 Zeichen
+	// AT 20 Zeichen
+	// CH 21 Zeichen
+	// Ersetze alle Buchstaben durch Zahlen, wobei A = 10, B = 11, …, Z = 35.
+    // Berechne den ganzzahligen Rest, der bei Division durch 97 bleibt.
+    // Subtrahiere den Rest von 98, das Ergebnis sind die beiden Prüfziffern. 
+    // Falls das Ergebnis einstellig ist, wird es mit einer führenden Null ergänzt.
+	// DE80500105175408332501 --> 500105175408332501DE80 --> 500105175408332501131480
+	// Zahl modulo 97 muss 1 ergeben
+
+	if (iban.length < 16) { return; }
+
+	sum = iban.substr(4);
+
+	a1 = parseInt(iban.charCodeAt(0, 1) - 64, 10) + 9;
+	sum = sum + a1.toString();
+	a1 = parseInt(iban.charCodeAt(1, 1) - 64, 10) + 9;
+	sum = sum + a1.toString();
+	sum = sum + iban.substr(2, 2);
+	
+	//sum = sum % 97;
+    // Calculate checksum
+    csum = parseInt(sum.substr(0, 1), 10);
+    for (i = 1; i < sum.length; i++) {
+        csum = csum * 10;
+        csum = csum + parseInt(sum.substr(i, 1), 10);
+        csum = csum % 97;
+    }
+	
+	if (csum !== 1) { bb = false; }
+
+	jQuery('#wpsg_mod_autodebit_iban').removeClass('wpsg_error');
+	if (bb === false) {
+		//alert('IBAN fehlerhaft');
+		jQuery('#wpsg_mod_autodebit_iban').addClass('wpsg_error');
+	}
+
+});
+
+
+
+
+
+</script>

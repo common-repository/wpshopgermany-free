@@ -1,0 +1,489 @@
+<?php
+
+	/**
+	 * Template für die alternative Ansicht einer Bestellung im Backend
+	 */
+
+?>
+
+<style>.orderdetail-alternative-left:active, .orderdetail-alternative-right:active { cursor: move; }</style>
+
+<div class="wpsg_order_view wpsg_order_view_alternativedesign" id="wpsg-bs">
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="<?php echo ((!isset($_REQUEST['action']))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order"><?php echo __("Bestellübersicht", "wpsg"); ?></a></li>
+					<li role="presentation" class="wpsg_showhide_filter active"><a onclick="return false;"><?php echo __("Bestellansicht (Detail)", "wpsg"); ?></a></li>
+					<li role="presentation" class="wpsg_top_extend" id="wpsg_be_orderdata">
+
+						<?php echo $this->view['oOrder']->getInvoiceFirstName().' '.$this->view['oOrder']->getInvoiceName().' / '.wpsg_ff($this->view['oOrder']->getAmount($this->getBackendTaxview()), $this->get_option('wpsg_currency')); ?>
+
+						<?php if (trim($this->view['oOrder']->admincomment) != "") { ?>
+							<a title="<?php echo __("Kommentar (Admin): ", "wpsg").htmlspecialchars($this->view['oOrder']->admincomment); ?>" onclick="return false;" class="glyphicon glyphicon-question-sign commenticon admincomment" href="#"></a>
+						<?php } ?>
+
+						<?php if (trim($this->view['oOrder']->comment) != "") { ?>
+							<a title="<?php echo __("Kommentar (Kunde): ", "wpsg").htmlspecialchars($this->view['oOrder']->comment); ?>" onclick="return false;" class="glyphicon glyphicon-question-sign commenticon customercomment" href="#"></a>
+						<?php } ?>
+
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a style="padding-top:11px;padding-bottom:11px;">
+							<button role="button" class="button btn-reset-itemorder">Anordnung der Kacheln zurücksetzen</button>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+
+
+	<div class="orderdetail-alternative">
+		<div class="col-md-8 orderdetail-alternative-left connectedSortable">
+			<div id="item-general" class="orderdetail-item orderdetail-item-left orderdetail-item-_general">
+				<div id="item-general" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['general']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-orderdata" class="orderdetail-item orderdetail-item-left orderdetail-item-_orderdata">
+				<div id="item-orderdata" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['orderdata']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-ordervariables" class="orderdetail-item orderdetail-item-left orderdetail-item-_ordervariables">
+				<div id="item-ordervariables" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['950']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-customercontact" class="orderdetail-item orderdetail-item-left orderdetail-item-_customercontact">
+				<div id="item-customercontact" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['1000']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-bills" class="orderdetail-item orderdetail-item-left orderdetail-_item-bills">
+				<div id="item-bills" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['1400']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-deliverynotes" class="orderdetail-item orderdetail-item-left orderdetail-item-_deliverynotes">
+				<div id="item-deliverynotes" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['2000']['content']; ?>
+
+				</div>
+			</div>
+		</div> <!-- .orderdetail-alternative-left -->
+
+
+
+		<div class="col-md-4 orderdetail-alternative-right connectedSortable">
+			<div id="item-customerdata" class="orderdetail-item orderdetail-item-right orderdetail-item-_customerdata">
+				<div id="item-customerdata" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['customerdata']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-shippay" class="orderdetail-item orderdetail-item-right orderdetail-item-_shippay">
+				<div id="item-shippay" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['shippay']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-confirmation" class="orderdetail-item orderdetail-item-right orderdetail-item-_confirmation">
+				<div id="item-confirmation" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['70']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-trustedshops" class="orderdetail-item orderdetail-item-right orderdetail-item-_trustedshops">
+				<div id="item-trustedshops" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['5000']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-orderlog" class="orderdetail-item orderdetail-item-right orderdetail-item-_orderlog">
+				<div id="item-orderlog" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['orderlog']['content']; ?>
+
+				</div>
+			</div>
+			<div id="item-dev" class="orderdetail-item orderdetail-item-right orderdetail-item-_dev">
+				<div id="item-dev" class="orderdetail-item-inner">
+
+					<?php echo $this->view['arSubAction']['dev']['content']; ?>
+
+				</div>
+			</div>
+		</div> <!-- .orderdetail-alternative-right -->
+	</div>
+
+
+</div>
+
+
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	/**
+	 * Ersetzt jedes Vorkommen eines Charaktersets in einem String
+	 */
+	String.prototype.replaceAll = function(search, replacement)
+	{
+
+		let target = this;
+		return target.split(search).join(replacement);
+
+	}; // String.prototype.replaceAll()
+
+	/**
+	 * Sendet eine eMail
+	 */
+	function wpsg_sendMail(oid)
+	{
+		jQuery('#wpsg_produkte_table').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=sendMail&do=send&edit_id=' + oid + '&noheader=1',
+			success: function(data) {
+				jQuery('#wpsg_produkte_table').replaceWith(data);
+				location.href = location.href;
+			}
+		} );
+
+		return false;
+
+	} // function wpsg_sendMail()
+
+	/**
+	 * Fügt einen neuen Rabatt hinzu (nur wenn keiner da ist)
+	 */
+	function wpsg_addDiscount(oid)
+	{
+		jQuery('#wpsg_produkte_table').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&subaction=discountData&do=add&edit_id=' + oid + '&noheader=1',
+			success: function(data) {
+				jQuery('#wpsg_produkte_table').replaceWith(data);
+				jQuery('#LinkRabattNeu').hide();
+			}
+		} );
+
+		return false;
+
+	} // function wpsg_addDiscount()
+
+
+	/**
+	 * Fügt einen neuen Gutschein hinzu (nur wenn keiner da ist)
+	 */
+	function wpsg_addVoucher(oid)
+	{
+		jQuery('#wpsg_produkte_table').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&subaction=voucherData&do=add&edit_id=' + oid + '&noheader=1',
+			success: function(data) {
+				jQuery('#wpsg_produkte_table').replaceWith(data);
+				jQuery('#LinkGutscheinNeu').hide();
+				//jQuery('#wpsg_kv_list').html(data);
+				//location.href = location.href;
+				//jQuery('#wpsg_kv_list').html('');
+			}
+		} );
+
+		return false;
+
+	} // function wpsg_addVoucher()
+
+	/*
+	 * Wendet die gespeicherte Reihenfolge auf die verschiebbaren Elemente an
+	 */
+	function applySavedItemOrder()
+	{
+
+		let leftElements = jQuery(".orderdetail-item-left");
+		let rightElements = jQuery(".orderdetail-item-right");
+
+		let leftOrder = '<?php echo json_encode($this->get_option('wpsg_backendui_orderdetail_itemorder_left')); ?>' || false;
+		let rightOrder = '<?php echo json_encode($this->get_option('wpsg_backendui_orderdetail_itemorder_right')); ?>' || false;
+
+		if(leftOrder === "false" || leftOrder.includes('"",')) leftOrder = false;
+		if(rightOrder === "false" || rightOrder.includes('"",')) rightOrder = false;
+
+		if(leftOrder)
+		{
+
+			let elementIDs = [];
+			leftElements.each(function(key, item) {
+				elementIDs.push(item.id);
+			});
+
+			let cleanLeftOrder = leftOrder.replace("[", "").replace("]", "").replaceAll('"', "").split(",");
+			writeOrderItems(cleanLeftOrder, "left");
+
+		}
+
+		if(rightOrder)
+		{
+
+			let elementIDs = [];
+			rightElements.each(function(key, item) {
+				elementIDs.push(item.id);
+			});
+
+			let cleanRightOrder = rightOrder.replace("[", "").replace("]", "").replaceAll('"', "").split(",");
+			writeOrderItems(cleanRightOrder, "right");
+
+		}
+
+	} // function applySavedItemOrder()
+
+	/*
+	 * Schreibt Elemente der angegebenen IDs ins DOM
+	 */
+	function writeOrderItems(orderIDs, orderPos)
+	{
+
+		let writeElement = "";
+
+		let elements = [];
+		orderIDs.forEach(function(id) {
+			elements.push(jQuery(`#${id}`)[0]);
+		});
+
+		switch(orderPos) {
+
+			case 'left':
+				writeElement = jQuery(".orderdetail-alternative-left");
+				break;
+
+			case 'right':
+				writeElement = jQuery(".orderdetail-alternative-right");
+				break;
+
+		}
+
+		if(writeElement.length > 0 || writeElement !== "")
+		{
+
+			writeElement[0].innerHTML = "";
+			elements.forEach(function (element) {
+				try{
+					writeElement[0].innerHTML += element.innerHTML;
+				}
+				catch(err){
+					return false;
+				}
+			});
+
+		}
+
+	} // function writeOrderItems()
+
+	/*
+	 * Weist den zuvor eingeklappten Elementen eine Klase zu und klappt sie schließlich auch ein
+	 */
+	function applyFoldedStatus()
+	{
+
+		let foldedPanels = '<?php echo json_encode($this->get_option('wpsg_backendui_orderdetail_foldedpanels')); ?>' || false;
+		if(foldedPanels === "false" || foldedPanels.includes('"",')) foldedPanels = false;
+
+		if(foldedPanels)
+		{
+
+			let foldedPanelsArr = foldedPanels.replace("[", "").replace("]", "").replaceAll('"', "").split(",");
+
+			for(var i = 0; i < foldedPanelsArr.length; i++) {
+				let mainParent = jQuery(`#${foldedPanelsArr[i].split("_")[0]}`);
+				mainParent.find(".panel-body").slideUp('fast');
+			}
+
+		}
+
+	} // fucntion applyFoldedStatus()
+
+	/*
+	 *  Speichert die angegebene Reihenfolge der verschiebbaren Elemente
+	 */
+	function saveItemOrder(order, orderPosition)
+	{
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&subaction=itemOrderData&do=save&noheader=1',
+			data: {
+				'order': order,
+				'orderPosition': orderPosition
+			}
+		} );
+
+	} // function saveItemOrder(order, orderPosition)
+
+	/*
+	 *  Speichert die angegebene Reihenfolge der verschiebbaren Elemente
+	 */
+	function saveFoldedItems(items)
+	{
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&subaction=foldedItemsData&do=save&noheader=1',
+			data: {
+				'folded_items': items
+			}
+		} );
+
+	} // function saveItemOrder(order, orderPosition)
+
+	// Weist dem gegebenen JS Element eine einzigartige Klasse zu
+	// und gibt das jeweilige Element als jQuery Object zurück
+	let counter = 0;
+	function jsElTojQueryObj(jsEl, specificClass) {
+
+		let id = jsEl.id ? `#${jsEl.id}` : "";
+		let classes = "";
+
+		if(typeof jsEl !== "object" || jsEl.length <= 1 && jsEl[0] === "#document")
+			return;
+
+		jsEl.classList.add(`${specificClass}-${counter++}`);
+
+		if(jsEl.classList && jsEl.classList.length > 0) {
+
+			jsEl.classList.forEach(function(className) {
+				if(!classes.includes(`.${className}`)) classes += `.${className}`;
+			});
+
+		}
+
+		return $(`${jsEl.tagName.toLowerCase()}${id}${classes}`);
+
+	} // function jsElTojQueryObj(jsEl, specificClass)
+
+
+	jQuery(document).ready(function() {
+
+		applySavedItemOrder();
+		applyFoldedStatus();
+		wpsg_view_orderdata_hide();
+
+		jQuery('#wpsg_order_view_tabs a.list-group-item').bind('click', function() {
+
+			jQuery('#wpsg_order_view_tabs a').removeClass('active');
+			jQuery('.wpsg_order_view_tab_content').hide();
+
+			tab = jQuery(this).attr('wpsg-data-target');
+			if (tab == 'orderdata') {
+				wpsg_view_orderdata_show();
+			} else {
+				wpsg_view_orderdata_hide();
+			}
+			jQuery(this).addClass('active');
+			jQuery('#tab' + jQuery(this).attr('wpsg-data-target')).show();
+
+			jQuery.cookie('wpsg_order_view_tab', jQuery(this).attr('wpsg-data-target'));
+			jQuery(this).blur();
+
+		} );
+
+
+		co = jQuery.cookie('wpsg_order_view_tab');
+		if (co === undefined) {
+			jQuery("[wpsg-data-target='general']").trigger("click");
+		} else {
+			jQuery("[wpsg-data-target='" + co + "']").trigger("click");
+		}
+
+		// Anordnung der Kacheln zurücksetzen
+		jQuery(".btn-reset-itemorder").click(function() {
+			const leftorder = ["item-general", "item-orderdata", "item-ordervariables", "item-customercontact", "item-bills", "item-deliverynotes"];
+			const rightorder = ["item-customerdata", "item-shippay", "item-confirmation", "item-trustedshops", "item-orderlog", "item-dev"];
+
+			saveItemOrder(leftorder, "left");
+			saveItemOrder(rightorder, "right");
+
+			setTimeout(function(){
+				applySavedItemOrder();
+			}, 1000);
+		});
+
+		// Drag & Drop
+		jQuery(".orderdetail-alternative-left, .orderdetail-alternative-right").sortable({
+			connectWith: ".connectedSortable"
+		}).disableSelection();
+
+		jQuery(".orderdetail-alternative-left").on('sortupdate', function()
+		{
+			var action = jQuery(".orderdetail-alternative-left").sortable("toArray");
+			saveItemOrder(action, "left");
+		});
+		jQuery(".orderdetail-alternative-right").on('sortupdate', function()
+		{
+			var action = jQuery(".orderdetail-alternative-right").sortable("toArray");
+			saveItemOrder(action, "right");
+		});
+
+		let foldedElements = '<?php echo json_encode($this->get_option('wpsg_backendui_orderdetail_foldedpanels')); ?>' || [];
+		if(foldedElements === "false" || foldedElements.includes('"",')) foldedElements = [];
+		if(foldedElements && foldedElements.length > 0) foldedElements = foldedElements.replace("[", "").replace("]", "").replaceAll('"', "").split(",");
+
+		// Panels einklappen
+		jQuery(".panel-heading").click(function(){
+
+			let jQueryPanelBody = jsElTojQueryObj(this.parentElement.lastElementChild, "orderdetail-panel-body");
+			let item_payload = jQueryPanelBody.parents().eq(1)[0].id + "_" + jQueryPanelBody[0].classList[0];
+
+			if(jQueryPanelBody.is(":hidden"))
+			{
+
+				let targetIndex = 0;
+
+				for(var i = 0; i < foldedElements.length; i++) {
+					if(foldedElements[i].includes(item_payload))
+						targetIndex = i;
+				}
+
+				foldedElements.splice(targetIndex, 1);
+				jQueryPanelBody.slideToggle('fast');
+
+			}
+			else
+			{
+
+				foldedElements.push(item_payload);
+				jQueryPanelBody.slideToggle('fast');
+
+			}
+
+			saveFoldedItems(foldedElements);
+
+		});
+
+
+	} );
+
+	/* ]]> */</script>

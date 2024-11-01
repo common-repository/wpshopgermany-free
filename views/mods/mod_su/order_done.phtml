@@ -1,0 +1,24 @@
+<?php
+
+	/**
+	 * Dieses Template wird nach einer Sofortüberweisungs Zahlung angezeigt
+	 */
+
+?>
+<p><?php echo __('Um den Betrag mit Sofortüberweisung zu bezahlen klicken Sie bitte auf folgendes Logo.', 'wpsg'); ?></p>
+<p>
+	<a title="<?php echo __('Mit Sofortüberweisung bezahlen', 'wpsg'); ?>" href="<?php echo $this->view['suLink']; ?>">
+		<img src="<?php echo WPSG_URL_CONTENT.'plugins/'.WPSG_FOLDERNAME.'/views/gfx/'; ?>banner_300x100.png" align="left" alt="<?php echo __('Mit Sofortüberweisung bezahlen', 'wpsg'); ?>" style="margin-right:7px;">
+	</a>
+</p>
+<?php if ($this->get_option('wpsg_mod_su_autostart') == '1') { ?>
+<script type="text/javascript">
+
+	jQuery(document).ready(function() { 
+		window.setTimeout(function() {
+		location.href = "<?php echo $this->view['suLink']; ?>";
+		}, 1000);
+	} ); 
+
+</script>
+<?php } ?>

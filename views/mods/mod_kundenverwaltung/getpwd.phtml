@@ -1,0 +1,36 @@
+<?php
+
+	/**
+	 * Template für die Seite, auf der der Kunde sein Passwort erneuern kann
+	 */
+
+?>
+<div class="wpsg_register">
+	
+	<p>
+		<?php echo __('Geben Sie hier die E-Mail Adresse an, mit der Sie bereits bestellt haben. Sie erhalten dann eine E-Mail mit der Aufforderung ein neues Passwort zu generieren.', 'wpsg'); ?>
+	</p>
+	
+	<?php echo $this->writeFrontendMessage(); ?>
+	
+	<form method="post" action="<?php echo $this->callMod('wpsg_mod_kundenverwaltung', 'getRegisterURL'); ?>">
+		
+		<div class="wpsg_block">
+		
+			<label for="wpsg_firma"><?php echo __("E-Mail", "wpsg"); ?>:</label>
+			
+			<input class="wpsg_checkout <?php echo ((in_array("email", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="wpsg_email" name="wpsg[sendpwd][email]" value="<?php echo htmlspecialchars(wpsg_getStr($_REQUEST['email'])); ?>" />
+			
+		</div>
+
+		<br />
+		
+		<input type="submit" value="<?php echo __('Passwort anfordern', 'wpsg'); ?>" class="wpsg_button wpsg_button_sendpwd" name="wpsg_mod_kundenverwaltung_sendpwd" />
+	
+		<?php $this->ClearSessionErrors(); ?>
+
+		<div class="wpsg_clear"></div>
+	
+	</form>
+	
+</div>

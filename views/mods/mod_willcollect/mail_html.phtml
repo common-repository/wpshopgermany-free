@@ -1,0 +1,22 @@
+<?php
+	
+	/**
+	 * Dieses Template integriert die Adresse bei der Zahlungsart "Selbstabholung" in die Mail
+	 */
+
+?> 
+<p>
+	<?php echo __('Bitte vereinbaren Sie mit uns einen Termin an dem Sie die Ware abholen.', 'wpsg'); ?>
+</p> 
+ 
+<table style="width:100%;">
+	<tr>
+		<td style="vertical-align:top; padding-right:15px;"><?php echo __('Abholadresse', 'wpsg'); ?></td>
+		<td style="">
+			<?php echo $this->view['wpsg_mod_willcollect']['adress']; ?><br /> 
+			<?php echo $this->view['wpsg_mod_willcollect']['street']; ?><br />
+			<?php echo $this->view['wpsg_mod_willcollect']['plzort']; ?>
+		</td>
+	</tr>
+</table> 
+ 

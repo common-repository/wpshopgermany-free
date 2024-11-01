@@ -1,0 +1,32 @@
+<?php 
+
+	/**
+	 * Template für die Integration des Login Formulares in den Checkout
+	 * wird von checkout.phtml eingebunden
+	 */
+
+?>
+<div class="wpsg_box">
+	
+	<div class="wpsg_checkoutblock">
+		<label for="wpsg_mod_kundenverwaltung_email"><?php echo __("E-Mail Adresse", "wpsg"); ?>:
+		</label>
+		<input class="wpsg_checkout <?php echo ((in_array("wpsg_mod_kundenverwaltung_email", (array)$this->view['error']))?'wpsg_error':''); ?>" type="text" id="wpsg_mod_kundenverwaltung_email" name="wpsg[mod_kundenverwaltung][email]" value="" />			
+	</div>
+	
+	<div class="wpsg_checkoutblock">
+		<label for="wpsg_mod_kundenverwaltung_password"><?php echo __("Passwort", "wpsg"); ?>:
+		</label>
+		<input class="wpsg_checkout <?php echo ((in_array("wpsg_mod_kundenverwaltung_password", (array)$this->view['error']))?'wpsg_error':''); ?>" type="password" id="wpsg_mod_kundenverwaltung_password" name="wpsg[mod_kundenverwaltung][password]" value="" />
+	</div>
+	
+	<br />
+	
+	<div class="wpsg_checkoutblock">
+		<a class="wpsg_pwdvergessen_link" href="<?php echo $this->callMod('wpsg_mod_kundenverwaltung', 'getPwdVergessenURL'); ?>">Passwort vergessen?</a>
+		<input type="submit" class="wpsg_button wpsg_mod_kundenverwaltung_login" value="<?php echo __('Login', 'wpsg'); ?>" name="wpsg_mod_kundenverwaltung_login" />
+	</div>
+
+	<div class="wpsg_clearer"></div><br />
+		
+</div>

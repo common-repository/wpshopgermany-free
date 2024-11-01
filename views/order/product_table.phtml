@@ -1,0 +1,395 @@
+<?php
+ 
+    /**
+     * Template für die Produkttabelle im Backend der Bestellverwaltung
+     */
+	    
+    $arCalculation = $this->view['oCalculation']->getCalculationArray(true);
+	$arTax = $this->view['oCalculation']->getTaxLabelArray();
+	$arTaxShort = $this->view['oCalculation']->getTaxLabelArray(true);
+	     
+    $this->view['colspan'] = 3;
+    if ($this->get_option('wpsg_showMwstAlways') == '1' || sizeof($arCalculation['tax']) > 1) $this->view['colspan'] ++;
+    
+    $this->view['arCalculation'] = $arCalculation;
+            
+    if ($this->getBackendTaxView() === WPSG_NETTO) $display = 'netto';
+    else $display = 'brutto';
+ 
+?>
+
+<style>
+
+	.wpsg_row_small td { font-size:0.8em; }
+	#wpsg-bs .wpsg_row_small  .wpsg-glyphlink-td > span { margin-top:0px; }
+	/*.wpsg_productrow_add td { border-top:0px !important; }*/
+
+</style>
+
+<?php echo wpsg_drawForm_Select('tax_mode', __('Besteuerung'), [
+		\wpsg\wpsg_calculation::TAXMODE_SMALLBUSINESS => __('Kleinunternehmerregelung'),
+		\wpsg\wpsg_calculation::TAXMODE_B2C => __('Endkundenbesteuerung'),
+		\wpsg\wpsg_calculation::TAXMODE_B2B => __('Firmenkundenbesteuerung (USTIdNr)')
+	], $this->view['oCalculation']->getTaxMode(), ['onchange' => 'WPSG_BE.updateCalculation();', 'help' => 'tax_mode']); ?>
+
+<br />
+
+<table class="wpsg_produkte table">
+	<thead>
+		<tr class="wpsg_kopf">
+			<th class="wpsg_cell_name"><?php echo __('Produktname', 'wpsg'); ?></th>
+			<th class="wpsg_cell_preis"><?php echo __('Einzelpreis', 'wpsg'); ?></th>
+			<?php if (sizeof($arCalculation['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+				<th class="wpsg_cell_mwst"><?php echo __("MwSt.", "wpsg"); ?></th>
+			<?php } ?>
+			<th class="wpsg_cell_menge"><?php echo __("Anzahl", "wpsg"); ?></th>
+			<th class="wpsg_cell_gesamtpreis"><?php echo __("Gesamtpreis", "wpsg"); ?></th>
+		</tr>
+	</thead>
+	<tbody>
+
+		<tr><td colspan="<?php echo $this->view['colspan'] + 1; ?>" style="line-height:2px; height:2px; background-color:#999999; padding:0px;"></td></tr>
+		<?php $i = 0; foreach ($arCalculation['product'] as $p) { $i ++; $product_price = $p[$display.'_single']; ?>
+			<tr class="wpsg_<?php echo (($i % 2 == 0)?'odd':'even'); ?>">
+				<td colspan="<?php echo $this->view['colspan'] + 1; ?>">
+					
+					<?php if (wpsg_isTrue($p['eu'])) { ?>
+						<img src="<?php echo WPSG_URL; ?>views/gfx/eu.png" alt="<?php echo __('Produkt unterliegt der EU-Leistungsortregel', 'wpsg'); ?>" title="<?php echo __('Produkt unterliegt der EU-Leistungsortregel', 'wpsg'); ?>" height="14" />
+					<?php } ?>
+					
+					<a href="<?php 
+						
+						echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id='.$p['product_id'], 'wpsg-product-edit-'.wpsg_getInt($p['product_id']));						
+						                
+					?>" title="<?php echo __('Zum Produkt', 'wpsg'); ?>">
+						<?php echo wpsg_hspc($this->getProductName($p['product_id'])); ?>
+					</a>
+					<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Produkt bearbeiten', 'wpsg'); ?>" onclick="return WPSG_BE_Product.editProduct(<?php echo $p['order_product_id']; ?>);"><span class="glyphicon glyphicon-pencil"></span></a>
+					<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Produkt löschen', 'wpsg'); ?>" onclick="return WPSG_BE_Product.removeProduct(<?php echo $p['order_product_id']; ?>);"><span class="glyphicon glyphicon-trash"></span></a>
+				</td>
+			</tr>
+			<tr class="wpsg_<?php echo (($i % 2 == 0)?'odd':'even'); ?> wpsg_productrow_add">
+				<td class="wpsg_cell_name"></td>
+				<td class="wpsg_cell_preis"><?php echo wpsg_ff($product_price); ?> <?php echo $this->get_option('wpsg_currency'); ?></td>
+				<?php if (sizeof($arCalculation['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>					
+					<td class="wpsg_cell_mwst"><?php 
+							
+						echo (($p['brutto'] === $p['netto'])?wpsg_ff(0, '%'):$arTaxShort[$p['tax_key']]);
+							
+					?></td>					
+				<?php } ?>
+				<td class="wpsg_cell_menge"><?php echo wpsg_hspc($p['amount']); ?></td>
+				<td class="wpsg_cell_gesamtpreis"><?php echo wpsg_ff($p['amount'] * $product_price); ?> <?php echo $this->get_option('wpsg_currency'); ?></td>
+			</tr>
+			<?php $this->callMods('order_view_row', array(&$p, $i)); ?>
+			<tr><td colspan="<?php echo $this->view['colspan'] + 1; ?>" style="line-height:2px; height:2px; background-color:#999999; padding:0px;"></td></tr>
+		<?php } ?>
+		
+		<?php // Gutscheine  ?>
+		<?php if (wpsg_isSizedArray($arCalculation['voucher'])) { ?>
+			
+			<?php foreach ($arCalculation['voucher'] as $v) { ?>
+
+				<tr class="wpsg_row_discount wpsg_row_small">
+					<td colspan="" class="wpsg_cell_mwst_label">
+
+						<div>
+							<?php echo __('Gutschein', 'wpsg'); ?>
+							
+							<?php if ($this->getBackendTaxView() === WPSG_BRUTTO) { ?>
+								<?php echo __('(inkl. MwSt.)', 'wpsg'); ?>
+							<?php } else { ?>
+								<?php echo __('(zzgl. MwSt.)', 'wpsg'); ?>
+							<?php } ?>
+
+							<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Gutschein bearbeiten', 'wpsg'); ?>" onclick="return WPSG_BE_Voucher.editVoucher(<?php echo $v['order_voucher_id']; ?>);"><span class="glyphicon glyphicon-pencil"></span></a>
+							<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Gutschein löschen', 'wpsg'); ?>" onclick="return WPSG_BE_Voucher.removeVoucher(<?php echo $v['order_voucher_id']; ?>);"><span class="glyphicon glyphicon-trash"></span></a>
+						</div>
+						<div>
+							Code: <?php echo $v['code']; ?>
+						</div>
+
+					</td>
+					<td class="wpsg_cell_preis">
+						
+						<?php if (strpos($v['set'], '%') === false) { ?>
+							<?php echo wpsg_ff($v[$display], $this->get_option('wpsg_currency')); ?>
+						<?php } else { ?>
+							<?php echo wpsg_ff($v['set'], '%'); ?>
+						<?php } ?>
+						
+					</td>
+					<?php if (sizeof($arCalculation['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+						<td class="wpsg_cell_mwst"><?php echo $arTaxShort[$v['tax_key']]; ?></td>
+					<?php } ?>
+					<td>1</td>
+					<td class="wpsg_cell_mwst_value wpsg_cell_gesamtpreis"><?php 
+							
+						echo wpsg_ff($v[$display]); ?> <?php echo $this->get_option('wpsg_currency');
+						
+						if (strpos($v['set'], '%') !== false) { 
+
+							echo '<span class="procent_payship">('.wpsg_ff(wpsg_tf($v['set']), '%').')</span>';
+
+						} 
+							
+					?></td>
+				</tr>
+			
+			<?php } ?>
+			<tr><td colspan="<?php echo $this->view['colspan'] + 1; ?>" style="line-height:2px; height:2px; background-color:#999999; padding:0px;"></td></tr>
+		
+		<?php } ?>
+
+		<tr class="wpsg_row_summe">
+			<td colspan="<?php echo $this->view['colspan']; ?>" class="wpsg_cell_summe_label">
+				
+				<?php if ($this->get_option('wpsg_kleinunternehmer') == '1') { ?>
+					
+					<?php echo wpsg_translate(__('Summe (zzgl. #1#)', 'wpsg'), '<a href="'.$this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN).'" target="_blank">'.__('Versandkosten', 'wpsg').'</a>'); ?>
+				
+				<?php } else { ?>
+					
+					<?php if ($this->get_option('wpsg_preisangaben') == WPSG_NETTO) { ?>
+						<?php echo wpsg_translate(__('Summe (zzgl. #1#, zzgl. MwSt.)', 'wpsg'), '<a href="'.$this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN).'" target="_blank">'.__('Versandkosten', 'wpsg').'</a>'); ?>
+					<?php } else { ?>
+						<?php echo wpsg_translate(__('Summe (zzgl. #1#, inkl. MwSt.)', 'wpsg'), '<a href="'.$this->getURL(wpsg_ShopController::URL_VERSANDKOSTEN).'" target="_blank">'.__('Versandkosten', 'wpsg').'</a>'); ?>
+					<?php } ?>
+				
+				<?php } ?>
+
+			</td>
+			<td class="wpsg_cell_summe_value wpsg_cell_gesamtpreis">
+				
+				<?php echo wpsg_ff($arCalculation['sum']['productsum_'.$display]); ?> <?php echo $this->get_option('wpsg_currency'); ?>
+
+			</td>
+		</tr>
+		
+		<?php // Versandkosten  ?>
+		<?php $price_shipping = $arCalculation['sum']['shipping_'.$display]; ?>
+		<?php if ($price_shipping != 0 || $this->get_option('wpsg_hideemptyshipping') != '1') { ?>
+			<tr class="wpsg_row_shipping">
+				<td class="wpsg_cell_shipping_label" colspan="2">
+					<?php echo __('Versandkosten', 'wpsg'); ?>
+					<?php echo __('  ('.$this->arShipping[$arCalculation['shipping'][0]['shipping_key']]['name'].')', 'wpsg'); ?>
+					<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Versandart ändern', 'wpsg'); ?>"  onclick="return WPSG_BE_Pay_Ship.changeShippingPayment();"><span class="glyphicon glyphicon-pencil"></span></a>
+				</td>
+				<?php if (sizeof($arCalculation['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+				<td><?php echo $arTaxShort[$arCalculation['shipping'][0]['tax_key']]; ?></td>
+				<?php } ?>
+				<td class="wpsg_cell_shipping_value wpsg_cell_gesamtpreis" colspan="2">
+					<span id="wpsg_cell_shipping_value"><?php echo wpsg_ff($price_shipping); ?> </span>
+					<?php echo $this->get_option('wpsg_currency'); ?>
+					
+					<?php if (strpos($arCalculation['shipping'][0]['set'], '%') !== false) { 
+
+						echo '<span class="procent_payship">('.wpsg_ff(wpsg_tf($arCalculation['shipping'][0]['set']), '%').')</span>';
+
+					} ?>
+					
+				</td>
+			</tr>
+		<?php } ?>
+		
+		<?php // Zahlungskosten  ?>
+		<?php $price_payment = $arCalculation['sum']['payment_'.$display]; ?>
+		<?php if ($price_payment != 0 || $this->get_option('wpsg_hideemptypayment') != '1') { ?>
+			<tr class="wpsg_row_payment">
+				<td colspan="2" class="wpsg_cell_payment_label">
+					<?php echo __('Zahlungsart', 'wpsg'); ?>
+					<?php echo __('  ('.$this->arPayment[$arCalculation['payment'][0]['payment_key']]['name'].')', 'wpsg'); ?>
+					<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Zahlungsart ändern', 'wpsg'); ?>" onclick="return WPSG_BE_Pay_Ship.changeShippingPayment();"><span class="glyphicon glyphicon-pencil"></span></a>
+				</td>
+				<?php if (sizeof($arCalculation['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+					<td><?php echo $arTaxShort[$arCalculation['payment'][0]['tax_key']]; ?></td>
+				<?php } ?>
+				<td class="wpsg_cell_payment_value wpsg_cell_gesamtpreis" colspan="2">
+					<span id="wpsg_cell_payment_value"><?php echo wpsg_ff($price_payment); ?> </span>
+					<?php echo $this->get_option('wpsg_currency'); ?>
+					
+					<?php if (strpos($arCalculation['payment'][0]['set'], '%') !== false) {
+						
+						echo '<span class="procent_payship">('.wpsg_ff(wpsg_tf($arCalculation['payment'][0]['set']), '%').')</span>';
+						
+					} ?>
+					
+				</td>
+			</tr>
+		<?php } ?>
+		
+		<?php // Rabatte  ?>
+		<?php if (wpsg_isSizedArray($arCalculation['discount'])) { ?>			
+			<?php foreach ($arCalculation['discount'] as $d) { ?>
+				<tr class="wpsg_row_discount wpsg_row_small">
+					<td colspan="" class="wpsg_cell_mwst_label">
+						
+						<?php echo __('Rabatt', 'wpsg'); ?>
+						
+						<?php if ($this->getBackendTaxView() === WPSG_BRUTTO) { ?>
+							<?php echo __('(inkl. MwSt.)', 'wpsg'); ?>
+						<?php } else { ?>
+							<?php echo __('(zzgl. MwSt.)', 'wpsg'); ?>
+						<?php } ?>
+
+						<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Rabatt bearbeiten', 'wpsg'); ?>" onclick="return WPSG_BE_Discount.editDiscount();"><span class="glyphicon glyphicon-pencil"></span></a>
+						<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Rabatt löschen', 'wpsg'); ?>" onclick="return WPSG_BE_Discount.removeDiscount();"><span class="glyphicon glyphicon-trash"></span></a>
+
+					</td>
+					<td class="wpsg_cell_preis">
+						
+						<?php if (strpos($d['set'], '%') === false) { ?>
+							<?php echo wpsg_ff($arCalculation['sum']['discount_'.$display], $this->get_option('wpsg_currency')); ?>
+						<?php } else { ?>
+							<?php echo wpsg_ff($d['set'], '%'); ?>
+						<?php } ?>
+						
+					</td>
+					<?php if (sizeof($arCalculation['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+						<td class="wpsg_cell_mwst"><?php echo $arTaxShort[$d['tax_key']]; ?></td>
+					<?php } ?>
+					<td></td>
+					<td class="wpsg_cell_mwst_value wpsg_cell_gesamtpreis">
+						<?php echo wpsg_ff($arCalculation['sum']['discount_'.$display]); ?> <?php echo $this->get_option('wpsg_currency'); ?>
+					</td>
+				</tr>
+			<?php } ?>
+		<?php } ?>
+		
+		<?php if ($this->getBackendTaxView() === WPSG_NETTO) { ?>
+			
+			<tr class="wpsg_row_gesamt">
+				<td colspan="<?php echo $this->view['colspan']; ?>" class="wpsg_cell_summe_label">
+					<?php echo __('Summe', 'wpsg'); ?>
+					<?php echo __('(zzgl. MwSt.)', 'wpsg'); ?>
+				</td>
+				<td class="wpsg_cell_gesamt_value wpsg_cell_gesamtpreis">
+					<?php echo wpsg_ff($arCalculation['sum'][$display]); ?> <?php echo $this->get_option('wpsg_currency'); ?>
+				</td>
+			</tr>
+			<?php foreach ($arCalculation['tax'] as $tax) { if ($tax['sum'] > 0 && $tax['key'] != '0') { ?>
+				<tr class="wpsg_row_mwst wpsg_row_small">
+					<td colspan="<?php echo $this->view['colspan']; ?>" class="wpsg_cell_mwst_label">
+						<?php echo wpsg_translate(__('zuzüglich MwSt. (#1#)', 'wpsg'), $arTax[$tax['key']]); ?>
+					</td>
+					<td class="wpsg_cell_mwst_value wpsg_cell_gesamtpreis">
+						<?php echo wpsg_ff($tax['sum']); ?> <?php echo $this->get_option('wpsg_currency'); ?>
+					</td>
+				</tr>
+			<?php } } ?>
+			<tr class="wpsg_row_gesamt">
+				<td colspan="<?php echo $this->view['colspan']; ?>" class="wpsg_cell_summe_label">
+					<strong><?php echo __('Gesamtsumme', 'wpsg'); ?></strong>
+					<?php echo __('(inkl. MwSt.)', 'wpsg'); ?>
+				</td>
+				<td class="wpsg_cell_gesamt_value wpsg_cell_gesamtpreis">
+					<strong><?php echo wpsg_ff($arCalculation['sum']['brutto']); ?> <?php echo $this->get_option('wpsg_currency'); ?></strong>
+				</td>
+			</tr>
+			
+		<?php } else { ?>
+
+			<tr class="wpsg_row_gesamt">
+				<td colspan="<?php echo $this->view['colspan']; ?>" class="wpsg_cell_summe_label">
+					<strong><?php echo __('Gesamtsumme', 'wpsg'); ?></strong>
+					<?php if ($this->getBackendTaxView() === WPSG_BRUTTO) { ?>
+						<?php echo __('(inkl. MwSt.)', 'wpsg'); ?>
+					<?php } else { ?>
+						<?php echo __('(zzgl. MwSt.)', 'wpsg'); ?>
+					<?php } ?>
+				</td>
+				<td class="wpsg_cell_gesamt_value wpsg_cell_gesamtpreis">
+					<strong><?php echo wpsg_ff($arCalculation['sum']['brutto']); ?> <?php echo $this->get_option('wpsg_currency'); ?></strong>
+				</td>
+			</tr>			
+			<?php foreach ($arCalculation['tax'] as $tax) { if ($tax['sum'] > 0 && $tax['key'] != '0') { ?>
+				<tr class="wpsg_row_mwst wpsg_row_small">
+					<td colspan="<?php echo $this->view['colspan']; ?>" class="wpsg_cell_mwst_label">
+						<?php if ($this->get_option('wpsg_kleinunternehmer') == '1') { ?>
+							<?php echo $this->get_option('wpsg_kleinunternehmer_text'); ?>
+						<?php } else { ?>
+							<?php echo wpsg_translate(__('darin enthaltene MwSt. (#1#)', 'wpsg'), $arTax[$tax['key']]); ?>
+						<?php } ?>
+					</td>
+					<td class="wpsg_cell_mwst_value wpsg_cell_gesamtpreis">
+						<?php echo wpsg_ff($tax['sum']); ?> <?php echo $this->get_option('wpsg_currency'); ?>
+					</td>
+				</tr>
+			<?php } } ?>
+			
+		<?php } ?>
+		
+		<?php // Wertgutscheine  ?>
+		<?php if (wpsg_isSizedArray($arCalculation['coupon'])) { ?>
+			
+			<?php foreach ($arCalculation['coupon'] as $c) { ?>
+
+				<tr class="wpsg_row_discount wpsg_row_small">
+					<td colspan="" class="wpsg_cell_mwst_label">
+
+						<div>
+							<?php echo __('Wertgutschein', 'wpsg'); ?>
+							
+							<?php if ($this->getBackendTaxView() === WPSG_BRUTTO) { ?>
+								<?php echo __('(inkl. MwSt.)', 'wpsg'); ?>
+							<?php } else { ?>
+								<?php echo __('(zzgl. MwSt.)', 'wpsg'); ?>
+							<?php } ?>
+
+							<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Wertgtschein bearbeiten', 'wpsg'); ?>" onclick="return WPSG_BE_Voucher.editVoucher(<?php echo $c['order_voucher_id']; ?>);"><span class="glyphicon glyphicon-pencil"></span></a>
+							<a href="#" class="wpsg-glyphlink-td" title="<?php echo __('Wertgutschein löschen', 'wpsg'); ?>" onclick="return WPSG_BE_Voucher.removeVoucher(<?php echo $c['order_voucher_id']; ?>);"><span class="glyphicon glyphicon-trash"></span></a>
+						</div>
+						<div>
+							Code: <?php echo $c['code']; ?>
+						</div>
+
+					</td>
+					<td class="wpsg_cell_preis">
+						
+						<?php if (strpos($c['set'], '%') === false) { ?>
+							<?php echo wpsg_ff($c[$display], $this->get_option('wpsg_currency')); ?>
+						<?php } else { ?>
+							<?php echo wpsg_ff($c['set'], '%'); ?>
+						<?php } ?>
+
+					</td>
+					<?php if (sizeof($arCalculation['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+						<td class="wpsg_cell_mwst"><?php echo $arTaxShort[$c['tax_key']]; ?></td>
+					<?php } ?>
+					<td>1</td>
+					<td class="wpsg_cell_mwst_value wpsg_cell_gesamtpreis"><?php
+							
+							echo wpsg_ff($c[$display]); ?> <?php echo $this->get_option('wpsg_currency');
+							
+							if (strpos($c['set'], '%') !== false) {
+								
+								echo '<span class="procent_payship">('.wpsg_ff(wpsg_tf($c['set']), '%').')</span>';
+								
+							}
+						
+						?></td>
+				</tr>
+			
+			<?php } ?>
+
+			<tr class="wpsg_row_gesamt">
+				<td colspan="<?php echo $this->view['colspan']; ?>" class="wpsg_cell_summe_label">
+					<strong><?php echo __('Zu zahlen', 'wpsg'); ?></strong>
+					<?php if ($this->getBackendTaxView() === WPSG_BRUTTO) { ?>
+						<?php echo __('(inkl. MwSt.)', 'wpsg'); ?>
+					<?php } else { ?>
+						<?php echo __('(zzgl. MwSt.)', 'wpsg'); ?>
+					<?php } ?>
+				</td>
+				<td class="wpsg_cell_gesamt_value wpsg_cell_gesamtpreis">
+					<strong><?php echo wpsg_ff($arCalculation['sum']['topay_brutto']); ?> <?php echo $this->get_option('wpsg_currency'); ?></strong>
+				</td>
+			</tr>
+		
+		<?php } ?>	
+	
+	</tbody>
+</table>
+
+<?php // wpsg_debug($arCalculation);  ?>
+	

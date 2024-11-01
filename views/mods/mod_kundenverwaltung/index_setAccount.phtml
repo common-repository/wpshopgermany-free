@@ -1,0 +1,191 @@
+<?php 
+
+    /*
+     * Template für die Auswahl der Kunden für die Kundenzusammenfassung
+     */
+    
+?>
+
+<div class="wpsg_customer" id="wpsg-bs">
+    <div class="content">
+
+        <form method="POST">
+
+			<?php echo wpsg_formNounce('Customer', 'search'); ?>
+			
+            <input type="hidden" name="wpsg_do" value="setAccount" />
+            
+            <div class="wpsg_customer" id="wpsg-bs">
+            
+                <nav class="navbar navbar-default">
+            
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+                        </div>
+                        <div class="collapse navbar-collapse" id="bs-customer-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li role="presentation" class=""><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Customer"><?php echo __("Kundenverwaltung (Übersicht)", "wpsg"); ?></a></li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="wpsg-filter wpsg-customer-tab wpsg-customer-tab-0 container-fluid form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-4"> 
+    
+                                <?php echo wpsg_drawForm_Input('filter[s]', __('Suchfeld (Zielkunde)', 'wpsg'), wpsg_getStr($_REQUEST['filter']['s'])); ?>
+                                <?php echo wpsg_drawForm_SubmitButton(__('Kunden suchen')); ?><br />
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                </nav>
+
+                <div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"></div>
+                                
+            </div>
+                    
+            <div class="content">
+                <div class="row">
+
+                    <div class="col-lg-6">
+
+                        <fieldset>
+
+                            <legend><?php echo __('Kundenkonto, in das die Kunden überführt werden sollen:', 'wpsg'); ?></legend>
+
+                            <?php if (!wpsg_isSizedArray($this->view['targetCustomer'])) { ?>
+                            
+                                <p>
+                                    <?php echo __('Es konnte kein passender Kunde gefunden werden.', 'wpsg'); ?>
+                                </p>
+                                
+                            <?php } else { ?>
+
+                                <table class="table wpsg-table-order table-bordered table-hover table-striped wpsg-table-customer">
+                                    <thead>
+                                    <tr>
+                                        <th class="manage-column column-title wpsg_pic_col"></th>
+                                        <th class="wpsg_order col_name" data-order="nr"><?php echo __("Nr/Name", 'wpsg'); ?></th>
+                                        <th class="wpsg_order col_adress" data-order="adress"><?php echo __("Anschrift", 'wpsg'); ?></th>
+                                        <th class="wpsg_order col_status" data-order="status"><?php echo __("Status", 'wpsg'); ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php foreach ($this->view['targetCustomer'] as $c) { ?>
+                                        <tr>
+                                            <td class="wpsg_pic_col">
+                                                
+                                                <img src="https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($c->getEMail()))); ?>?s=40&d=mm" alt=""" />                                                
+                                                <input type="radio" name="set_target" value="<?php echo $c->id; ?>" />
+                                                
+                                            </td>
+                                            <td class="col_name column-title">
+                                                <strong><a title="<?php echo __("Diesen Kunden bearbeiten", "wpsg"); ?>" href="<?php 
+														
+													echo wpsg_admin_url('Customer', 'edit', ['edit_id' => $c->id]);
+														
+												?>" class="row-title"><?php echo trim($c->GetNr().' '.$c->getLabel()); ?></a></strong>
+                                                <?php if (strlen($c->getEMail()) > 0) { ?>
+                                                    <a style="margin-bottom:3px; display:block;" href="mailto:<?php echo $c->getEMail(); ?>" title="<?php echo __('Dem Kunden eine E-Mail schreiben.', 'wpsg'); ?>"><?php echo $c->getEMail();  ?></a>
+                                                <?php } ?>
+                                                
+                                                <?php $passwort_saltmd5 = $c->passwort_saltmd5; if (!wpsg_isSizedString($passwort_saltmd5)) { ?>
+                                                <strong class="wpsg_error"><?php echo __('Gastzugang', 'wpsg'); ?></strong>
+                                                <?php } ?>
+                                                
+                                            </td>
+                                            <td class="col_adress">
+                                                <?php echo ((strlen($c->getCompany()) > 0)?$c->getCompany().'<br />':''); ?>
+                                                <?php echo $c->getStreet(); ?><br />
+                                                <?php echo trim($c->getZip().' '.$c->getCity()); ?><br />
+                                            </td>
+                                            <td class="col_status">
+                                                <?php echo wpsg_translate(__('#1# Bestellungen', 'wpsg'), $c->getOrderCount()); ?><br />
+                                                <?php echo wpsg_translate(__('Umsatz: #1#', 'wpsg'), wpsg_ff($c->getOrderAmount(), $this->get_option('wpsg_currency'))); ?>
+                                                <?php if ($c->getOrderCount() > 0) { ?>
+                                                    <br />
+                                                    <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&filter[k_id]=<?php echo $c->id; ?>"><?php echo __('Bestellungen einsehen', 'wpsg'); ?></a>
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                    </tbody>
+                                </table>
+                            
+                                <br />
+                                
+                                <input type="submit" name="submit_do" class="button" value="<?php echo __('Kundenkonten zusammenfügen', 'wpsg'); ?>" />                                       
+                                
+                            <?php } ?>
+
+                        </fieldset>
+
+                    </div>
+                    <div class="col-lg-6">
+
+                        <fieldset>
+
+                            <legend><?php echo __('Gewählte Kunden (Diese werden gelöscht)', 'wpsg'); ?></legend>
+
+                            <table class="table wpsg-table-order table-bordered table-hover table-striped wpsg-table-customer">
+                                <thead>
+                                <tr>
+                                    <th class="manage-column column-title wpsg_pic_col"></th>
+                                    <th class="wpsg_order col_name" data-order="nr"><?php echo __("Nr/Name", 'wpsg'); ?></th>
+                                    <th class="wpsg_order col_adress" data-order="adress"><?php echo __("Anschrift", 'wpsg'); ?></th>
+                                    <th class="wpsg_order col_status" data-order="status"><?php echo __("Status", 'wpsg'); ?></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach (@$_REQUEST['customer'] as $customer_id) { $c = wpsg_customer::getInstance($customer_id); ?>
+                                    <tr>
+                                        <td class="wpsg_pic_col">
+                                            <img src="https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($c->getEMail()))); ?>?s=40&d=mm" alt=""" />
+                                            <input type="hidden" value="<?php echo $c->id; ?>" name="customer[]" />
+                                        </td>
+                                        <td class="col_name column-title">
+                                            <strong><a title="<?php echo __("Diesen Kunden bearbeiten", "wpsg"); ?>" href="<?php 
+													
+												echo wpsg_admin_url('Customer', 'edit', ['edit_id' => $c->id]); 
+												
+											?>" class="row-title"><?php echo trim($c->GetNr().' '.$c->getLabel()); ?></a></strong>
+                                            <?php if (strlen($c->getEMail()) > 0) { ?>
+                                                <a href="mailto:<?php echo $c->getEMail(); ?>" title="<?php echo __('Dem Kunden eine E-Mail schreiben.', 'wpsg'); ?>"><?php echo $c->getEMail();  ?></a>
+                                            <?php } ?>
+                                        </td>
+                                        <td class="col_adress">
+                                            <?php echo ((strlen($c->getCompany()) > 0)?$c->getCompany().'<br />':''); ?>
+                                            <?php echo $c->getStreet(); ?><br />
+                                            <?php echo trim($c->getZip().' '.$c->getCity()); ?><br />
+                                        </td>
+                                        <td class="col_status">
+                                            <?php echo wpsg_translate(__('#1# Bestellungen', 'wpsg'), $c->getOrderCount()); ?><br />
+                                            <?php echo wpsg_translate(__('Umsatz: #1#', 'wpsg'), wpsg_ff($c->getOrderAmount(), $this->get_option('wpsg_currency'))); ?>
+                                            <?php if ($c->getOrderCount() > 0) { ?>
+                                                <br />
+                                                <a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&filter[k_id]=<?php echo $c->id; ?>"><?php echo __('Bestellungen einsehen', 'wpsg'); ?></a>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                                </tbody>
+                            </table>
+
+                        </fieldset>
+
+                    </div>
+
+                </div>
+            </div>                
+                    
+        </form>
+    
+        <?php // wpsg_debug($_REQUEST); ?>
+
+    </div>
+
+</div>
+    

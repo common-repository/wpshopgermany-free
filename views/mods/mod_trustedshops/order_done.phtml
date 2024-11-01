@@ -1,0 +1,17 @@
+<?php
+
+	/**
+	 * Template für die Einbindung des Trusted Shops Bewertungs Links nach Bestellabschluss
+	 */
+
+?>
+
+<?php if ($this->view['wpsg_mod_trustedshops']['vote'] == '1' || $this->get_option('wpsg_mod_trustedshops_warranty') == '1') { ?>
+<div id="trustedShopsCheckout" style="display: none;">
+	<span id="tsCheckoutOrderNr"><?php echo wpsg_hspc($this->view['order']['onr']); ?></span>
+	<span id="tsCheckoutBuyerEmail"><?php echo wpsg_hspc($this->view['basket']['checkout']['email']); ?></span>
+	<span id="tsCheckoutOrderAmount"><?php echo wpsg_hspc($this->view['basket']['sum']['preis_gesamt_brutto']); ?></span>
+	<span id="tsCheckoutOrderCurrency"><?php echo wpsg_hspc($this->get_option('wpsg_currency')); ?></span>
+	<span id="tsCheckoutOrderPaymentType"><?php echo wpsg_hspc($this->arPayment[$this->view['basket']['checkout']['payment']]['name']); ?></span>
+</div>
+<?php } ?>

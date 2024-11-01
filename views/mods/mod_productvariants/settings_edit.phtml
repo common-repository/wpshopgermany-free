@@ -1,0 +1,39 @@
+<?php
+
+	/*
+	 * Template für die Einstellungen des Moduls 
+	 */
+
+?>
+
+<br />
+
+<div>
+	<ul class="nav nav-tabs">
+  		<li role="presentation" class="active"><a href="#tab1" role="tab" data-toggle="tab"><?php echo __('Globale Produktvarianten', 'wpsg'); ?></a></li>
+  		<li role="presentation"><a href="#tab2" role="tab" data-toggle="tab"><?php echo __('Einstellungen', 'wpsg'); ?></a></li>  
+	</ul>
+	<div class="tab-content">
+		<div id="tab1" role="tabpanel" class="tab-pane active">
+			<?php echo $this->view['wpsg_mod_productvariants']['html']; ?>
+		</div>
+		<div id="tab2" role="tabpanel" class="tab-pane">
+			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productvariants_price', __('Preis der Variation direkt anzeigen'), $this->get_option('wpsg_mod_productvariants_price')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_vp_detailview', __('Erweiterte Variantenanzeige aktivieren', 'wpsg'), $this->get_option('wpsg_vp_detailview'), array('help' => 'wpsg_vp_detailview')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_vp_replaceanr', __('Produktartikelnummer ersetzen', 'wpsg'), $this->get_option('wpsg_vp_replaceanr'), array('hint' => __('Ersetzt die Produktartikelnummer durch die zusammengesetzte Artikelnummern der Varianten.', 'wpsg'), 'help' => 'wpsg_vp_replaceanr')); ?>
+			
+		</div>
+</div>
+
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		wpsg_mod_productvariants_show(0);
+		
+	} );
+
+/* ]]> */</script>
+ 

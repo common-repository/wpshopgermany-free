@@ -1,0 +1,39 @@
+<?php 
+
+	/**
+	 * Template für die Integration des Händlerbund-Formulars in das Rechtstextmodul
+	 */
+
+?>
+
+<style type="text/css">
+	
+	.wphb_clear { clear:both; }
+	.wphb_form_field { width:770px; margin-bottom:5px; }
+	.wphb_form_field .wphb_form_left { line-height:24px; font-weight:bold; width:350px; float:left; }
+	.wphb_form_field .wphb_form_right { width:420px; float:left; position:relative; line-height:28px; }
+	.wphb_form_field .wphb_form_right select, .wphb_form_field .wphb_form_right input { width:95%; }
+	.wphb_form_field .wphb_form_right input.checkbox { width:auto !important; float:left; margin-left:2px; margin-top:5px; }
+	.wphb_form_field .wphb_form_right p { padding:4px 0px 4px 6px; margin:0px; }
+	.wphb_form { padding:10px; }
+	.wphb_date { float:right; padding-right:5%; }
+	.wphb_hinweis { font-style:italic; }
+	
+</style>	
+
+<?php if ($this->view['wpsg_mod_legaltexts']['form'] == false) { ?>
+
+	<p><?php echo __('wpShopGermany bietet eine Schnittstelle zum <a href="https://partner.haendlerbund.de/partnerdoor.php?partnerid=partner_wp&bannerid=18" target="_blank">Händlerbund</a> an.', 'wpsg'); ?></p>
+	<p><?php echo __('Händlerbund bietet Schutzpakete im Abo ("AGB-Rechtstext-Flatrate") für Onlineshop Betreiber an. Mit dem wpShopGermany-Händlerbund Plugin (ab Version 1.0), werden die angebotenen Rechtstexte auf die zugeordneten Blog-Seiten mittels Mausklick automatisch übernommen und aktualisiert.', 'wpsg'); ?></p>
+	 			
+	<?php if (file_exists(WP_PLUGIN_DIR."/wpshopgermany-haendlerbund/wpshopgermany-haendlerbund.php")) { ?>
+		<p style="color:red;"><?php echo __('Das Plugin wurde bereits gefunden aber noch nicht aktiviert. Bitte aktivieren sie das Plugin in der <a href="plugins.php">Pluginverwaltung</a>.', 'wpsg'); ?></p>
+	<?php } ?>
+
+<?php } else { ?>
+	
+	<?php echo $this->view['wpsg_mod_legaltexts']['form']; ?>
+	
+	<input type="hidden" name="wpsg_mod_legaltexts_submitform" value="1" />
+	
+<?php } ?>

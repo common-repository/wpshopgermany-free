@@ -1,0 +1,272 @@
+<?php
+
+	/**
+	 * HTML Teil für die Produktvariablenverwaltung
+	 * (GLOBAL und Produktbezogen)
+	 */
+
+?>
+
+<div id="wpsg_mod_productvariants_dialog" class="wpsg_mod_productvariants_dialog_noDialog">
+            
+    <div class="modal-body">
+
+    </div>
+    <div class="modal-footer1">
+
+	<a href="#" onclick="return wpsg_mod_productvariants_add();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neue Produktvariante anlegen', 'wpsg'); ?></a>
+
+    </div>
+      
+</div>
+
+<div id="wpsg_mod_productvariants_dialog_modal" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title"><?php echo __('Produktvariation bearbeiten', 'wpsg'); ?></h4>
+			</div>
+			<div class="modal-body">
+
+			</div>
+			<div class="modal-footer">
+
+				<button type="button" class="btn-sm wpsg_mod_productvariants_variation_add_button btn btn-default" id="wpsg_mod_productvariants_variation_add_button" style="display:none;" onclick="return wpsg_mod_productvariants_variation_add();"><span class="glyphicon glyphicon-plus"></span>&nbsp;<?php echo __('Neue Variation', 'wpsg'); ?></button>
+				<button type="button" class="btn-sm wpsg_mod_productvariants_variants_close wpsg_mod_productvariants_variants_vari btn btn-default" style="display:none;" onclick="return wpsg_mod_productvariants_back();"><span class="glyphicon glyphicon-remove"></span>&nbsp;<?php echo __('Schließen', 'wpsg'); ?></button>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	function wpsg_mod_productvariants_del(variant_id)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass Sie die Variante löschen möchten?', 'wpsg'); ?>')) return false;
+
+		var product_id = jQuery('#wpsg_mod_productvariants_product_id').val();
+		
+		jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariants_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+			data: {  
+				'subaction': 'admin_del',
+				'variant_id': variant_id,
+				'product_id': product_id
+			},
+			success: function(data) { 
+				
+				jQuery('#wpsg_mod_productvariants_dialog .modal-body').html(data);
+				jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', false); 
+
+			}
+    	} ); 
+
+		//setTimeout("saveOrder()", 1000);
+		
+        return false;
+		
+	} // function wpsg_mod_productvariants_del(variant_id)
+
+	function wpsg_mod_productvariation_del(product_id, variation_id)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass Sie die Variation löschen möchten?', 'wpsg'); ?>')) return false;
+
+		var vari_id = jQuery('#wpsg_mod_productvariants_var_id').val();
+		
+		jQuery('#wpsg_mod_productvariants_dialog_modal button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariants_dialog_modal .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+			data: {  
+				'subaction': 'admin_variation_del',
+				'product_id': product_id,
+				'variation_id': variation_id,
+				'variant_id': vari_id
+			},
+			success: function(data) { 
+				
+				jQuery('#wpsg_mod_productvariants_dialog_modal .modal-body').html(data);
+				jQuery('#wpsg_mod_productvariants_dialog_modal button').prop('disabled', false);
+
+			}
+    	} ); 
+		   
+        return false;
+		
+	} // function wpsg_mod_productvariation_del(variation_id)
+	
+	function wpsg_mod_productvariants_edit(variant_id)
+	{
+
+		var product_id = jQuery('#wpsg_mod_productvariants_product_id').val();
+
+		jQuery('#wpsg_mod_productvariants_dialog_modal button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariants_dialog_modal .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		jQuery('.wpsg_mod_productvariants_variants_close').show();
+
+		jQuery('#wpsg_mod_productvariants_dialog_modal').modal( { } ).modal('show');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+			data: {  
+				'subaction': 'admin_edit',
+				'variant_id': variant_id,
+				'product_id': product_id
+			},
+			success: function(data) { 
+
+				jQuery('#wpsg_mod_productvariants_dialog_modal .modal-body').html(data);
+				jQuery('#wpsg_mod_productvariants_dialog_modal button').prop('disabled', false);
+
+			}
+    	} ); 
+		   
+        return false;
+		
+	} // function wpsg_mod_productvariants_edit(variant_id)
+
+	function wpsg_mod_productvariants_variation_add()
+	{
+
+		var variant_id = jQuery('#wpsg_mod_productvariants_var_id').val();
+		var product_id = jQuery('#wpsg_mod_productvariants_product_id').val();
+
+		jQuery('#wpsg_mod_productvariants_dialog_modal button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariants_dialog_modal .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		jQuery('#wpsg_mod_productvariants_dialog_modal').modal( { } ).modal('show');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+			data: {  
+				'subaction': 'admin_variation_add',
+				'variant_id': variant_id,
+				'product_id': product_id
+			},
+			success: function(data) { 
+
+				jQuery('#wpsg_mod_productvariants_dialog_modal .modal-body').html(data);
+
+				jQuery('#wpsg_mod_productvariants_dialog_modal button').prop('disabled', false);
+				jQuery('.wpsg_mod_productvariants_variants').hide();
+				jQuery('.wpsg_mod_productvariants_variants_vari').show();
+
+			}
+    	} ); 
+		   
+        return false;
+		
+	} // function wpsg_mod_productvariants_variation_add()
+	
+	function wpsg_mod_productvariants_add()
+	{
+
+		var product_id = jQuery('#wpsg_mod_productvariants_product_id').val();
+		
+		jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariants_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+			data: {  
+				'subaction': 'admin_add',
+				'product_id': product_id
+			},
+			success: function(data) { 
+				
+				jQuery('#wpsg_mod_productvariants_dialog .modal-body').html(data);				
+				jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', false); 
+
+			}
+    	} ); 
+
+		setTimeout("saveOrder()", 3000);
+
+        return false;
+		
+	} // function wpsg_mod_productvariants_add()
+
+	function saveOrder() {
+		var wpsg_reorder = jQuery('.wpsg_mod_productvariants_table_variants tbody').sortable('toArray');
+		var product_id = jQuery('#wpsg_mod_productvariants_product_id').val();
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&subaction=admin_inlineEdit&noheader=1',
+			data: {
+				'field': 'pos',
+				'product_id': product_id,
+				'value': jQuery('.wpsg_mod_productvariants_table_variants tbody').sortable('toArray')
+			},
+			success: function(data) { }
+		} );
+		// jQuery(this).sortable('toArray')
+		// jQuery('.wpsg_mod_productvariants_table_variants tbody').sortable(
+
+	}
+	
+	function wpsg_mod_productvariants_back()
+	{
+
+		var product_id = jQuery('#wpsg_mod_productvariants_product_id').val();
+
+		jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariants_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery('#wpsg_mod_productvariants_dialog_modal').modal( { } ).modal('hide');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+			data: {
+				'subaction': 'admin_show',
+				'product_id': product_id
+			},
+			success: function(data) {
+
+				jQuery('.wpsg_mod_productvariants_variants').show();
+				jQuery('.wpsg_mod_productvariants_variants_vari').hide();
+				jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', false);
+
+				jQuery('#wpsg_mod_productvariants_dialog .modal-body').html(data);
+
+			}
+    	} );
+
+		return false;
+
+	} // function wpsg_mod_productvariants_back()
+
+	function wpsg_mod_productvariants_show(product_id)
+	{
+
+		jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', true);
+		jQuery('#wpsg_mod_productvariants_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		 
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvariants&noheader=1',
+			data: {  
+				'subaction': 'admin_show',
+				'product_id': product_id
+			},
+			success: function(data) { 
+
+				jQuery('.wpsg_mod_productvariants_variants').show();
+				jQuery('.wpsg_mod_productvariants_variants_vari').hide();
+				
+				jQuery('#wpsg_mod_productvariants_dialog .modal-body').html(data);
+				jQuery('#wpsg_mod_productvariants_dialog button').prop('disabled', false); 
+
+			}
+    	} ); 
+		 
+		return false;
+		
+	} // function wpsg_mod_productvariants_show()
+
+/* ]]> */</script>

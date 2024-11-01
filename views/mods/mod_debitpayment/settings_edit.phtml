@@ -1,0 +1,15 @@
+<?php
+
+	/**
+	 * Template für die Zahlungsart "Nachnahme" 
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_debitpayment_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_debitpayment_name'), array('help' => 'wpsg_mod_debitpayment_name')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_debitpayment_aktiv', __('Aktiv', 'wpsg'), $this->get_option('wpsg_mod_debitpayment_aktiv'), array('help' => 'wpsg_mod_debitpayment_aktiv')); ?>
+<?php echo wpsg_drawForm_Textarea('wpsg_mod_debitpayment_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_debitpayment_hint'), array('help' => 'wpsg_mod_debitpayment_hint')); ?>
+
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_debitpayment_rabgeb', __('Rabatt/Gebühr', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_debitpayment_rabgeb'), true), array('help' => 'wpsg_mod_debitpayment_rabgeb', 'unit' => $this->get_option('wpsg_currency').' / %')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_debitpayment_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_debitpayment_mwst'), array('help' => 'wpsg_mod_debitpayment_mwst')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_debitpayment_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_debitpayment_mwstland'), array('help' => 'wpsg_mod_debitpayment_mwstland')); ?>

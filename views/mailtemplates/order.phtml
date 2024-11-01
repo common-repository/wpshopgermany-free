@@ -1,0 +1,124 @@
+<?php
+	
+	if ($this->getFrontendTaxView() === WPSG_BRUTTO) $display_brutto_netto = 'brutto';
+	else $display_brutto_netto = 'netto';
+
+?><?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { $prod_col = 25; } else { $prod_col = 35; } ?>
+
+<?php echo wpsg_pad_right(__('Pos', 'wpsg'), 5); ?>
+<?php echo wpsg_pad_right(__('Produkt', 'wpsg'), $prod_col); ?>
+<?php echo wpsg_pad_left(__('Stückpreis', 'wpsg').' ', 15); ?>
+<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+<?php echo wpsg_pad_left(__('MwSt.', 'wpsg').' ', 10); ?>
+<?php } ?>
+<?php echo wpsg_pad_right(__('Anzahl', 'wpsg'), 6); ?>
+<?php echo wpsg_pad_left(__('Summe', 'wpsg'), 15); ?> 
+----------------------------------------------------------------------------
+<?php $i = 0; foreach ((array)$this->view['basket']['produkte'] as $product_index => $p) { $i ++; ?>
+<?php echo wpsg_pad_right($i.'.', 5); ?>
+<?php echo wpsg_pad_right(((wpsg_isSizedString($p['detailname'])?$p['detailname']:$p['name'])), $prod_col); ?>
+<?php echo wpsg_pad_left(wpsg_ff($p['preis'], $this->get_option('wpsg_currency')).' ', 15); ?>
+<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+<?php echo wpsg_pad_left(wpsg_ff($p['mwst_value'], '%').' ', 10); ?>
+<?php } ?>
+<?php echo wpsg_pad_left($p['menge'], 6); ?>
+<?php echo wpsg_pad_left(wpsg_ff($p['preis'] * $p['menge'], $this->get_option('wpsg_currency')), 15); ?> 
+<?php echo wpsg_pad_left(__('Art. Nr.:', 'wpsg').' ', 15); ?><?php echo wpsg_pad_right($p['anr'], ($prod_col - strlen($p['anr']))); ?> 
+<?php $this->callMods('mail_row', array($i, $p)); ?>
+<?php if (wpsg_isSizedArray($p['order_allowedshipping'])) { ?>
+<?php echo wpsg_pad_left(' ', 5); ?><?php echo __('Mögliche Versandarten', 'wpsg').': '; ?>
+<?php $i = 0; foreach ($p['order_allowedshipping'] as $shipping) { $i ++; ?>
+<?php echo $this->getShippingName($shipping); ?>
+<?php if ($i < sizeof($p['order_allowedshipping'])) { ?>, <?php } ?>
+<?php } ?> 
+<?php } ?>
+<?php } ?>
+ 
+<?php if (wpsg_isSizedArray($this->view['basket']['arCalculation']['voucher'])) {
+	
+	foreach ($this->view['basket']['arCalculation']['voucher'] as $gs) {
+		
+		echo wpsg_pad_right(' ', 5);
+		echo wpsg_pad_right(wpsg_translate(__('Gutschein (#1#)', 'wpsg'), $gs['code']), $prod_col);
+		echo wpsg_pad_left(wpsg_ff($gs['set'], ((strpos($gs['set'], '%') !== false)?'%':$this->get_option('wpsg_currency'))).' ', 15);
+		
+		if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') {
+			
+			echo wpsg_pad_left(__('anteilig', 'wpsg').' ', 10);
+			
+		}
+		
+		echo wpsg_pad_left('1', 6);
+		echo wpsg_pad_left(wpsg_ff($gs[$display_brutto_netto], $this->get_option('wpsg_currency')), 15);
+		echo "\r\n";
+		
+	}
+
+} ?>
+<?php if (isset($this->view['basket']['sum']['preis_rabatt']) && $this->view['basket']['sum']['preis_rabatt'] > 0) { ?>
+     <?php echo wpsg_pad_right(__('Abzüglich Rabatt', 'wpsg'), 40); ?>
+<?php echo wpsg_pad_left('-'.wpsg_ff($this->view['basket']['sum']['preis_rabatt'], $this->get_option('wpsg_currency')), 31); ?> 
+<?php } ?>
+<?php echo wpsg_pad_left('', 5); ?>
+<?php echo wpsg_pad_right(__('Zwischensumme:', 'wpsg'), 40); ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->view['basket']['sum']['preis'], $this->get_option('wpsg_currency')), 31); ?> 
+<?php if ($this->view['basket']['sum']['preis_shipping'] != 0 || $this->get_option('wpsg_hideemptyshipping') != '1') { ?>
+     <?php echo wpsg_pad_right(__('Versandkosten:', 'wpsg'), 40); ?>
+<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+<?php if (!wpsg_isSizedInt($this->arShipping[$this->view['basket']['checkout']['payment']]['mwst'])) { ?>
+<?php echo wpsg_pad_left(__('Anteilig', 'wpsg').' ', 10); ?>
+<?php } else { ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->arShipping[$this->view['basket']['checkout']['shipping']]['mwst_value'], '% '), 10); ?>
+<?php } ?>
+<?php } else { ?>          <?php } ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->view['basket']['sum']['preis_shipping'], $this->get_option('wpsg_currency')), 21); ?> 
+<?php } ?>
+<?php if (wpsg_isSizedArray($this->view['basket']['shipping']['methods'])) { ?>
+<?php foreach ($this->view['basket']['shipping']['methods'] as $shipping) { ?>
+<?php echo wpsg_pad_left(' ', 10); ?><?php echo wpsg_pad_right($this->getShippingName($shipping), 36); ?>
+<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+<?php if ($this->view['basket']['shipping'][$shipping]['tax_rata'] == 1) { ?>
+<?php echo wpsg_pad_right(__('Anteilig', 'wpsg'), 10); ?>
+<?php } else { ?>
+<?php echo wpsg_pad_right(wpsg_ff($this->view['basket']['shipping'][$shipping]['mwst'], '%'), 10); ?>
+<?php } ?>
+<?php } ?>
+<?php if ($this->get_option('wpsg_preisangaben_frontend') == WPSG_NETTO) { ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->view['basket']['shipping'][$shipping]['preis_shipping_netto'], $this->get_option('wpsg_currency')), 20); ?>
+<?php } else { ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->view['basket']['shipping'][$shipping]['preis_shipping_brutto'], $this->get_option('wpsg_currency')), 20); ?>
+<?php } ?> 
+<?php } ?>
+<?php } ?>
+<?php if ($this->view['basket']['sum']['preis_payment'] != 0 || $this->get_option('wpsg_hideemptypayment') != '1') { ?>
+     <?php echo wpsg_pad_right(__('Zahlungsart:', 'wpsg'), 40); ?>
+<?php if (sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1') { ?>
+<?php if (!wpsg_isSizedInt($this->arPayment[$this->view['basket']['checkout']['payment']]['mwst'])) { ?>
+<?php echo wpsg_pad_left(__('Anteilig', 'wpsg').' ', 10); ?>
+<?php } else { ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->arPayment[$this->view['basket']['checkout']['payment']]['mwst_value'], '% '), 10); ?>
+<?php } ?>
+<?php } else { ?>          <?php } ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->view['basket']['sum']['preis_payment'], $this->get_option('wpsg_currency')), 21); ?> 
+<?php } ?>
+<?php if ($this->get_option('wpsg_kleinunternehmer') == '1') { ?>
+ 
+     <?php echo $this->get_option('wpsg_kleinunternehmer_text'); ?>
+ 
+<?php } else { ?>
+<?php foreach ($this->view['basket']['mwst'] as $mwst_id => $mwst) { ?>
+<?php if ($this->getFrontendTaxview() == WPSG_NETTO) { ?>
+     <?php echo wpsg_pad_right(wpsg_translate(__('zuzüglich MwSt. (#1#)', 'wpsg'), $mwst['name']), 47); ?>
+<?php } else { ?>
+     <?php echo wpsg_pad_right(wpsg_translate(__('darin enthaltene MwSt. (#1#)', 'wpsg'), $mwst['name']), 47); ?>
+<?php } ?>
+<?php echo wpsg_pad_left(wpsg_ff($mwst['sum'], $this->get_option('wpsg_currency')), 24); ?> 
+<?php } ?>
+<?php } ?>
+ 
+<?php echo wpsg_pad_left(' ', 61); ?>---------------
+     <?php echo wpsg_pad_right(__('Gesamtpreis:', 'wpsg'), 37); ?>
+<?php echo wpsg_pad_left(wpsg_ff($this->view['basket']['sum']['preis_gesamt_brutto'], $this->get_option('wpsg_currency')), 34); ?>
+<?php $this->callMods('mail_order_end', [&$this->view['basket']['arCalculation'], false]); ?>
+ 
+<?php $this->callMods('mail_aftercalculation', array(&$this->view['basket']['checkout']['o_id'])); ?>

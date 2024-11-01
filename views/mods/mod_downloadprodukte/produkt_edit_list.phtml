@@ -1,0 +1,22 @@
+<?php
+	
+	/**
+	 * Template für die Liste der Dateien eines Download- Produkts
+	 */
+ 
+?>
+<?php if (wpsg_isSizedArray($this->view['prodFiles']) && wpsg_isSizedInt($_REQUEST['edit_id'])) { ?>
+	<ul>
+	<?php foreach ($this->view['prodFiles'] as $file) { ?>
+
+		<li>
+			<a target="_blank" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_downloadprodukte&noheader=1&cmd=download_file&file=<?php echo rawurlencode(basename($file[1])); ?>&edit_id=<?php echo $_REQUEST['edit_id']; ?>" title="<?php echo wpsg_hspc(basename($file[1])); ?>"><?php echo wpsg_hspc(substr(basename($file[1]), 0, 50)); ?></a>
+			(<?php echo wpsg_formatSize($file[1]); ?>)
+			<div class="wpsg_glyphicon_right glyphicon glyphicon-trash" onclick="return wpsg_remove_file('<?php echo basename($file[0]) ?>');" title="<?php echo __('Datei löschen', 'wpsg') ?>"></div>
+		</li>
+
+	<?php } ?>
+	</ul>
+<?php } else { ?>
+<p><?php echo __('Bisher keine Dateien hochgeladen.', 'wpsg'); ?>
+<?php } ?>

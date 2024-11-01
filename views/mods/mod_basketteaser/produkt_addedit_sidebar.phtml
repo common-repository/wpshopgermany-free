@@ -1,0 +1,23 @@
+<?php
+
+	/**
+	 * Template für die Integration des Warenkorbteaser Moduls in die Produktverwaltung
+	 * Sollte nicht verändert werden
+	 */
+
+?>
+<div id="wpsg_basketteaser" class="panel panel-default">	
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">
+			<?php echo __('Warenkorbteaserprodukt', 'wpsg'); ?>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<?php echo wpsg_drawForm_Input('mod_basketteaser_from', __('Von', 'wpsg'), wpsg_fromDate($this->view['data']['mod_basketteaser_from']), array('datepicker' => true)); ?>
+		<?php echo wpsg_drawForm_Input('mod_basketteaser_to', __('Bis', 'wpsg'), wpsg_fromDate($this->view['data']['mod_basketteaser_to']), array('datepicker' => true)); ?>
+	
+	<br /><br />
+	
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_basketteaser"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration des Warenkorbteasers', 'wpsg'); ?></a>
+	</div>
+</div>

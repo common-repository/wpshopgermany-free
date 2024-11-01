@@ -1,0 +1,15 @@
+<?php
+
+	/**
+	 * Template für die Integration der Produkte in die Bestellverwaltung
+	 */
+
+?>
+<tr class="wpsg_<?php echo ((wpsg_getInt($this->view['i']) == 0)?'odd':'even'); ?>">
+	<td ><?php echo __('Downloads', 'wpsg'); ?>:</td>
+	<td align="right" colspan="<?php echo ((sizeof($this->view['arCalculation']['tax']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?'4':'3'); ?>">	
+		 <?php foreach ($this->view['wpsg_mod_downloadprodukte']['arFiles'] as $file) { ?>
+		 <a target="_new" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_downloadprodukte&noheader=1&cmd=download_file&file=<?php echo rawurlencode(basename($file[1])); ?>&edit_id=<?php echo $this->getProduktId($this->view['wpsg_mod_downloadprodukte']['product']['product_key']); ?>"><?php echo basename($file[1]); ?></a>
+		 <?php } ?>
+	</td>
+</tr>

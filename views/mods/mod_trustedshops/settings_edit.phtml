@@ -1,0 +1,191 @@
+<?php
+
+	/**
+	 * Tempalte für die Einstellungen des Trusted Shops Moduls
+	 */
+	
+?>
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_trustedshops_shopid', __('Shop-ID', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_shopid')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_trustedshops_customerset', __('Abfrage Bewertungseinwilligung (im Checkout)', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_customerset'), array('help' => 'wpsg_mod_trustedshops_customerset')); ?>
+			
+<div id="wpsg_mod_trustedshops_customerset_preset_layer">
+	<?php echo wpsg_drawForm_Checkbox('wpsg_mod_trustedshops_customerset_preset', __('Als Vorauswahl aktiv', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_customerset_preset'), array('help' => 'wpsg_mod_trustedshops_customerset_preset')); ?>
+</div>
+
+<br />
+
+<div class="wpsg_mod_protectedshops">
+	<div class="wpsg_admin_box" id="wpsg_tab">	
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#tab1" aria-controls="home" role="tab" data-toggle="tab"><?php echo __('Trusted Shops Widget', 'wpsg'); ?></a></li>
+        <li role="presentation"><a href="#tab2" aria-controls="profile" role="tab" data-toggle="tab"><?php echo __('Bestellabschluss', 'wpsg'); ?></a></li>
+        <li role="presentation"><a href="#tab3" aria-controls="messages" role="tab" data-toggle="tab"><?php echo __('Bewertungslinks', 'wpsg'); ?></a></li>
+        <li role="presentation"><a href="#tab4" aria-controls="messages" role="tab" data-toggle="tab"><?php echo __('Review Collector', 'wpsg'); ?></a></li>
+    </ul>
+	<div class="tab-content">
+		<div id="tab1" role="tabpanel" class="tab-pane active" >
+	
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_trustedshops_siegelcache', __('Bewertungsbild zwischenspeichern (empfohlen)', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_siegelcache'), array('help' => 'wpsg_mod_trustedshops_siegelcache')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_trustedshops_siegeltitle', __('Titel des Bewertungsbildes', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_siegeltitle'), array('help' => 'wpsg_mod_trustedshops_siegeltitle')); ?>
+						
+				<?php if (wpsg_isSizedString($this->view['siegelURL'])) { ?>
+	 			<br />
+	 			<div class="wpsg_hinweis"><?php echo wpsg_translate(__('Das Trusted Shops Widget muss in einen <a href="#1#">Widgetbereich</a> eingefügt werden.', 'wpsg'), WPSG_URL_WP.'wp-admin/widgets.php'); ?></div><br />
+	 			<?php echo __('Vorschau:', 'wpsg'); ?><br />
+				<img class="bewertung" alt="<?php echo wpsg_hspc($this->get_option('wpsg_mod_trustedshops_siegeltitle')); ?>" border="0" src="<?php echo $this->view['siegelURL']; ?>"/>
+				<?php } ?>
+						
+		</div>
+			
+		<div id="tab2" role="tabpanel" class="tab-pane" >
+						
+				<?php echo wpsg_drawForm_Select('wpsg_mod_trustedshops_orderdone', __('Link zur Bewertung', 'wpsg'), array(
+					'0' => __('Nicht anzeigen', 'wpsg'),
+					'1' => __('Immer anzeigen', 'wpsg'),
+					'2' => __('Nur anzeigen, wenn Kunde bewerten möchte', 'wpsg')
+				), $this->get_option('wpsg_mod_trustedshops_orderdone'), array('help' => 'wpsg_mod_trustedshops_orderdone')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_trustedshops_orderdonetitle', __('Titel des Links', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_orderdonetitle'), array('help' => 'wpsg_mod_trustedshops_orderdonetitle')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_trustedshops_orderdonelogo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_orderdonelogo'), array('help' => 'wpsg_mod_trustedshops_orderdonelogo')); ?>
+	 								
+				<br />
+				
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_trustedshops_warranty', __('Trusted Shops Käuferschutz (Garantie)', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_warranty'), array('help' => 'wpsg_mod_trustedshops_warranty')); ?>
+	 								 
+		</div>
+			
+		<div id="tab3" role="tabpanel" class="tab-pane" >
+			
+				<?php echo wpsg_drawForm_Select('wpsg_mod_trustedshops_customermail', __('Link zur Bewertung in Kundenmail nach Bestellabschluss', 'wpsg'), array(
+					'0' => __('Nicht anzeigen', 'wpsg'),
+					'1' => __('Immer anzeigen', 'wpsg'),
+					'2' => __('Nur anzeigen, wenn Kunde bewerten möchte', 'wpsg')
+				), $this->get_option('wpsg_mod_trustedshops_customermail'), array('help' => 'wpsg_mod_trustedshops_customermail')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_trustedshops_customermailtitle', __('Text des Links', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_customermailtitle'), array('help' => 'wpsg_mod_trustedshops_customermailtitle')); ?>
+				
+				<br />
+				
+				<?php if ($this->hasMod('wpsg_mod_rechnungen')) { ?>
+					
+					<br />
+					<?php echo wpsg_drawForm_Select('wpsg_mod_trustedshops_invoicemail', __('Link zur Bewertung in Rechnungsmail', 'wpsg'), array(
+						'0' => __('Nicht anzeigen', 'wpsg'),
+						'1' => __('Immer anzeigen', 'wpsg'),
+						'2' => __('Nur anzeigen, wenn Kunde bewerten möchte', 'wpsg')
+					), $this->get_option('wpsg_mod_trustedshops_invoicemail'), array('help' => 'wpsg_mod_trustedshops_invoicemail')); ?>
+					<?php echo wpsg_drawForm_Input('wpsg_mod_trustedshops_invoicemailtitle', __('Text des Links', 'wpsg'), $this->get_option('wpsg_mod_trustedshops_invoicemailtitle'), array('help' => 'wpsg_mod_trustedshops_invoicemailtitle')); ?>
+					
+				<?php } ?>
+						
+		</div>
+			
+		<div id="tab4" role="tabpanel" class="tab-pane" >
+
+            <?php echo wpsg_drawForm_TextStart(); ?>
+						<input type="hidden" name="wpsg_mod_trustedshops_reminder" value="0">
+						<input id="wpsg_mod_trustedshops_reminder" type="checkbox" class="checkbox" <?php echo ((wpsg_isSizedInt($this->get_option('wpsg_mod_trustedshops_reminder')))?'checked="checked"':''); ?> tabindex="14" name="wpsg_mod_trustedshops_reminder" value="1">
+			
+						<div id="wpsg_mod_trustedshops_reminder_layer" class="wpsg_form_trustedshops_reminderDays">
+							
+							<p><?php echo __('Nach', 'wpsg'); ?></p>
+							<input id="wpsg_mod_trustedshops_reminderDays" type="text" class="text" tabindex="15" name="wpsg_mod_trustedshops_reminderDays" value="<?php echo $this->get_option('wpsg_mod_trustedshops_reminderDays'); ?>">
+							<p><?php echo __('Tagen', 'wpsg'); ?></p>
+						
+						</div>
+						
+            <?php echo wpsg_drawForm_TextEnd(__('Erinnerung', 'wpsg'), array('noP' => true)); ?>
+			
+            <?php echo wpsg_drawForm_TextStart(); ?>
+					<?php foreach ($this->arStatus as $state_id => $state_label) { ?>
+					<?php
+					$arr1 = $this->get_option('wpsg_mod_trustedshops_state');
+					$chk = ((in_array($state_id, (array)$this->get_option('wpsg_mod_trustedshops_state')))?1:0);
+					echo wpsg_drawForm_Checkbox('wpsg_mod_trustedshops_state[]', __($state_label, 'wpsg'),
+					$chk, array('help1' => 'wpsg_shippay_mwstland',
+								'value' => wpsg_hspc($state_id),
+								'noHidden' => true,
+								'fullWidth' => true
+					));
+					?>
+					<br />
+					<?php } ?>
+
+            <?php echo wpsg_drawForm_TextEnd(__('Bestellzustände', 'wpsg'), array('noP' => true)); ?>
+
+				
+				 				
+				<?php echo wpsg_drawForm_Input('', __('Letzter Export', 'wpsg'), $this->view['lastExport'], array('text' => true)); ?>
+				
+				<br />
+				
+				<div class="wpsg_form_field">
+					<div class="wpsg_form_left">&nbsp;</div>
+					<div class="wpsg_form_right wpsg_form_right_unit">
+						<?php $temp = $this->callMod('wpsg_mod_trustedshops', 'getExportData');
+						if (wpsg_isSizedArray($temp)) { ?>
+						<a target="_blank" onclick="location.href=location.href;" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_trustedshops&do=export&noheader=1" class="button"><?php echo __('CSV-Export-Datei erstellen', 'wpsg'); ?></a>
+						<?php } else { ?>
+						<p><?php echo __('Derzeit keine Daten zum Export verfügbar.', 'wpsg'); ?></p>
+						<?php } ?>
+					</div>
+					<div class="wpsg_clear"></div>
+				</div>
+				
+				<br />
+				
+				<a href="https://www.trustedshops.com/tsb2b/sa/ratings/batchRatingRequest.seam"><?php echo __('Trusted Shops Review Collector', 'wpsg'); ?></a>				
+				
+		</div>
+			
+	</div>
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_mod_trustedshops_reminder').bind('change', function() {
+
+			if (jQuery('#wpsg_mod_trustedshops_reminder').is(':checked'))
+			{
+
+				jQuery('#wpsg_mod_trustedshops_reminder_layer').show(250);
+				
+			}
+			else
+			{
+
+				jQuery('#wpsg_mod_trustedshops_reminder_layer').hide(250);
+				
+			}
+			
+		} ).change();
+		
+		jQuery('#wpsg_tab').wpsg_tab( { 
+			'cookiename': 'wpsg_trustedshop_tab',
+			'tab2': function() {
+				jQuery('.tablink').show();
+			}
+		} );
+
+		jQuery('#wpsg_mod_trustedshops_customerset').bind('change', function() {
+
+			if (jQuery(this).attr('checked') === true || jQuery(this).attr('checked') == 'checked')
+			{
+
+				jQuery('#wpsg_mod_trustedshops_customerset_preset_layer').show();
+				
+			}
+			else
+			{
+
+				jQuery('#wpsg_mod_trustedshops_customerset_preset_layer').hide();
+				
+			}
+			
+		} ).change();
+		
+	} );
+
+/* ]]> */</script>

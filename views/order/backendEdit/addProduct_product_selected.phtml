@@ -1,0 +1,102 @@
+<?php
+    
+    /**
+     * Template für das hinzufügen eines Produktes wenn das Produkt ausgewählt wurde
+     */
+             
+    /** @var wpsg_product $oProduct */
+    $oProduct = $this->view['oProduct'];
+
+    /** @var wpsg_order_product $oOrderProduct */
+    $oOrderProduct = $this->view['oOrderProduct'];
+        
+?>
+
+<style>
+    
+    .wpsg_product_add { position:relative; min-height:150px; }
+    .wpsg_product_add .image { position:absolute; left:0px; top:10px; }
+    
+</style>
+
+<strong><?php echo $oProduct->getProductName(); ?></strong>
+
+<div class="wpsg_product_add">
+
+    <input type="hidden" name="product_id" value="<?php echo $oProduct->id; ?>" />
+    
+    <?php if ($oOrderProduct !== false) { ?>
+    <input type="hidden" name="order_product_id" value="<?php echo $oOrderProduct->id; ?>" />
+    <?php } ?>
+    
+    <?php
+
+        $attachment_id = $GLOBALS['wpsg_sc']->imagehandler->getAttachmentID($oProduct->id);
+        
+    ?>
+    
+    <?php if (wpsg_isSizedInt($attachment_id)) { ?>
+    <div class="image"><?php echo wp_get_attachment_image($attachment_id, [100, 100]); ?></div>
+    <?php } ?>
+    
+    <?php echo wpsg_drawForm_Input('add_price', __('Produktpreis', 'wpsg').' '.(($this->getBackendTaxView() === WPSG_BRUTTO)?'(BRUTTO)':'(NETTO'), wpsg_ff((($oOrderProduct !== false)?$oOrderProduct->getPrice($this->getBackendTaxView()):$oProduct->getPrice($this->getBackendTaxView())), $this->get_option('wpsg_currency'))); ?>
+    <?php echo wpsg_drawForm_Input('add_amount', __('Menge', 'wpsg'), (($oOrderProduct !== false)?$oOrderProduct->getCount():'1')); ?>
+    <?php echo wpsg_drawForm_Checkbox('add_eu',__('EU-Leistungsortregel anwenden', 'wpsg'),(($oOrderProduct !== false)?$oOrderProduct->euleistungsortregel:'1')) ?>
+	
+    <?php if ($this->callMod('wpsg_mod_productvariants', 'isVariantsProduct', [$oProduct->id])) { 
+    	
+    	$arVariants = $this->callMod('wpsg_mod_productvariants', 'getVariants', [$oProduct->id, true, true, true]); 
+    	
+    	if ($oOrderProduct !== false) $arVariantenInfoArray = $this->callMod('wpsg_mod_productvariants', 'getVariantenInfoArray', [$oOrderProduct->getProductKey()]);
+    	else $arVariantenInfoArray = [];
+    	 
+    	?> 
+        
+        <?php if (wpsg_isSizedArray($arVariants)) { ?>
+                
+            <br />
+            
+            <?php foreach ($arVariants as $var_id => $var_data) { 
+                
+                    $arVariSelect = [];
+                    foreach ($var_data['arVariation'] as $vari_id => $vari_data) $arVariSelect[$vari_id] = $vari_data['name'];
+                
+                ?>
+            
+                <?php echo wpsg_drawForm_Select('wpsg_vp['.$var_id.']', $var_data['name'], $arVariSelect,$arVariantenInfoArray[$var_data['id']]['vari_id'], ['field_class' => 'varichange']); ?>
+                
+            <?php } ?>
+        
+        <?php } ?>
+		
+		<script>
+			
+			jQuery('.varichange').on('change', function() {
+
+				jQuery('#add_price').val('..');
+				
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=addProduct&do=updatePrice&noheader=1&product_id=<?php echo $oProduct->id; ?>',
+					data: {
+						form_data: jQuery('#wpsg_product_add_form').serialize()
+					},
+					success: function(data) {
+
+						jQuery('#add_price').val(data);
+
+					}
+				} );
+				
+			} );
+			
+		</script>
+        
+    <?php } ?> 
+    
+    <script>
+
+        jQuery('#wpsg_product_dialog .btn-primary').prop('disabled', false);
+        
+    </script>
+
+</div>

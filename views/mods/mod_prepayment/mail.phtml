@@ -1,0 +1,15 @@
+<?php
+
+	/**
+	 * Dieses Template dient zur Integration der Admin Kontodaten in eine Bestellung 
+	 */
+
+?>
+ 
+<?php echo wpsg_translate(__('Bitte überweisen Sie den Rechnungsbetrag in Höhe von #1# auf folgendes Konto und geben Sie als Betreff "#2#" an.', 'wpsg'), wpsg_ff($this->view['basket']['sum']['preis_gesamt_brutto'], $this->get_option('wpsg_currency')), $this->view['mod_prepayment']['subject']); ?> 
+ 
+<?php echo wpsg_pad_right(__('Kontoinhaber', 'wpsg').':', 35); ?><?php echo $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_kinhaber')); ?> 
+<?php echo wpsg_pad_right(__('IBAN', 'wpsg').':', 35); ?><?php echo $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_iban')); ?> 
+<?php echo wpsg_pad_right(__('Bank', 'wpsg').':', 35); ?><?php echo $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_bank')); ?>  
+<?php echo wpsg_pad_right(__('BIC-/SWIFT-Code', 'wpsg').':', 35); ?><?php echo $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_swift')); ?> 
+<?php echo wpsg_pad_right(__('Betreff: #1#', 'wpsg'), 35); ?><?php echo $this->view['mod_prepayment']['subject']; ?>   

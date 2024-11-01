@@ -1,0 +1,42 @@
+<?php 
+
+	/**
+	 * Template des Rechtstext Moduls, welches ITRecht integriert
+	 */
+
+?>
+ 
+<?php if ($this->view['wpsg_mod_legaltexts']['form'] == false) { ?>
+	
+	<a href="https://www.it-recht-kanzlei.de/Service/wpShopGermany-agb.php?partner_id=150">
+		<img class="itrechtlogo" src="<?php echo $this->getRessourceURL('mods/mod_legaltexts/Logo_150.png'); ?>" alt="it-recht Kanzlei München" />
+	</a>
+	
+	<p><?php echo __('wpShopGermany bietet eine AGB-Schnittstelle zur <a href="https://www.it-recht-kanzlei.de/Service/wpShopGermany-agb.php?partner_id=150">IT-Recht Kanzlei</a> an.', 'wpsg'); ?></p>
+	
+	<ul>
+		<li><?php echo wpsg_translate(__('Kostenloses Plugin zur automatisierten Nutzung des AGB-Service der <a href="#1#">IT-Recht-Kanzlei</a>', 'wpsg'), 'https://www.it-recht-kanzlei.de/Service/wpShopGermany-agb.php?partner_id=150'); ?></li>
+		<li><?php echo wpsg_translate(__('abmahnsichere Rechtstexte (AGB, Datenschutzerklärung, Widerrufsbelehrung & Co) von der <a href="#1#">IT-Recht Kanzlei</a> ab nur 8,90 €/mtl.', 'wpsg'), 'https://www.it-recht-kanzlei.de/Service/wpShopGermany-agb.php?partner_id=150'); ?></li>
+		<li><?php echo __('Einfache Integration von aktuellen & abmahnsicheren Rechtstexten in den wpShopGermany-Shop', 'wpsg'); ?></li>
+		<li><?php echo __('Automatische Überwachung und Aktualisierung der Rechtstexte', 'wpsg'); ?></li>
+		<li><?php echo __('Selbstverständlich: Anwaltliche Haftung', 'wpsg'); ?></li>
+		<li><?php echo __('Flexibles Vertragsmodell für den AGB-Service: Bei Bedarf Jederzeit monatlich kündbar', 'wpsg'); ?></li>
+	</ul>
+	
+	<br />
+	
+	<p>
+		<a class="button" href="https://www.it-recht-kanzlei.de/Service/wpShopGermany-agb.php?partner_id=150"><?php echo __('Jetzt absichern', 'wpsg'); ?></a>
+	</p>
+	 	
+	<?php if (file_exists(WP_PLUGIN_DIR."/wpshopgermany-itrecht/wpshopgermany-itrecht.php")) { ?>
+		<p style="color:red;"><?php echo __('Das Plugin wurde bereits gefunden aber noch nicht aktiviert. Bitte aktivieren sie das Plugin in der <a href="plugins.php">Pluginverwaltung</a>.', 'wpsg'); ?></p>
+	<?php } ?>
+ 
+<?php } else { ?>
+	
+	<?php echo $this->view['wpsg_mod_legaltexts']['form']; ?>
+	
+	<input type="hidden" name="wpsg_mod_legaltexts_submitform" value="1" />
+	
+<?php } ?>

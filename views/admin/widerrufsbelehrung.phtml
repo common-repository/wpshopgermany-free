@@ -1,0 +1,76 @@
+<?php
+
+	/**
+	 * Template für die Eingabe der Widerrufsbelehrung im Backend
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $_REQUEST['subaction']; ?>&amp;noheader=1">
+
+        <?php \wp_nonce_field('wpsg-save-revocation'); ?>
+        
+		<?php echo wpsg_drawForm_AdminboxStart(__('Widerruf', 'wpsg')); ?>
+			 
+			<?php echo wpsg_drawForm_Textarea('wpsg_ps_mailwiderruf', __('Widerrufsbelehrung', 'wpsg'), $this->get_option('wpsg_ps_mailwiderruf'), array(
+				'hint' => 'nohspc_'.__('Dieser Text wird in die Mail eingebunden, die der Kunde als Bestellbestätigung erhält.', 'wpsg').'<br />'.__('Das Template für die Mail finden Sie unter: <b>views/mailtemplates/kundenmail.phtml</b> bzw. <b>views/mailtemplates/html/kundenmail.phtml</b>.', 'wpsg')
+			)); ?>							
+			<?php echo wpsg_drawForm_Upload('wpsg_widerrufsformular', __('Widerrufsformular', 'wpsg')); ?>
+
+			<?php echo wpsg_drawForm_TextStart(); ?>
+			<?php if (wpsg_isSizedString($this->view['revocationform'])) { ?>
+			
+				<a target="_blank" href="<?php 
+					
+					echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php/?page=wpsg-Admin&subaction=widerrufsbelehrung&download&noheader=1', 'wpsg-admin-widerrufsbelehrung-download');
+
+				?>"><?php echo $this->view['revocationform']; ?></a>
+				<a onclick="if (!confirm('<?php echo __('Sind Sie sich sicher, dass Sie das Widerrufsformular löschen möchten?', 'wpsg'); ?>')) return false;" style="float:right;" href="<?php 
+					
+					echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=widerrufsbelehrung&noheader=1&do=removeWiderrufsformular', 'wpsg-admin-widerrufsbelehrung-delete'); 
+					
+				?>"><?php echo __('Widerrufsformular löschen', 'wpsg'); ?></a>
+			
+			<?php } else { ?>
+			
+				<p><?php echo __('Bisher wurde kein Widerrufsformular hinterlegt.', 'wpsg'); ?></p>
+			
+			<?php } ?>
+			
+			<br /><br />
+			<a href="<?php 
+				
+				echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=widerrufsbelehrung&noheader=1&do=generateWiderrufsformular', 'wpsg-admin-widerrufsbelehrung-generate'); 
+				
+			?>" class="button"><?php echo __('Standardformular aus Shopinfo erstellen', 'wpsg'); ?></a>
+			<br /><br />
+			
+			<?php echo wpsg_drawForm_TextEnd(); ?>
+		
+			<?php echo wpsg_drawForm_Checkbox('wpsg_widerrufsformular_kundenmail', __('Anhang an Bestellbestätigung', 'wpsg'), $this->get_option('wpsg_widerrufsformular_kundenmail')); ?>
+			
+			<?php if ($this->hasMod('wpsg_mod_rechnungen')) { ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_widerrufsformular_invoice', __('Anhang an Rechnung', 'wpsg'), $this->get_option('wpsg_widerrufsformular_invoice')); ?>
+			<?php } ?>
+			
+			<?php if ($this->hasMod('wpsg_mod_auftragsbestaetigung')) { ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_widerrufsformular_orderconfirm', __('Anhang an Auftragsbestätigung', 'wpsg'), $this->get_option('wpsg_widerrufsformular_orderconfirm')); ?>
+			<?php } ?>
+					 
+		<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+
+	</form>
+</div>

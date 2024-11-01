@@ -1,0 +1,43 @@
+<?php
+
+	/**
+	 * Template für die Liste der gewählten Zubehörprodukte (Backend)
+	 */
+
+?>
+<br />
+<?php if (sizeof($this->view['wpsg_mod_relatedproducts']['data']) <= 0) { ?>
+<p><?php echo __('Noch keine Produkte zugeordnet', 'wpsg'); ?></p>
+<?php } else { ?>
+<?php foreach ($this->view['wpsg_mod_relatedproducts']['data'] as $p) { ?>
+	<span id="wpsg_rp_<?php echo $p['id']; ?>">
+		<?php echo wpsg_drawForm_Select('wpsg_mod_relatedproduct['.$p['id'].']', $p['name'], $this->view['wpsg_mod_relatedproducts']['arTemplates'], $p['template'], array('icon' => 'wpsg_icon_remove glyphicon glyphicon-trash')); ?>
+	</span>
+	<div class="wpsg_clear"></div>
+<?php } ?>
+<?php } ?>
+
+<script type="text/javascript">
+
+	jQuery('#relatedproducts_list a.wpsg_icon_remove').bind('click', function() {
+
+		var rel_id = jQuery(this).parents('span').attr('id').replace(/wpsg_rp_/, '');
+
+		jQuery('#relatedproducts_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_relatedproducts&cmd=wpsg_rp_remove&noheader=1&edit_id=<?php echo $this->view['wpsg_mod_relatedproducts']['product_id']; ?>',
+			data: {
+				'rel_id': rel_id
+			},
+			success: function(data) {
+
+				jQuery('#relatedproducts_list').html(data);
+			}
+		} );
+		
+		return false;
+		
+	} );
+
+</script>

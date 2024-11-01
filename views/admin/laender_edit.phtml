@@ -1,0 +1,23 @@
+<form id="wpsg_land_edit_form_edit" class="form-horizontal">
+ 
+	<?php if (wpsg_isSizedInt($this->view['land']['id'])) { ?>
+	<input type="hidden" name="id" value="<?php echo $this->view['land']['id']; ?>" />
+	<?php } ?>
+	
+	<?php echo wpsg_drawForm_Input('country[name]', __('Ländername', 'wpsg'), wpsg_getStr($this->view['land']['name']), array('help' => 'wpsg_land_name')); ?>
+	<?php echo wpsg_drawForm_Input('country[kuerzel]', __('Kürzel', 'wpsg'), wpsg_getStr($this->view['land']['kuerzel']), array('help' => 'wpsg_land_kuerzel')); ?>
+	<?php echo wpsg_drawForm_Select('country[vz]', __('Versandzone', 'wpsg'), $this->view['vz'], wpsg_getStr($this->view['land']['vz']), array('help' => 'wpsg_land_vz')); ?>
+	<?php echo wpsg_drawForm_Select('country[mwst]', __('MwSt. Grundlage', 'wpsg'), array(
+		'0' => __('mit MwSt.', 'wpsg'),
+		'1' => __('keine MwSt.', 'wpsg'),
+		'2' => __('keine MwSt. bei USt.IdNr.', 'wpsg')
+	), wpsg_getStr($this->view['land']['mwst']), array('help' => 'wpsg_land_mwst')); ?>
+	<?php echo wpsg_drawForm_Input('country[mwst_a]', __('MwSt. Satz A (stark ermäßigter Satz)', 'wpsg'), wpsg_getStr($this->view['land']['mwst_a']), array('help' => 'wpsg_land_mwst_a')); ?>
+	<?php echo wpsg_drawForm_Input('country[mwst_b]', __('MwSt. Satz B (ermäßigter Satz)', 'wpsg'), wpsg_getStr($this->view['land']['mwst_b']), array('help' => 'wpsg_land_mwst_b')); ?>
+	<?php echo wpsg_drawForm_Input('country[mwst_c]', __('MwSt. Satz C (Normalsatz)', 'wpsg'), wpsg_getStr($this->view['land']['mwst_c']), array('help' => 'wpsg_land_mwst_c')); ?>
+	<?php echo wpsg_drawForm_Input('country[mwst_d]', __('MwSt. Satz D (Zwischensatz)', 'wpsg'), wpsg_getStr($this->view['land']['mwst_d']), array('help' => 'wpsg_land_mwst_d')); ?>
+	<?php echo wpsg_drawForm_Checkbox('standard', __('Standardland', 'wpsg'), wpsg_getStr($this->view['land']['standard']), array('disabled' => ((isset($this->view['land']['standard']) && $this->view['land']['standard'] == '1')?true:false), 'help' => 'wpsg_land_standard')); ?>
+
+	<?php $this->callMods('laender_edit'); ?>
+	
+</form>

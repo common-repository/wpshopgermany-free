@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * Dieses Template wird in der Produktverwaltung in der rechten Spalte verwendet
+ */
+
+?>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+
+	jQuery(document).ready(function() {	
+
+		<?php if ($this->get_option('wpsg_classicupload') != '1') { ?>
+		new AjaxUpload(
+			"upload_produktfile_button", {
+				name: "wpsg_mod_downloadprodukte_file",
+				action: "<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_downloadprodukte&edit_id=<?php echo $this->view['data']['id'] ?>&noheader=1&cmd=upload_file",
+				onSubmit: function(file, extension) {
+	
+					jQuery('#produktfiles_target').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+					
+				},
+				onComplete: function(file, response) {
+					//alert(response);
+					if (response == '1')
+					{
+						//jQuery("#produktfiles_target").html('lalal');
+						jQuery("#produktfiles_target").load("<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_downloadprodukte&cmd=produktfiles_list&edit_id=<?php echo $_REQUEST['edit_id']; ?>&noheader=1");
+					}
+					else
+					{
+						alert(response);
+					}
+				}										
+			}
+		);
+		<?php } ?>
+							   
+	} );
+
+	/**
+	 * Wird beim löschen einer Datei aufgerufen
+	 */
+	function wpsg_remove_file(strFile)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sicher, das Sie diese Datei löschen möchten?', 'wpsg'); ?>')) return false;
+
+		jQuery('#produktfiles_target').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_downloadprodukte&cmd=remove&noheader=1&edit_id=<?php echo $this->view['data']['id']; ?>',
+			data: {
+				file: strFile
+			},
+			success: function(data) {
+				//alert(data);
+				jQuery('#produktfiles_target').html(data);
+			}
+		} );
+
+		return false;
+		
+	}
+	
+/* ]]> */
+</script>
+
+<div id="wpsg_downloadprodukte" class="panel panel-default">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">
+			<?php echo __('Downloadprodukt', 'wpsg'); ?>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div id="produktfiles_target"><?php echo $this->view['prodFiles']; ?></div>
+		
+		<?php if ($this->get_option('wpsg_classicupload') == '1') { ?>
+		<input type="file" name="wpsg_mod_downloadprodukte_file" />
+		<?php } else { ?>	
+		<input value="<?php echo __("Upload", "wpsg"); ?>" type="text" style="text-align:center;" size="10" id="upload_produktfile_button" />
+		<?php } ?>		
+		
+		<div class="wpsg_clear"></div><br />
+		<div class="wpsg_form_field">
+			<div class="wpsg_form_left" style="width:75px;">
+				<label for="feinheit"><?php echo __('FTP Pfad', 'wpsg'); ?>:</label>
+			</div>
+			<div class="wpsg_form_right">
+				<p>
+					<a href="#" onclick="alert('<?php echo wpsg_hspc($this->view['wpsg_mod_downloadprodukte']['path']); ?>'); return false;"><?php echo __('Anzeigen', 'wpsg'); ?></a>
+				</p>
+			</div>
+			<div class="wpsg_clear"></div>
+		</div>		
+		
+		<br /><br />
+		
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_downloadprodukte"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration des Downloadproduktes', 'wpsg'); ?></a>
+		
+	</div>
+</div>

@@ -1,0 +1,62 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Moduls "Sofortüberweisung"
+	 */
+
+?>
+<script type="text/javascript">
+
+	var arPagesURL = jQuery.parseJSON('<?php echo json_encode($this->view['pagesurl']); ?>');
+
+	jQuery(document).ready(function() { 
+
+		jQuery('#wpsg_page_mod_paypal_success').bind('change', function() {
+			if (jQuery(this).val() > 0)
+			{
+				jQuery('#wpsg_mod_su_successurl').val(arPagesURL[jQuery(this).val()]);
+			}
+			else
+			{
+				jQuery('#wpsg_mod_su_successurl').val('');	
+			}	
+		} );
+
+		jQuery('#wpsg_page_mod_paypal_error').bind('change', function() {
+			if (jQuery(this).val() > 0)
+			{
+				jQuery('#wpsg_mod_su_errorurl').val(arPagesURL[jQuery(this).val()]);
+			}
+			else
+			{
+				jQuery('#wpsg_mod_su_errorurl').val('');	
+			}	
+		} );
+		
+	} );
+ 	
+</script>
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_bezeichnung', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_su_bezeichnung'), array('help' => 'wpsg_mod_su_bezeichnung')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_su_aktiv', __('Aktiv', 'wpsg'), $this->get_option('wpsg_mod_su_aktiv')); ?>
+<?php echo wpsg_drawForm_Textarea('wpsg_mod_su_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_su_hint'), array('help' => 'wpsg_mod_su_hint')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_subject1', __('Betreff für Überweisung (Zeile 1)', 'wpsg'), $this->get_option('wpsg_mod_su_subject1'), array('help' => 'wpsg_mod_su_subject1')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_subject2', __('Betreff für Überweisung (Zeile 2)', 'wpsg'), $this->get_option('wpsg_mod_su_subject2'), array('help' => 'wpsg_mod_su_subject2')); ?>
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_su_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_su_gebuehr')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_su_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_su_mwst'), array('help' => 'wpsg_mod_su_mwst')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_su_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_su_mwstland'), array('help' => 'wpsg_mod_su_mwstland')); ?>
+
+<br />
+<?php echo wpsg_drawForm_Select('wpsg_mod_su_currency', __('Verwendete Währung', 'wpsg'), array('EUR' => __('Euro', 'wpsg'), 'CHF' => __('Schweizer Franken', 'wpsg'), 'GBP' => __('Britische Pfund', 'wpsg')), $this->get_option('wpsg_mod_su_currency'), array('help' => 'wpsg_mod_su_currency')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_userid', __('Kunden-Nr für Sofortüberweisung.de', 'wpsg'), $this->get_option('wpsg_mod_su_userid'), array('help' => 'wpsg_mod_su_userid')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_projectid', __('Projekt ID für Sofortüberweisung.de', 'wpsg'), $this->get_option('wpsg_mod_su_projectid'), array('help' => 'wpsg_mod_su_projectid')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_projectpassword', __('Projekt Passwort', 'wpsg'), $this->get_option('wpsg_mod_su_projectpassword'), array('help' => 'wpsg_mod_su_projectpassword')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_noticepassword', __('Benachrichtigungs Passwort', 'wpsg'), $this->get_option('wpsg_mod_su_noticepassword'), array('help' => 'wpsg_mod_su_noticepassword')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_su_language', __('Sprache bei Sofortüberweisung.de', 'wpsg'), array('DE' => __('deutsch', 'wpsg'), 'EN' => __('englisch', 'wpsg'), 'FR' => __('französisch', 'wpsg'), 'NL' => __('niederländisch', 'wpsg')), $this->get_option('wpsg_mod_su_language'), array('help' => 'wpsg_mod_su_language')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_su_hash', __('Verwendetes HASH Verfahren', 'wpsg'), array('md5' => 'MD5', 'sha1' => 'SHA1', 'sha256' => 'SHA256', 'sha512' => 'SHA512'), $this->get_option('wpsg_mod_su_hash'), array('help' => 'wpsg_mod_su_hash')); ?>
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_su_confirmurl', __('URL für HTTP Benachrichtigung', 'wpsg'), $this->view['wpsg_mod_su_confirmurl'], array('help' => 'wpsg_mod_su_confirmurl', 'readonly' => true)); ?>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_su_autostart', __('Zahlung sofort starten', 'wpsg'), $this->get_option('wpsg_mod_su_autostart')); ?>
+

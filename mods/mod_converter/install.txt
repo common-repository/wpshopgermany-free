@@ -1,0 +1,30 @@
+------------------------------------------------------------------------------------------
+Installation WPSG4 und M1-Converter
+------------------------------------------------------------------------------------------
+
+- Neue Domain anlegen
+- Datenbank WPSG3 als SQL-Dump exportieren
+- Datenbank für WPSG4 anlegen und den SQL-Dump importieren
+- Plugin WPSG4 installieren und aktivieren
+- Zugangsdaten für die Datenbank in wp-config.php eintragen
+  (DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
+- Themes installieren
+
+
+- Plugin M1-Converter ZIP-Datei auspacken nach /wp-content/plugins/ und aktivieren
+- Verzeichnis /wp-content/uploads von WPSG3 nach WPSG4 kopieren
+- M1-Converter starten
+
+
+- Aufräumen, Löschen nicht mehr benötigter Verzeichnisse
+  - /wp-content/uploads/wpsg_produktbilder
+  - /wp-content/uploads/wpsg_rechnungen
+  - /wp-content/uploads/wpsg/wpsg_deliverynote: Verzeichnisse außer mit Jahreszahl
+
+
+- /wp-content/uploads/wpsg/wpsg_girocode
+  .htaccess:  Allow from all
+
+
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------

@@ -1,0 +1,10 @@
+<?php
+
+	/**
+	 * Template für die Anzeige der Produktattribute in der Mail, die bei einer neuen Bestellung an den Kunde geht (Text Mail)
+	*/
+
+?><?php foreach ((array)$this->view['wpsg_mod_produktattribute']['data'] as $pa_id) { ?>
+<?php echo wpsg_pad_right(' ', 5); ?><?php echo $this->callMod('wpsg_mod_produktattribute', 'getAttributeLabel', array($pa_id)); ?>: <?php echo $this->callMod('wpsg_mod_produktattribute', 'getAttributeValue', array($this->view['wpsg_mod_produktattribute']['id'], $pa_id)); ?>
+
+<?php } ?>

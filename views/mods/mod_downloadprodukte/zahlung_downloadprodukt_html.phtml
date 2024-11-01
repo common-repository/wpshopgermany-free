@@ -1,0 +1,23 @@
+<?php include(WPSG_PATH_VIEW . 'mailtemplates/html/logo.phtml'); ?>
+
+<p><?php echo __("Hallo", "wpsg"); ?> <?php echo $this->view['customer']['vname']; ?> <?php echo $this->view['customer']['name']; ?></p>
+
+<p><?php echo __("Ihre Bezahlung zu der Bestellung", "wpsg"); ?> <?php echo $this->view['order']['onr'] ?> <?php echo __("ist bei uns eingegangen.", "wpsg"); ?></p>
+
+<p><?php echo __("Die Produkte, die als Download vorliegen, wurden für Sie freigeschaltet.", "wpsg"); ?></p> 
+
+<ul>
+	<?php foreach ((array)$this->view['arLinks'] as $link) { ?>
+	<li><a href="<?php echo $link; ?>"><?php echo $link; ?></a></li>
+	<?php } ?>
+</ul>
+
+<?php if ($this->get_option('wpsg_mod_downloadprodukte_zt') == '0') { ?>
+<p><?php echo __("Sie haben für", "wpsg"); ?> <?php echo $this->view['data']['tage']; ?> <?php echo __("Tage die Möglichkeit die Dateien herunterzuladen.", "wpsg"); ?></p>
+<?php } else { ?>
+<p><?php echo preg_replace('/%1%/', $this->get_option('wpsg_mod_downloadprodukte_days'), __('Sie können die Datei %1% mal herunterladen', 'wpsg')); ?></p>
+<?php } ?>
+
+<p><?php echo __("Viele Grüße", "wpsg"); ?></p>
+ 
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p>

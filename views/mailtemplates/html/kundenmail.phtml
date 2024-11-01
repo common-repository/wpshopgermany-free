@@ -1,0 +1,46 @@
+<?php 
+
+	/* Wichtig, da die Module sonst kein HTML zurückgeben */
+	$this->htmlMail = true;
+
+	include(WPSG_PATH_VIEW . 'mailtemplates/html/logo.phtml');
+
+?>
+<p><?php echo wpsg_translate(__('Hallo #1# #2#,', 'wpsg'), $this->view['basket']['checkout']['vname'], $this->view['basket']['checkout']['name']); ?></p>
+
+<p><?php echo __('Vielen Dank für Ihre Bestellung!', 'wpsg'); ?></p>
+
+<?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/customer.phtml'); ?>
+
+<br />
+
+<h2><?php echo __('Warenkorb', 'wpsg'); ?>:</h2>
+
+<?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/order.phtml'); ?>
+
+<?php $this->callMods('mail_aftercalculation', array(&$this->view['basket']['checkout']['o_id'])); ?>
+
+<?php if (wpsg_isSizedString($this->view['basket']['checkout']['comment'])) { ?>
+<h2><?php echo __('Bestellkommentar', 'wpsg') ?></h2>
+<p><?php echo $this->view['basket']['checkout']['comment'] ?></p>
+<?php } ?>
+
+<p><?php echo __('Wir bedanken uns fuer Ihre Bestellung.', 'wpsg'); ?></p>
+<p><?php echo __('Bitte beachten Sie, dass es sich bei dieser E-Mail um eine Bestellbestaetigung und keine bindende Auftragsbestaetigung handelt. Preisirrtuemer sind leider nicht vollstaendig auszuschliessen.', 'wpsg'); ?></p>
+<p><?php echo wpsg_translate(__('Es gelten unsere <a href="#1#">Allgemeinen Geschaeftsbedingungen</a> (<a href="#1#">AGB</a>).', 'wpsg'), $this->getURL(wpsg_ShopController::URL_AGB)); ?></p>  
+  
+<?php $this->CallMods('kundenmail_afteragb', array(&$this->view['basket']['checkout']['o_id'])); ?>
+
+<h3><?php echo __("Widerrufsbelehrung", "wpsg"); ?></h3>
+
+<?php if (wpsg_isSizedString($this->get_option("wpsg_ps_mailwiderruf"))) { ?>
+<p><?php echo nl2br($this->get_option("wpsg_ps_mailwiderruf")); ?></p> 
+<?php } else { ?>
+<?php echo __("...hier steht der Text zum Widerrufsrecht...", "wpsg"); ?>
+<?php } ?>
+ 
+<h3><?php echo __("Ende der Widerrufsbelehrung", "wpsg"); ?></h3>
+
+<p><?php echo __('Mit freundlichen Grüßen', 'wpsg'); ?></p>
+
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p>

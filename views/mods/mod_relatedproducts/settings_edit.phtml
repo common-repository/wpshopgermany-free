@@ -1,0 +1,43 @@
+<?php
+
+	/**
+	 * Tempalte für die Einstellungen des Moduls "Zubehörprodukte"
+	 */
+
+?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_relatedproducts_template', __('Produkttemplate für die Zubehörprodukte', 'wpsg'), $this->view['wpsg_mod_relatedproducts']['arTemplates'], $this->get_option('wpsg_mod_relatedproducts_template'), array('help' => 'wpsg_mod_relatedproducts_template')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_relatedproducts_synchron', __('Synchrone Verknüpfung der Produkte', 'wpsg'), $this->get_option('wpsg_mod_relatedproducts_synchron'), array('help' => 'wpsg_mod_relatedproducts_synchron')); ?>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_relatedproducts_showBasket', __('Zubehörprodukte im Warenkorb anpreisen', 'wpsg'), $this->get_option('wpsg_mod_relatedproducts_showBasket'), array('hint' => __('Wird unterhalb des Warenkorbes dargestellt. Alternativ kann [wpsg_relatedproducts_basket limit="5"] verwendet werden.', 'wpsg'), 'help' => 'wpsg_relatedproducts_basket')); ?>
+<div class="wpsg_mod_relatedproducts_showBasket_activ" style="display:none;">
+<?php echo wpsg_drawForm_Input('wpsg_mod_relatedproducts_showBasketLimit', __('Maximale Anzahl an angezeigten Produkten', 'wpsg'), $this->get_option('wpsg_mod_relatedproducts_showBasketLimit'), array('help' => 'wpsg_mod_relatedproducts_showBasketLimits')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_relatedproducts_showBasketTemplate', __('Template für die Zubehörprodukte im Warenkorb', 'wpsg'), $this->view['wpsg_mod_relatedproducts']['arTemplates'], $this->get_option('wpsg_mod_relatedproducts_showBasketTemplate'), array('help' => 'wpsg_mod_relatedproducts_showBasketTemplate')); ?>
+</div>
+
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_relatedproducts_showAjaxDialog', __('Zubehörprodukte im Warenkorb-Lightbox anpreisen', 'wpsg'), $this->get_option('wpsg_mod_relatedproducts_showAjaxDialog'), array('help' => 'wpsg_mod_relatedproducts_showAjaxDialog')); ?>
+<div class="wpsg_mod_relatedproducts_showAjaxDialog_activ" style="display:none;">
+<?php echo wpsg_drawForm_Input('wpsg_mod_relatedproducts_showAjaxDialogLimit', __('Maximale Anzahl an angezeigten Produkten', 'wpsg'), $this->get_option('wpsg_mod_relatedproducts_showAjaxDialogLimit'), array('help' => 'wpsg_mod_relatedproducts_showAjaxDialogLimits')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_relatedproducts_showAjaxDialogTemplate', __('Tempalte für die Zubehörprodukte in der Lightbox', 'wpsg'), $this->view['wpsg_mod_relatedproducts']['arTemplates'], $this->get_option('wpsg_mod_relatedproducts_showAjaxDialogTemplate'), array('help' => 'wpsg_mod_relatedproducts_showAjaxDialogTemplate')); ?>
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('#wpsg_mod_relatedproducts_showBasket').bind('change', function() {
+
+			if (jQuery(this).is(':checked')) jQuery('.wpsg_mod_relatedproducts_showBasket_activ').show();
+			else jQuery('.wpsg_mod_relatedproducts_showBasket_activ').hide();
+			
+		} ).change();
+
+		jQuery('#wpsg_mod_relatedproducts_showAjaxDialog').bind('change', function() {
+
+			if (jQuery(this).is(':checked')) jQuery('.wpsg_mod_relatedproducts_showAjaxDialog_activ').show();
+			else jQuery('.wpsg_mod_relatedproducts_showAjaxDialog_activ').hide();
+			
+		} ).change();
+		
+	} );
+
+/* ]]> */</script>

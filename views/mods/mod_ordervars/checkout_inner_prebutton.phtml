@@ -1,0 +1,44 @@
+<?php
+
+	/**
+	 * Template für die Integration der Bestellvariablen innerhalb des Checkouts
+	 */
+
+?>
+<div class="wpsg_box wpsg_mod_ordervars">
+
+	<h2><?php echo __('Bestellvariablen', 'wpsg'); ?></h2>
+	
+	<div class="wpsg_spacer"></div>
+	
+	<div class="wpsg_inner">
+		<?php foreach ((array)$this->view['wpsg_mod_ordervars']['data'] as $ov) { ?>
+			<div class="wpsg_checkoutblock">	
+				<?php if ($ov['typ'] == '3') { // Checkbox ?>
+				<label class="wpshopgermany_checkout" for="wpsg_mod_ordervars_<?php echo $ov['id']; ?>">
+					<input type="hidden" value="0" name="wpsg_mod_ordervars[<?php echo $ov['id']; ?>]" />
+					<input class="<?php echo ((in_array("wpsg_mod_ordervars_".$ov['id'], (array)$this->view['error']))?'wpsg_error':''); ?>" id="wpsg_mod_ordervars_<?php echo $ov['id']; ?>" <?php echo ((wpsg_getStr($_SESSION['wpsg']['wpsg_mod_ordervars'][$ov['id']]) == '1')?'checked="checked"':''); ?> type="checkbox" value="1" name="wpsg_mod_ordervars[<?php echo $ov['id']; ?>]" /><?php echo $this->callMod('wpsg_mod_ordervars', 'getNameById', array($ov['id'])); ?><?php if ($ov['pflicht'] == '1') { ?><span class="wpsg_required">*</span><?php } ?>
+				</label>
+				<?php } else { ?>	
+				<label class="wpshopgermany_checkout" for="wpsg_mod_ordervars_<?php echo $ov['id']; ?>">
+					<?php echo $this->callMod('wpsg_mod_ordervars', 'getNameById', array($ov['id'])); ?>
+					<?php if ($ov['pflicht'] == '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+				</label> 
+				<div class="wpsg_mod_ordervars_field">
+					<?php if ($ov['typ'] == '1') { // Auswahlfeld ?>		
+					<select class="<?php echo ((in_array("wpsg_mod_ordervars_".$ov['id'], (array)$this->view['error']))?'wpsg_error':''); ?> <?php echo (($ov['pflicht'] == '1')?'validate[required]':''); ?>" name="wpsg_mod_ordervars[<?php echo $ov['id']; ?>]" id="wpsg_mod_ordervars_<?php echo $ov['id']; ?>">
+						<option value=""><?php echo __('Bitte wählen', 'wpsg'); ?></option>
+						<?php $ov['auswahl'] = explode('|', $ov['auswahl']); foreach ((array)$ov['auswahl'] as $option) { ?>
+						<option <?php echo ((wpsg_getStr($_SESSION['wpsg']['wpsg_mod_ordervars'][$ov['id']]) == $option)?'selected="selected"':''); ?> value="<?php echo wpsg_hspc($option); ?>"><?php echo wpsg_hspc($option); ?></option>
+						<?php } ?>
+					</select>
+					<?php } else if ($ov['typ'] == '2') { // Textfeld ?>
+					<input class="<?php echo ((in_array("wpsg_mod_ordervars_".$ov['id'], (array)$this->view['error']))?'wpsg_error':''); ?> <?php echo (($ov['pflicht'] == '1')?'validate[required]':''); ?>" type="text" name="wpsg_mod_ordervars[<?php echo $ov['id']; ?>]" value="<?php echo wpsg_hspc(wpsg_getStr($_SESSION['wpsg']['wpsg_mod_ordervars'][$ov['id']])); ?>" id="wpsg_mod_ordervars_<?php echo $ov['id']; ?>" />
+					<?php } ?>
+				</div>
+				<?php } ?>
+				<div class="wpsg_clear"></div>
+			</div>
+		<?php } ?>
+	</div>
+</div>

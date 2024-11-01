@@ -1,0 +1,23 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des TopSeller Widgets
+	 */
+	
+?>
+<?php echo wpsg_drawForm_Select(
+	$this->view['wpsg_mod_topseller_template']['name'], 
+	__('Template', 'wpsg'), 
+	$this->view['arTemplates'], 
+	$this->view['wpsg_mod_topseller_template']['value'], array(
+		'id' => $this->view['wpsg_mod_topseller_template']['id'],
+		'noIndex' => true	
+	)
+); ?>
+<?php echo wpsg_drawForm_Input(
+	$this->view['wpsg_mod_topseller_limit']['name'], 
+	__('Limit', 'wpsg'), 
+	$this->view['wpsg_mod_topseller_limit']['value'], array(
+		'id' => $this->view['wpsg_mod_topseller_limit']['id']	
+	)
+); ?>

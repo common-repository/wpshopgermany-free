@@ -1,0 +1,47 @@
+<?php
+
+	/**
+	 * Template für die verwaltung der Seiten im Backend
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=seiten&noheader=1'); ?>">	
+
+		<?php wp_nonce_field('wpsg-admin-seiten'); ?>
+		
+		<?php echo wpsg_drawForm_AdminboxStart(__('Seitenkonfiguration', 'wpsg')); ?>
+			
+			<?php if ($this->hasMod('wpsg_mod_request') == '1') { ?>
+				<?php echo wpsg_drawForm_Select('wpsg_page_request', __('Anfrageliste', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_request'), array('help' => 'wpsg_page_request')); ?>
+			<?php } ?>
+			
+			<?php echo wpsg_drawForm_Select('wpsg_page_basket', __('Warenkorbseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_basket'), array('help' => 'wpsg_page_basket')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_page_basket_more', __('"Weiter shoppen" - Seite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_basket_more'), array('help' => 'wpsg_page_basket_more')); ?>
+            <?php echo wpsg_drawForm_Select('wpsg_page_product', __('Produktdetailseite', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_product'), array('help' => 'wpsg_page_product')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_page_versand', __('Versandkosten', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_versand'), array('help' => 'wpsg_page_versand')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_page_agb', __('AGB', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_agb'), array('help' => 'wpsg_page_agb')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_page_datenschutz', __('Datenschutz', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_datenschutz'), array('help' => 'wpsg_page_datenschutz')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_page_widerrufsbelehrung', __('Widerrufsbelehrung', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_widerrufsbelehrung'), array('help' => 'wpsg_page_widerrufsbelehrung')); ?>
+			<?php // echo wpsg_drawForm_Input('wpsg_page_onlinedisputeresolution', __('Online Streitbeilegung', 'wpsg'), $this->get_option('wpsg_page_onlinedisputeresolution'), array('help' => 'wpsg_page_onlinedisputeresolution')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_page_impressum', __('Impressum', 'wpsg'), $this->view['pages'], $this->get_option('wpsg_page_impressum'), array('help' => 'wpsg_page_impressum')); ?>
+			
+		<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+			
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+			
+		
+			
+	</form>	
+</div>

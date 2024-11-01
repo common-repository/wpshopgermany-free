@@ -1,0 +1,203 @@
+<?php
+
+	/**
+	 * Template für die Produktauswahl über den RTE
+	 */
+
+?><html>
+	<head>
+	
+		<?php if ($_REQUEST['wpsg_mode'] != 'wpsg_mod_relatedproducts') { ?>
+		<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>
+		<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-includes/js/tinymce/utils/mctabs.js"></script>
+		<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-includes/js/tinymce/utils/form_utils.js"></script>
+	 	<?php } ?>
+	 
+		<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-admin/load-scripts.php?c=1&load[]=jquery-core"></script>
+		<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl'); ?>/<?php echo WPSG_CONTENTDIR_WP; ?>/plugins/".WPSG_FOLDERNAME."/views/js/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+		
+		<link rel='stylesheet' id='wpsg-bscss-css'  href='<?php echo get_option('siteurl'); ?>/<?php echo WPSG_CONTENTDIR_WP; ?>/plugins/'.WPSG_FOLDERNAME.'/views/js/bootstrap-3.3.6-dist/css/bootstrap.css?ver=4.7.5' type='text/css' media='all' />
+		<link rel='stylesheet' id='wpsg-bs-theme-css-css'  href='<?php echo get_option('siteurl'); ?>/<?php echo WPSG_CONTENTDIR_WP; ?>/plugins/'.WPSG_FOLDERNAME.'/views/js/bootstrap-3.3.6-dist/css/bootstrap-theme.css?ver=4.7.5' type='text/css' media='all' />
+		
+		<link rel="stylesheet" href="<?php echo $this->getRessourceURL('css/admin.css'); ?>" type="text/css" media="all" />
+				
+		<title><?php echo __('wpShopGermany Produktauswahl', 'wpsg'); ?></title>
+			
+		<script type="text/javascript">
+		
+			function insertProdukt()
+			{
+
+				<?php if ($_REQUEST['wpsg_mode'] == 'wpsg_mod_relatedproducts') { ?>
+				var produkt_id = document.getElementById("produkt").value;
+				var template = document.getElementById("template").value;
+				var template_file = document.getElementById("template").options[document.getElementById("template").selectedIndex].text;
+
+				jQuery('#relatedproducts_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				
+				jQuery.ajax( { 
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_relatedproducts&cmd=wpsg_rp_add&noheader=1&edit_id=<?php echo $_REQUEST['edit_id'] ?>',
+					data: {
+						'rel_id': produkt_id,
+						'template': template,
+						'template_file': template_file
+					},
+					success: function(data) {
+						jQuery('#relatedproducts_list').html(data);
+					}
+				} );
+				
+				<?php } else { ?>
+				var produkt_id = document.getElementById("produkt").value;
+				var text = "[wpshopgermany product=\"" + produkt_id + "\"";
+		
+				if (document.getElementById("template") != null && document.getElementById("template").value != "0")
+				{
+
+					text += " template=\"" + document.getElementById("template").options[document.getElementById("template").selectedIndex].text + "\"";
+				
+				}
+				
+				if (document.getElementById("title") != null && document.getElementById("title").value != "1")
+				{
+					
+					text += " hide_title=\"1\" ";
+					
+				}
+				
+				text += "]";
+									
+				if (window.tinyMCE)
+				{
+
+					<?php if (get_bloginfo('version') < 3.9) { ?>
+						
+					window.tinyMCE.execInstanceCommand("content", "mceInsertContent", false, text);
+					tinyMCEPopup.editor.execCommand("mceRepaint");			
+						
+					<?php } else { ?>
+
+					parent.tinyMCE.execCommand('mceInsertContent', false, text);
+					parent.tinyMCE.activeEditor.windowManager.close();
+						
+					<?php } ?>
+													
+									
+					tinyMCEPopup.close();
+													
+				}
+				<?php } ?>
+				
+				return false;
+									
+			} // function insertProdukt()
+
+			<?php if ($_REQUEST['wpsg_mode'] != 'wpsg_mod_relatedproducts' && $this->hasMod('wpsg_mod_productgroups')) { ?>			
+			function insertProductgroup()
+			{
+
+				var group = document.getElementById("produktgroup").value; 
+				var order = document.getElementById("produktgroup_order").value; 
+				var direction = document.getElementById("produktgroup_direction").value; 
+
+				if (window.tinyMCE)
+				{
+
+					var text = '[wpshopgermany produktgruppe="' + group + '" sortierung="' + order + '" richtung="' + direction + '"]';
+
+					<?php if (get_bloginfo('version') < 3.9) { ?>
+								 			
+					window.tinyMCE.execInstanceCommand("content", "mceInsertContent", false, text);							
+					tinyMCEPopup.editor.execCommand("mceRepaint");							
+
+					<?php } else { ?>
+
+					parent.tinyMCE.execCommand('mceInsertContent', false, text);
+					parent.tinyMCE.activeEditor.windowManager.close();
+						
+					<?php } ?>
+					
+					tinyMCEPopup.close();
+																			
+				}
+
+				return false;
+				
+			} // function insertProductgroup()
+			<?php } ?>
+			
+			<?php if ($_REQUEST['wpsg_mode'] == 'wpsg_mod_relatedproducts') { ?>
+			function insertProduktClose()
+			{
+
+				insertProdukt();
+				
+				//jQuery('#wpsg_mod_relatedproducts_dialog').modal( { } ).modal('hide');
+				jQuery("#wpsg_mod_relatedproducts_dialog .close").click()
+				return false;
+				
+			} // function insertProduktClose()
+			<?php } ?>
+			
+		</script>
+
+		<style>
+
+			<?php if ($_REQUEST['wpsg_mode'] != 'wpsg_mod_relatedproducts') { ?>
+
+				* { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; }
+			    #wpsg-bs { min-width:100px; }
+				body { padding:0px 15px 0px 15px ; }
+				label { mragin-bottom:5px; }
+				select { width:100%; margin-bottom:15px; }
+				input[type="button"] { float:right; margin-top:30px; }
+
+			<?php } else { ?>
+
+				body { margin:0px; padding:0px; min-width:0%; }
+				input[type="button"] { float:right; margin-right:15px; margin-top:15px; }
+
+			<?php } ?>
+
+		</style>
+
+	</head>
+	
+	<body id="wpsg-bs">
+  	
+		<div class="container-fluid">
+			<div class="row">
+ 
+				<?php if (sizeof($this->view['arProdukte']) <= 0) { ?>
+					<p><?php echo __('Keine Produkte in der Datenbank.', 'wpsg'); ?></p>
+				<?php } else { ?>			
+					<?php asort($this->view['arProdukte']); ?>
+					<?php echo wpsg_drawForm_Select('produkt', __('Produkt', 'wpsg'), $this->view['arProdukte'], false); ?>
+					
+					<div class="col-xs-6">
+						<div class="row"><?php echo wpsg_drawForm_Select('template', __('Template', 'wpsg'), $this->view['arTemplates'], false); ?></div>
+					</div>
+					<div class="col-xs-6">
+						<div class="row"><?php echo wpsg_drawForm_Select('title', __('Titel anzeigen', 'wpsg'), array('1' => __('Ja', 'wpsg'), '0' => __('Nein', 'wpsg')), '1'); ?></div>
+					</div>
+					
+					<?php if ($_REQUEST['wpsg_mode'] != 'wpsg_mod_relatedproducts') { ?>				
+					<input class="btn btn-primary" type="button" value="<?php echo __('Einfügen', 'wpsg'); ?>" onclick="return insertProdukt();" />
+					<?php } ?>
+					
+					<div class="wpsg_clear"></div><br />
+									
+					<?php if ($this->hasMod('wpsg_mod_productgroups') && $_REQUEST['wpsg_mode'] != 'wpsg_mod_relatedproducts') { ?>		
+					<?php echo wpsg_drawForm_Select('produktgroup', __('Produktgruppe', 'wpsg'), $this->view['arProduktgroups'], false); ?>
+					<?php echo wpsg_drawForm_Select('produktgroup_order', __('Sortierung', 'wpsg'), $this->view['arProductgroupsOrder'], false); ?>
+					<?php echo wpsg_drawForm_Select('produktgroup_direction', __('Richtung', 'wpsg'), $this->view['arProductgroupsDirection'], false); ?> 
+					<input class="btn btn-primary" type="button" value="<?php echo __('Einfügen', 'wpsg'); ?>" onclick="return insertProductgroup();" />
+					<?php } ?>
+											
+				<?php } ?>
+			
+			</div>
+		</div>
+			
+	</body>
+</html>

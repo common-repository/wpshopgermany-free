@@ -1,0 +1,17 @@
+<?php
+ 
+	/**
+	 * Template für die Integration des Produktgewichts in die Produktverwaltung
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktgewicht', 'wpsg')); ?>
+
+    <?php echo wpsg_drawForm_Input('wpsg_mod_weight[weight]', __('Produktgewicht', 'wpsg'), wpsg_ff($this->view['wpsg_mod_weight']['weight']), array('unit' => $this->get_option('wpsg_mod_weight_unit'))); ?>
+
+    <br />
+
+	<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_weight"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration des Gewichtsmoduls', 'wpsg'); ?></a>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>

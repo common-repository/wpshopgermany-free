@@ -1,0 +1,101 @@
+<?php
+	
+	/**
+	 * Template für die Einstellungen des Versandarten/Lieferanten Moduls
+	 */
+
+?>
+<p>
+	<?php echo __('Mit diesem Modul ist es möglich beliebig viele Lieferanten zu konfigurieren.', 'wpsg'); ?><br />
+	<?php echo __('Unter Lieferanten verstehen wir den Dienstleister, der die Ware zu dem Kunden bringt und dafür die Versandkosten berechnet.', 'wpsg'); ?><br />
+	<?php echo __('Wird ein Wert angegeben, so wird dieser Wert als Pauschale verwendet.', 'wpsg'); ?><br />
+</p>
+<p>
+	<?php echo __('Sollen die Kosten nach Bestellwert, Stückzahl oder Gewicht (Wenn Modul Produktgewicht aktiviert) gestaffelt werden so gilt folgendes Format:15:15,00|10:10,00|5,00. Es ist auch möglich nur einen Wert anzugeben (Bsp. 5,00), so wird generell dieser Wert für diese Versandart berechnet.', 'wpsg'); ?><br />
+	<br />
+   	<?php echo __('ab 15 Stück 15,00 EUR Versandkosten', 'wpsg'); ?><br />
+    <?php echo __('ab 10 Stück 10,00 EUR Versandkosten', 'wpsg'); ?><br />
+    <?php echo __('bis 10 Stück 5,00 EUR Versandkosten', 'wpsg'); ?><br />
+    <br />
+	<?php echo __('Bietet man Beispielsweise den Versand als DHL Paket an, so kann man bei Bezeichnung "DHL Paket" eintragen und als Preis z.B. 6,90. Dieser Preis wird dann als Pauschale unabhängig von Stückzahl oder Gesamtgewicht verwendet.', 'wpsg'); ?>
+</p>
+
+<script type="text/javascript">
+
+	/**
+	 * Legt eine neue Versandart an und aktualisiert die Liste
+	 */
+	function wpsg_addVA()
+	{
+
+		jQuery('#wpsg_va_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&noheader=1&do=add',
+			success: function(data) {
+				jQuery('#wpsg_va_list').html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_addVA()	
+
+	/**
+	 * Speichert die Änderung in der Checkbox der MwSt.
+	 */
+	function wpsg_saveVAMwSt(oElement, va_id)
+	{
+
+		if (jQuery(oElement).attr("checked")) value = '1'; else value = '0';
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1',
+			data: {
+				field: 'mwst_laender',
+				va_id: va_id,
+				value: value
+			}		
+		} );
+		
+	} // function wpsg_saveVAMwSt(oElement, va_id)		
+	
+	/**
+	 * Wird aufgerufen wenn eine Versandart entfernt werden soll
+	 */
+	function wpsg_removeVA(va_id)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass sie die Versandart löschen möchten?', 'wpsg'); ?>')) return false;
+		
+		jQuery('#wpsg_va_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&noheader=1&do=remove&va_id=' + va_id,
+			success: function(data) {
+				jQuery('#wpsg_va_list').html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_removeVA()		
+	 
+</script>
+
+<div class="wpsg_admin_box">		
+		  		
+	<div class="head">
+		<div class="title">
+			<div class="fulltab">
+				<?php echo __('Versandarten', 'wpsg'); ?>
+			</div>
+		</div>
+	</div>
+	<div class="content" id="wpsg_va_list">
+		<?php echo $this->mod->va_list(); ?>
+	</div>
+
+	<a href="#" onclick="return wpsg_addVA();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span>Neue Versandart anlegen</a>
+			
+</div>

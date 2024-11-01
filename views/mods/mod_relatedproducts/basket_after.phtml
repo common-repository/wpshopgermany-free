@@ -1,0 +1,20 @@
+<?php
+
+	/**
+	 * Template für die Integration der Zubehörprodukte in den Warenkorb
+	 */
+
+?>
+<?php if (wpsg_isSizedArray($this->view['wpsg_mod_relatedproducts']['data'])) { ?>
+<div class="wpsg_mod_relatedproducts_basket">
+
+	<h2><?php echo __('Das könnte Ihnen auch gefallen:', 'wpsg'); ?></h2>
+
+	<?php foreach ($this->view['wpsg_mod_relatedproducts']['data'] as $rp_data) { ?>
+	
+		<?php echo $this->callMod('wpsg_mod_relatedproducts', 'renderRelatedProduct', array(&$rp_data, $this->get_option('wpsg_mod_relatedproducts_showBasketTemplate'))); ?>
+		
+	<?php } ?>
+
+</div>
+<?php } ?>

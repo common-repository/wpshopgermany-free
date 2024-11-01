@@ -1,0 +1,42 @@
+<?php
+
+	/**
+	 * Template für den Karteireiter "News" der Konfiguration
+	 */
+
+?>
+
+<?php if (wpsg_isSizedArray($this->view['news'])) { ?>
+ 
+	<div class="wpsg_news_wrap">
+	
+		<?php foreach ($this->view['news'] as $news) { ?>
+		<div class="wpsg_news <?php echo ((wpsg_news::isRead($news['id']))?'wpsg_news_read':''); ?>"> 
+			
+			<?php 
+			$temp = '<a target="_blank" onclick="setTimeout(function() { location.href = location.href; }, 1000); return true;" href="'.WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=news&read='.rawurlencode($news['id']).'&noheader=1">'.wpsg_hspc(wpsg_formatTimestamp($news['date'], true).' - '.$news['title']).'</a>';
+			echo wpsg_drawForm_AdminboxStart(__($temp, 'wpsg'), '', array('panel-body-class' => ((wpsg_news::isRead($news['id']))?'bg-success':'bg-info')));
+			
+			?>
+		 
+			<div class="wpsg_news_content"><?php echo wpsg_news::prepareContent($news); ?></div>
+			<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+			 
+		</div>
+				
+		<?php } ?>
+	
+	</div>
+
+<?php } else { ?>
+
+	<p><?php echo __('Derzeit stehen keine News zum Lesen bereit.', 'wpsg'); ?>
+
+<?php } ?>
+
+<hr />
+
+<?php echo wpsg_translate(__('Letzte Aktualisierung: #1# [<a href="#2#">Aktualisieren</a>]', 'wpsg'),
+	((wpsg_isSizedInt($this->get_option('wpsg_news_cache_refresh')))?wpsg_formatTimestamp(wpsg_timestamp($this->get_option('wpsg_news_cache_refresh'))):'n.A.'),
+	WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=news&reload=1&noheader=1'
+); ?>

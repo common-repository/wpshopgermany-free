@@ -1,0 +1,10 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen des Moduls "Versandkostenfrei"
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_freeshipping_bezeichnung', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_freeshipping_bezeichnung'), array('help' => 'wpsg_mod_freeshipping_bezeichnung')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_freeshipping_aktiv', __('Aktiv', 'wpsg'), $this->get_option('wpsg_mod_freeshipping_aktiv'), array('help' => 'wpsg_mod_freeshipping_aktiv')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_freeshipping_minvalue', __('Mindestbestellwert', 'wpsg'), $this->get_option('wpsg_mod_freeshipping_minvalue'), array('help' => 'wpsg_mod_freeshipping_minvalue')); ?>

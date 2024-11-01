@@ -1,0 +1,111 @@
+<?php
+	
+	/**
+	 * Template für den Dialog wenn im Backend "Lightbox Meldung" eingestellt ist
+	 */
+	 
+	// $this->view['product_key'] // Der ProduktSchlüssel des hinzugefügten Produktes
+	// $this->view['amount_add'] // So oft wurde das Produkt hinzugefügt
+	// $this->view['amount_basket'] // So oft befindet sich das hinzugefügte Produkt im Warenkorb
+	// $this->view['product_data'] // Array mit Produktdaten
+	// $this->view['product_index'] // Index des Produktes im Warenkorb	 	
+	
+	if (isset($_REQUEST['wpsg']['product_key'])) {
+		//$image = $this->imagehandler->getAttachmentID($this->view['product_data']['product_key']);
+		$image = $this->imagehandler->getAttachmentID($_REQUEST['wpsg']['product_key']);
+	} else {
+		$arImages = $this->imagehandler->getAttachmentIDs($this->view['product_data']['product_id']);
+		$image = $arImages[0];
+	}
+	
+	$this->basket->initFromSession(true);
+	$arBasket = $this->basket->toArray();
+	
+?> 	 
+
+<div class="product_add_layer">
+	<?php if (wpsg_isSizedString($image)) { ?>
+	<div class="wpsg_productimages">	
+		<?php echo wp_get_attachment_image($image, 'medium', false, array()); ?>
+	</div>
+	<?php } ?>
+	
+	<div class="wpsg_basket_ajax_message_content_right">
+		
+		<?php /* Preisanzeige Start */ ?>
+		<div class=wpsg_ajaxdialog_form>
+			<?php echo wpsg_translate(
+				__('Der Preis für das Produkt beträgt #1#.', 'wpsg'),
+				wpsg_ff($this->view['product_data']['preis'], $this->get_option('wpsg_currency'))
+			); ?>
+			<br />
+			<?php echo wpsg_translate(
+				__('Im Warenkorb befinden sich jetzt #1# Produkt(e).', 'wpsg'),
+				$arBasket['menge']
+			); ?>
+			<br />
+			<?php echo wpsg_translate(
+				__('Der Gesamtpreis (inkl. Versand) beträgt jetzt #1#.', 'wpsg'),
+				wpsg_ff($arBasket['sum']['preis_gesamt'], $this->get_option('wpsg_currency'))
+			); ?>
+			
+		</div>
+		<div class="wpsg_clear"></div>
+		<?php /* Preisanzeige ENDE */ ?>
+	
+		<?php /* Füllmengenanzeige START */ ?>
+		<?php if ($this->hasMod('wpsg_mod_fuellmenge') && $this->get_option('wpsg_mod_fuellmenge_showAjaxDialog') === '1') { ?>
+			<div class="wpsg_ajaxdialog_form">
+			<?php echo wpsg_translate(__('Füllmenge: #1# #2#', 'wpsg'),'<span class="wpsg_fmenge">'.wpsg_ff($this->view['product_data']['fmenge']).'</span>', $this->view['product_data']['feinheit']); ?> 
+			</div>	
+		<?php } ?>	
+		<div class="wpsg_clear"></div>	
+		<?php /* Füllmengenanzeige ENDE */ ?>
+		
+		<?php /* Gewichtsanzeige Start */ ?>
+		<?php if ($this->hasMod('wpsg_mod_weight') && $this->get_option('wpsg_mod_weight_showAjaxDialog') === '1') { ?>
+			<div class="wpsg_ajaxdialog_form">
+				<?php echo wpsg_translate(__('Gewicht: #1# #2#', 'wpsg'), '<span class="wpsg_weight"">'.wpsg_ff($this->view['product_data']['weight']).'</span>', $this->view['product_data']['weight_unit']); ?>
+			</div>
+		<?php } ?>
+		<div class="wpsg_clear"></div>
+		<?php /* Gewichtsanzeige ENDE */ ?>
+		
+	</div>
+	
+	<div class="wpsg_clear"></div>
+	
+	<?php /* Zubehörprodukte START */?>
+	<?php if ($this->hasMod('wpsg_mod_relatedproducts') && $this->get_option('wpsg_mod_relatedproducts_showAjaxDialog') === '1') { ?>
+		<?php $arRelatedProducts = $this->callMod('wpsg_mod_relatedproducts', 'getRelatedProducts', array($this->getProduktID($this->view['product_key']))); ?>
+		<?php if (wpsg_isSizedArray($arRelatedProducts)) { ?> 			 
+			<div class="wpsg_ajaxdialog_relatedproducts">
+				<h3><?php echo __('Das könnte Ihnen auch gefallen:', 'wpsg'); ?></h3>
+	
+				<div class="wpsg_clear"></div>
+				
+				<?php foreach ($arRelatedProducts as $rp_data) { $product_data = $this->loadProduktArray($rp_data['product_id']); ?>
+				
+				<div class="wpsg_ajaxdialog_productrow">
+					<h4><?php echo $this->getProductName($rp_data['product_id']); ?></h4>
+					<a href="<?php echo $this->getProduktLink($rp_data['product_id']); ?>">
+					<?php
+					$arImages = $this->imagehandler->getAttachmentIDs($rp_data['product_id']);
+					$image = $arImages[0];
+					?>
+					<?php if (wpsg_isSizedString($image)) { ?> 
+						<?php if (wpsg_isSizedString($image)) { ?> 
+							<?php echo wp_get_attachment_image($image, 'medium', false, array()); ?>
+						<?php } ?>
+					<?php } ?>
+					</a>
+				</div>
+				
+				<?php } ?>
+			</div>
+		<?php }?>	
+	<?php } ?>	
+	<?php /* Zubehörprodukte ENDE*/?>
+	
+	<div class="wpsg_clear"></div>
+</div>

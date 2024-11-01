@@ -1,0 +1,74 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen der Produktvariablen
+	 */
+
+?>
+<script type="text/javascript">
+
+	function wpsg_addPV() 
+	{
+
+		jQuery('#wpsg_pv_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvars&noheader=1&do=add',
+			success: function(data) {
+				jQuery('#wpsg_pv_list').html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_addPV()
+
+	function wpsg_removePV(pv_id)
+	{
+
+		jQuery('#wpsg_pv_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_productvars&noheader=1&do=del',
+			data: {
+				pv_id: pv_id
+			},
+			success: function(data) {
+				jQuery('#wpsg_pv_list').html(data);
+			}
+		} );
+		
+		return false;
+
+	}
+
+</script>
+
+<br />
+
+<div>
+	<ul class="nav nav-tabs">
+  		<li role="presentation" class="active"><a href="#tab1" role="tab" data-toggle="tab"><?php echo __('Globale Produktvarianten', 'wpsg'); ?></a></li>
+  		<li role="presentation"><a href="#tab2" role="tab" data-toggle="tab"><?php echo __('Einstellungen', 'wpsg'); ?></a></li>  
+	</ul>
+	<div class="tab-content">
+		<div id="tab1" role="tabpanel" class="tab-pane active">
+			<div class="content" id="wpsg_pv_list">
+				<?php echo $this->mod->pv_list(); ?>
+			</div>
+
+			<br />
+	
+			<a title="<?php echo __('Neue Produktvariable anlegen', 'wpsg'); ?>" href="" class="" onclick="return wpsg_addPV();"><span class="glyphicon wpsg-glyphicon glyphicon-plus"></span><?php echo __('Neue Produktvariable anlegen.', 'wpsg'); ?></a>
+		
+		</div>
+		<div id="tab2" role="tabpanel" class="tab-pane">
+			
+			<div class="wpsg_productvars_form">
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productvars_showProduct', __('Produktvariable(n) im Produkttemplate abfragen', 'wpsg'), $this->get_option('wpsg_mod_productvars_showProduct'), array('help' => 'wpsg_mod_productvars_showProduct')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productvars_showBasket', __('Produktvariable(n) im Warenkorbtemplate darstellen', 'wpsg'), $this->get_option('wpsg_mod_productvars_showBasket'), array('help' => 'wpsg_mod_productvars_showBasket')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productvars_showOverview', __('Produktvariable(n) im Bestellübersichtstemplate darstellen', 'wpsg'), $this->get_option('wpsg_mod_productvars_showOverview'), array('help' => 'wpsg_mod_productvars_showOverview')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_productvars_showMail', __('Produktvariable(n) im Mailtemplate nicht darstellen', 'wpsg'), $this->get_option('wpsg_mod_productvars_showMail'), array('help' => 'wpsg_mod_productvars_showMail')); ?>		
+			</div>
+		</div>
+</div>

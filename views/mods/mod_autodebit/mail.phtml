@@ -1,0 +1,21 @@
+<?php
+
+	/**
+	 * Dieses Template integriert sich in die E-Mails für Kunden und Admin und zeigt die Bankdaten für das Modul "Bankeinzug" an
+	 */
+
+?>
+ 
+<?php echo wpsg_pad_right(__('Name der Bank', 'wpsg').':', 35); ?><?php echo $this->view['wpsg_mod_autodebit']['name']; ?> 
+<?php if ($this->get_option('wpsg_mod_autodebit_iban') == '1') { ?>
+<?php echo wpsg_pad_right(__('BIC Code der Bank', 'wpsg').':', 35); ?><?php echo $this->view['wpsg_mod_autodebit']['bic']; ?> 
+<?php } else { ?>
+<?php echo wpsg_pad_right(__('BLZ der Bank', 'wpsg').':', 35); ?><?php echo $this->view['wpsg_mod_autodebit']['blz']; ?> 
+<?php } ?>
+<?php echo wpsg_pad_right(__('Name des Kontoinhabers', 'wpsg').':', 35); ?><?php echo $this->view['wpsg_mod_autodebit']['inhaber']; ?> 
+<?php if ($this->get_option('wpsg_mod_autodebit_iban') == '1') { ?>
+<?php echo wpsg_pad_right(__('IBAN Nr.', 'wpsg').':', 35); ?><?php echo $this->view['wpsg_mod_autodebit']['iban']; ?> 
+<?php } else { ?>
+<?php echo wpsg_pad_right(__('Kontonummer', 'wpsg').':', 35); ?><?php echo $this->view['wpsg_mod_autodebit']['knr']; ?>  
+<?php } ?>
+ 

@@ -1,0 +1,39 @@
+<?php
+	
+	/*
+	 * 
+	 * Template für die Produktgruppenansicht im Frontend
+	 * 
+	 */ 
+
+	// Produkte die neben dem Namen angezeigt werden sollen
+	$showP = 4;
+	
+?>
+
+<?php $c = 0; foreach ((array)$this->view['data'] as $k => $g) { ?>
+<?php //wpsg_debug($g) ?>
+<div class="wpsg_pgruppen_list_row">
+	<div class="wpsg_pgruppen_list_titel">
+		<a href="<?php echo WPSG_URL_WP ?>?page_id=<?php echo get_the_ID(); ?>&show=<?php echo $k ?>">
+			<h2><?php echo $g['pgruppe_name'] ?></h2>
+		</a>
+	</div>
+	<div class="wpsg_pgruppen_list_produkte">	
+		<?php for ($i = 0; $i < $showP && $i < sizeof($g['produkte']); $i ++) { ?>
+			<?php $image = array_rand($g['produkte'][$i]['bilder']); ?>
+			<?php if ($image >= 0 && is_int($image)) { ?>
+			<div class="wpsg_pgruppen_list_image">
+				
+				<a href="<?php echo $g['produkte'][$i]['url'] ?>">
+					<?php echo wp_get_attachment_image($g['produkte'][$i]['bilder'][0], 'thumbnail', false, array()); ?>
+				</a>
+				 
+			</div>
+			<?php } ?>
+		<?php } ?>
+		<div style="clear:both;"></div>			
+	</div>
+</div>
+<?php $c++ ?>
+<?php } ?>

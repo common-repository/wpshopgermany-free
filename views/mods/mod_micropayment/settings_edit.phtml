@@ -1,0 +1,213 @@
+<?php
+
+	/**
+	 * Template für die Einstellungen für das Micropayment Modul
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_accountid', __('Account ID', 'wpsg'), $this->get_option('wpsg_mod_micropayment_accountid'), array('help' => 'wpsg_mod_micropayment_accountid')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_projectid', __('Projekt ID', 'wpsg'), $this->get_option('wpsg_mod_micropayment_projectid'), array('help' => 'wpsg_mod_micropayment_projectid')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_accesskey', __('AccessKey', 'wpsg'), $this->get_option('wpsg_mod_micropayment_accesskey'), array('help' => 'wpsg_mod_micropayment_accesskey')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_successPage', __('Seite nach erfolgreicher Zahlung', 'wpsg'), $this->view['wpsg_mod_micropayment']['arPages'], $this->get_option('wpsg_mod_micropayment_successPage'), array('help' => 'wpsg_mod_micropayment_successpage')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_paystart', __('Zahlungs sofort starten', 'wpsg'), $this->get_option('wpsg_mod_micropayment_paystart')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_apiURL', __('API URL', 'wpsg'), $this->view['wpsg_mod_micropayment']['apiURL'], array('readonly' => true, 'hint' => __('Muss im micropayment™ Interface hinterlegt werden.', 'wpsg'), 'help' => 'wpsg_mod_micropayment_apiURL')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_sandbox', __('Sandbox', 'wpsg'), $this->get_option('wpsg_mod_micropayment_sandbox')); ?>
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_account', __('Account (Für Webmasterbewerbung)', 'wpsg'), $this->get_option('wpsg_mod_micropayment_account'), array('help' => 'wpsg_mod_micropayment_account')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_layout', __('Layout', 'wpsg'), $this->get_option('wpsg_mod_micropayment_layout'), array('help' => 'wpsg_mod_micropayment_layout')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_bgcolor', __('Hintergrundfarbe', 'wpsg'), $this->get_option('wpsg_mod_micropayment_bgcolor'), array('help' => 'wpsg_mod_micropayment_bgcolor')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_campaign', __('Kampagne des Projektinhabers', 'wpsg'), $this->get_option('wpsg_mod_micropayment_campaign'), array('help' => 'wpsg_mod_micropayment_campaign')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_bggfx', __('Hintergrundgrafik für Zahlfenster', 'wpsg'), $this->get_option('wpsg_mod_micropayment_bggfx'), array ('help' => 'wpsg_mod_micropayment_bggfx')); ?>
+<br />
+<div class="wpsg_admin_box" id="wpsg_mod_micropayment_creditcard">
+	<div id="mail_global" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('CreditCard - Abrechnung per Creditkarte', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_creditcard_activ', __('Zahlungsart "Kreditkarte" aktiv', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcard_activ'), array(
+				/* 'hint' => wpsg_translate(__('Für Abrechnungsbeträge zwischen #1# und #2#', 'wpsg'), wpsg_ff(2.50, $this->get_option('wpsg_currency')), wpsg_ff(500, $this->get_option('wpsg_currency'))) */
+			)); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_creditcard_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcard_name'), array('help' => 'wpsg_mod_micropayment_name')); ?>
+			<?php echo wpsg_drawForm_Textarea('wpsg_mod_micropayment_creditcard_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcard_hint'), array('help' => 'wpsg_mod_micropayment_hint')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_creditcard_logo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcard_logo'), array('help' => 'wpsg_mod_micropayment_logo')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_creditcard_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_micropayment_creditcard_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_micropayment_gebuehr')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_creditcard_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_micropayment_creditcard_mwst'), array('help' => 'wpsg_mod_micropayment_mwst')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_creditcard_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcard_mwstland'), array('help' => 'wpsg_mod_micropayment_mwstland')); ?>			
+		</div>
+	</div>
+</div>
+<br />
+<div class="wpsg_admin_box" id="wpsg_mod_micropayment_creditcardreservation">
+	<div id="mail_global" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('CreditCard - Abrechnung per Creditkarte (Reservierung)', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_creditcardreservation_activ', __('Zahlungsart "Kreditkarte mit Reservierung" aktiv', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcardreservation_activ'), array(
+				/* 'hint' => wpsg_translate(__('Für Abrechnungsbeträge zwischen #1# und #2#', 'wpsg'), wpsg_ff(2.50, $this->get_option('wpsg_currency')), wpsg_ff(500, $this->get_option('wpsg_currency'))) */
+			)); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_creditcardreservation_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcardreservation_name'), array('help' => 'wpsg_mod_micropayment_name')); ?>
+			<?php echo wpsg_drawForm_Textarea('wpsg_mod_micropayment_creditcardreservation_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcardreservation_hint'), array('help' => 'wpsg_mod_micropayment_hint')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_creditcardreservation_logo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcardreservation_logo'), array('help' => 'wpsg_mod_micropayment_logo')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_creditcardreservation_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_micropayment_creditcardreservation_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_micropayment_gebuehr')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_creditcardreservation_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_micropayment_creditcardreservation_mwst'), array('help' => 'wpsg_mod_micropayment_mwst')); ?>			
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_creditcardreservation_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_micropayment_creditcardreservation_mwstland'), array('help' => 'wpsg_mod_micropayment_mwstland')); ?>			
+		</div>
+	</div>
+</div>
+<br />
+<div class="wpsg_admin_box" id="wpsg_mod_micropayment_directdebit">
+	<div id="mail_global" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('Lastschrift - Abrechnung per Lastschrift', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_directdebit_activ', __('Zahlungsart "Lastschrift" aktiv', 'wpsg'), $this->get_option('wpsg_mod_micropayment_activ')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_directdebit_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_directdebit_name'), array('help' => 'wpsg_mod_micropayment_name')); ?>
+			<?php echo wpsg_drawForm_Textarea('wpsg_mod_micropayment_directdebit_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_micropayment_directdebit_hint'), array('help' => 'wpsg_mod_micropayment_hint')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_directdebit_logo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_micropayment_directdebit_logo'), array('help' => 'wpsg_mod_micropayment_logo')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_directdebit_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_micropayment_directdebit_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_micropayment_gebuehr')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_directdebit_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_micropayment_directdebit_mwst'), array('help' => 'wpsg_mod_micropayment_mwst')); ?>	
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_directdebit_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_micropayment_directdebit_mwstland'), array('help' => 'wpsg_mod_micropayment_mwstland')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_directdebit_subject', __('Betreff der Zahlung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_directdebit_subject'), array('help' => 'wpsg_mod_micropayment_subject')); ?>		
+		</div>
+	</div>
+</div>
+<br />
+<div class="wpsg_admin_box" id="wpsg_mod_micropayment_ebank2pay">
+	<div id="mail_global" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('eBank2Pay - Abrechnung per Online Banking', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_ebank2pay_activ', __('Zahlungsart "eBank2Pay" aktiv', 'wpsg'), $this->get_option('wpsg_mod_micropayment_ebank2pay_activ'), array(
+				/* 'hint' => wpsg_translate(__('Für Abrechnungsbeträge zwischen #1# und #2#', 'wpsg'), wpsg_ff(0.50, $this->get_option('wpsg_currency')), wpsg_ff(500, $this->get_option('wpsg_currency'))) */ 
+			)); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_ebank2pay_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_ebank2pay_name'), array('help' => 'wpsg_mod_micropayment_name')); ?>
+			<?php echo wpsg_drawForm_Textarea('wpsg_mod_micropayment_ebank2pay_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_micropayment_ebank2pay_hint'), array('help' => 'wpsg_mod_micropayment_hint')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_ebank2pay_logo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_micropayment_ebank2pay_logo'), array('help' => 'wpsg_mod_micropayment_logo')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_ebank2pay_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_micropayment_ebank2pay_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_micropayment_gebuehr')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_ebank2pay_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_micropayment_ebank2pay_mwst'), array('help' => 'wpsg_mod_micropayment_mwst')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_ebank2pay_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_micropayment_ebank2pay_mwstland'), array('help' => 'wpsg_mod_micropayment_mwstland')); ?>						
+		</div>
+	</div>
+</div>
+<br />
+<div class="wpsg_admin_box" id="wpsg_mod_micropayment_prepayment">
+	<div id="mail_global" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('Vorkasse - Abrechnung per Vorkasse', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_prepayment_activ', __('Zahlungsart "Vorkasse" aktiv', 'wpsg'), $this->get_option('wpsg_mod_micropayment_prepayment_activ')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_prepayment_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_prepayment_name'), array('help' => 'wpsg_mod_micropayment_name')); ?>
+			<?php echo wpsg_drawForm_Textarea('wpsg_mod_micropayment_prepayment_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_micropayment_prepayment_hint'), array('help' => 'wpsg_mod_micropayment_hint')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_prepayment_logo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_micropayment_prepayment_logo'), array('help' => 'wpsg_mod_micropayment_logo')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_prepayment_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_micropayment_prepayment_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_micropayment_gebuehr')); ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_prepayment_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_micropayment_prepayment_mwst'), array('help' => 'wpsg_mod_micropayment_mwst')); ?>
+			<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_prepayment_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_micropayment_prepayment_mwstland'), array('help' => 'wpsg_mod_micropayment_mwstland')); ?>
+			<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_prepayment_subject', __('Betreff der Zahlung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_prepayment_subject'), array('help' => 'wpsg_mod_micropayment_subject')); ?>			
+		</div>
+	</div>
+</div>
+<br />
+<div class="wpsg_admin_box" id="wpsg_mod_micropayment_call2pay">
+	<div id="mail_global" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('Call2Pay - Abrechnung per Anruf / Telefon', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">
+			
+			<div id="wpsg_mod_micropayment_call2pay_layer" style="<?php echo (($this->get_option('wpsg_mod_micropayment_call2pay_activ') == '1')?'display:block;':'display:none;'); ?>">
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_call2pay_activ', __('Zahlungsart "Call2Pay" aktiv', 'wpsg'), $this->get_option('wpsg_mod_micropayment_call2pay_activ'), array(
+					/* 'hint' => wpsg_translate(__('Für Abrechnungsbeträge zwischen #1# und #2#', 'wpsg'), wpsg_ff(0.05, $this->get_option('wpsg_currency')), wpsg_ff(50, $this->get_option('wpsg_currency'))) */
+				)); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_call2pay_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_call2pay_name'), array('help' => 'wpsg_mod_micropayment_name')); ?>
+				<?php echo wpsg_drawForm_Textarea('wpsg_mod_micropayment_call2pay_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_micropayment_call2pay_hint'), array('help' => 'wpsg_mod_micropayment_hint')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_call2pay_logo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_micropayment_call2pay_logo'), array('help' => 'wpsg_mod_micropayment_logo')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_call2pay_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_micropayment_call2pay_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_micropayment_gebuehr')); ?>
+				<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_call2pay_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_micropayment_call2pay_mwst'), array('help' => 'wpsg_mod_micropayment_mwst')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_call2pay_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_micropayment_call2pay_mwstland'), array('help' => 'wpsg_mod_micropayment_mwstland')); ?>
+			</div>
+			
+			<?php if ($this->get_option('wpsg_mod_micropayment_call2pay_activ') != '1') { ?>
+			<div id="wpsg_mod_micropayment_call2pay_infolayer">
+				<span style="color:red; font-weigh:bold;"><?php echo __('Bitte beachten Sie, dass es bei der Nutzung von Call2Pay folgende Einschränkungen gibt', 'wpsg'); ?>:</span><br />
+				<ul>
+					<li><?php echo __('Nur Abrechnung von telekommunikationsbasierten Mehrwertdiensten möglich', 'wpsg'); ?></li>
+					<li><?php echo __('Preisobergrenze von 30 Euro pro Transaktion', 'wpsg'); ?></li>
+					<li><?php echo __('National und international KEINE einheitliche Gebührenstruktur', 'wpsg'); ?></li>
+					<li><?php echo __('Teilweise abweichende Preise aus dem Mobilfunknetz', 'wpsg'); ?></li>					
+				</ul>
+				<br />
+				<span style="font-weight:bold;"><?php echo __('Sollten Sie sich unsicher sein, ob Sie diese Zahlarten nutzen können oder dürfen, melden Sie sich einfach bei uns!', 'wpsg'); ?></span>
+				<ul>
+					<li><?php echo __('Ansprechpartner', 'wpsg'); ?>: Martin Eliason</li>
+					<li><?php echo __('Telefon (Festnetz)', 'wpsg'); ?>: +49 – (0)30 – 64904255</li>
+					<li><?php echo __('eMail', 'wpsg'); ?>: <a href="mailto:meliason@micropayment.de">meliason@micropayment.de</a></li>
+					<li><?php echo __('Stichwort', 'wpsg'); ?>: WordPress-Shopmodul</li>
+				</ul>
+				<br />
+				<input type="button" class="button" onclick="jQuery('#wpsg_mod_micropayment_call2pay_infolayer').hide(); jQuery('#wpsg_mod_micropayment_call2pay_layer').show();" value="<?php echo __('Ich habe einen entsprechenden Account und kann die Zahlungsart nutzen.', 'wpsg'); ?>" />
+			</div>
+			<?php } ?>			
+												
+		</div>
+	</div>
+</div>
+<br />
+<div class="wpsg_admin_box" id="wpsg_mod_micropayment_handypay">
+	<div id="mail_global" class="head" style="border-bottom: 0px none;">
+		<div class="title">
+			<div class="fulltab"><?php echo __('HandyPay - Abrechnung per SMS / Tan', 'wpsg'); ?></div>
+		</div>
+		<div class="content wpsg_admin_box_content" style="display: block;">
+		
+			<div id="wpsg_mod_micropayment_handypay_layer" style="<?php echo (($this->get_option('wpsg_mod_micropayment_handypay_activ') == '1')?'display:block;':'display:none;'); ?>">
+		
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_handypay_activ', __('Zahlungsart "Call2Pay" aktiv', 'wpsg'), $this->get_option('wpsg_mod_micropayment_handypay_activ'), array(
+					/* 'hint' => wpsg_translate(__('Für Abrechnungsbeträge zwischen #1# und #2#', 'wpsg'), wpsg_ff(0.50, $this->get_option('wpsg_currency')), wpsg_ff(5.00, $this->get_option('wpsg_currency'))) */
+				)); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_handypay_name', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_micropayment_handypay_name'), array('help' => 'wpsg_mod_micropayment_name')); ?>
+				<?php echo wpsg_drawForm_Textarea('wpsg_mod_micropayment_handypay_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_micropayment_handypay_hint'), array('help' => 'wpsg_mod_micropayment_hint')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_handypay_logo', __('Alternative Logo URL', 'wpsg'), $this->get_option('wpsg_mod_micropayment_handypay_logo'), array('help' => 'wpsg_mod_micropayment_logo')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_mod_micropayment_handypay_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_micropayment_handypay_gebuehr'), true), array('unit' => $this->get_option('wpsg_currency').' / %', 'help' => 'wpsg_mod_micropayment_gebuehr')); ?>
+				<?php echo wpsg_drawForm_Select('wpsg_mod_micropayment_handypay_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_micropayment_handypay_mwst'), array('help' => 'wpsg_mod_micropayment_mwst')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_mod_micropayment_handypay_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_micropayment_handypay_mwstland'), array('help' => 'wpsg_mod_micropayment_mwstland')); ?>						
+			</div>
+		
+			<?php if ($this->get_option('wpsg_mod_micropayment_handypay_activ') != '1') { ?>
+			<div id="wpsg_mod_micropayment_handypay_infolayer">
+				<span style="color:red; font-weigh:bold;"><?php echo __('Bitte beachten Sie, dass es bei der Nutzung von HandyPay folgende Einschränkungen gibt', 'wpsg'); ?>:</span><br />
+				<ul>
+					<li><?php echo __('Nur Abrechnung von telekommunikationsbasierten Mehrwertdiensten möglich', 'wpsg'); ?></li>
+					<li><?php echo __('Preise nicht frei tarifierbar, nur vorgegebene Tarifstruktur nutzbar', 'wpsg'); ?></li>
+					<li><?php echo __('National und international KEINE einheitliche Gebührenstruktur', 'wpsg'); ?></li>					
+				</ul>
+				<br />
+				<span style="font-weight:bold;"><?php echo __('Sollten Sie sich unsicher sein, ob Sie diese Zahlarten nutzen können oder dürfen, melden Sie sich einfach bei uns!', 'wpsg'); ?></span>
+				<ul>
+					<li><?php echo __('Ansprechpartner', 'wpsg'); ?>: Martin Eliason</li>
+					<li><?php echo __('Telefon (Festnetz)', 'wpsg'); ?>: +49 – (0)30 – 64904255</li>
+					<li><?php echo __('eMail', 'wpsg'); ?>: <a href="mailto:meliason@micropayment.de">meliason@micropayment.de</a></li>
+					<li><?php echo __('Stichwort', 'wpsg'); ?>: WordPress-Shopmodul</li>
+				</ul>
+				<br />
+				<input type="button" class="button" onclick="jQuery('#wpsg_mod_micropayment_handypay_infolayer').hide(); jQuery('#wpsg_mod_micropayment_handypay_layer').show();" value="<?php echo __('Ich habe einen entsprechenden Account und kann die Zahlungsart nutzen.', 'wpsg'); ?>" />
+			</div>
+			<?php } ?>
+			
+		</div>		
+	</div>
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('.wpsg_admin_box').wpsg_adminbox();
+		
+	} );
+
+/* ]]> */</script>

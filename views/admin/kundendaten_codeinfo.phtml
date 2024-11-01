@@ -1,0 +1,26 @@
+<?php
+	
+	/**
+	 * Dieses Template wird bei den Kundenvariablen angezeigt und zeigt den Code für benutzerdefinierte Kundenvariablen an
+	 */
+
+?>
+<?php echo wpsg_translate(__('Code für die Abfrage der Kundenvariable mit der ID #1# (Muss im checkout2.phtml verwendet werden)', 'wpsg'), $this->view['id']); ?>
+<div class="wpsg_code">
+	
+	&lt;?php echo $this-&gt;renderKundenField($this-&gt;view, <?php echo $this->view['id'] ?>); ?&gt;
+
+</div><br />
+<?php echo wpsg_translate(__('Code für die Ausgabe der Kundenvariable mit der ID #1# (Während die Bestellung noch nicht übertragen wurde)', 'wpsg'), $this->view['id']); ?>
+<div class="wpsg_code">
+	
+	&lt;?php echo $this-&gt;getCustomerFieldFromSession(<?php echo $this->view['id'] ?>); ?&gt;
+
+</div><br />
+<?php echo wpsg_translate(__('Code für die Ausgabe der Kundenvariable mit der ID #1# (Nachdem der Kunde in der Datenbank angelegt ist)', 'wpsg'), $this->view['id']); ?>
+<div class="wpsg_code">
+	
+	&lt;?php echo $this-&gt;getCustomFieldFromDB(%kunde_id%, <?php echo $this->view['id'] ?>); ?&gt;
+
+</div>
+<div class="wpsg_hinweis"><?php echo __('%kunde_id% muss durch die ID des Kunden in der Datenbank ersetzt werden', 'wpsg'); ?></div>

@@ -1,0 +1,87 @@
+<?php
+        
+    /**
+     * Template für das hinzufügen von Produkten zur Bestellung
+     */
+         
+?>
+
+<style>
+    
+    #product_search { width:100%; }
+    
+</style>
+
+<form id="wpsg_product_add_form">
+    
+    <div class="autocomplete_wrap">
+        <input type="text" id="product_search" name="product_serch" value="" placeholder="<?php echo __('Produktsuche', 'wpsg'); ?>" />
+    </div>
+    
+    <hr />
+    
+    <div id="wpsg_product_add_target">
+        
+    </div>
+    
+</form>
+ 
+<script>
+    
+    function wpsg_loadProduct(product_id, order_product_id) {
+
+        jQuery('#wpsg_product_add_target').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+        
+        jQuery.ajax( {
+            url: '<?php
+	
+				echo wpsg_admin_url('Order', 'view', ['subaction' => 'addProduct', 'do' => 'product', 'edit_id' => $_REQUEST['edit_id']], ['noheader' => '1'], true);
+				
+			?>',
+            data: {
+                product_id: product_id,
+                order_product_id: order_product_id
+            },
+            success: function(data) {
+
+                jQuery('#wpsg_product_add_target').html(data);
+
+            }
+        } );
+        
+    } // function wpsg_loadProduct(product_id, order_product_id)
+    
+    jQuery(document).ready(function() {
+
+        jQuery('#wpsg_product_add_form').on('submit', function() { return false; } );
+        
+        jQuery('#product_search').autocomplete( {
+            source: '<?php 
+				
+				echo wpsg_admin_url('Order', 'view', ['subaction' => 'addProduct', 'do' => 'search', 'edit_id' => $_REQUEST['edit_id']], ['noheader' => '1'], true); 
+				
+			?>',
+            minLength: 2,
+            appendTo: ".autocomplete_wrap",
+            select: function(event, ui) {
+
+                wpsg_loadProduct(ui.item.id, <?php echo ((wpsg_isSizedInt($_REQUEST['order_product_id']))?$_REQUEST['order_product_id']:0); ?>);
+
+                return false;
+
+            }
+        } );
+        
+        <?php if (wpsg_isSizedInt($_REQUEST['order_product_id'])) { ?>
+        
+            wpsg_loadProduct(0, <?php echo $_REQUEST['order_product_id']; ?>);
+        
+        <?php } else { ?>
+            
+            jQuery('#product_search').focus();
+            
+        <?php } ?>
+        
+    } );
+    
+</script>

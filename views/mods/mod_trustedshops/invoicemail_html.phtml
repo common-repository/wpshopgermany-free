@@ -1,0 +1,11 @@
+<?php
+
+	/**
+	 * Template für den Trusted Shops Bewertungs Link in der Rechnungs - E-mail (HTML)
+	 */
+
+?>  
+<p>
+	<a href="https://www.trustedshops.de/bewertung/bewerten_<?php echo $this->get_option('wpsg_mod_trustedshops_shopid'); ?>.html&buyerEmail=<?php echo urlencode(base64_encode($this->view['customer']['email'])); ?>&shopOrderID=<?php echo urlencode(base64_encode($this->view['order']['onr'])); ?>"><?php echo $this->get_option('wpsg_mod_trustedshops_invoicemailtitle'); ?></a>
+</p> 
+ 

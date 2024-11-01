@@ -1,0 +1,17 @@
+<?php
+	
+	/**
+	 * Template für die Hilfe bei den Produktattributen
+	 * Sollte nicht angepasst werden
+	 */
+
+?>
+<?php echo wpsg_translate(__('Code für den Namen des Produktattributes mit der ID #1#', 'wpsg'), $this->view['id']); ?>
+<div class="wpsg_code">
+	<?php echo wpsg_hspc('<?php echo $this->callMod(\'wpsg_mod_produktattribute\', \'getAttributeLabel\', array('.$this->view['id'].')); ?>'); ?>
+</div>
+<?php echo wpsg_translate(__('Code für den Wert des Produktattributes mit der ID #1#', 'wpsg'), $this->view['id']); ?>
+<div class="wpsg_code">
+	<?php echo wpsg_hspc('<?php echo $this->callMod(\'wpsg_mod_produktattribute\', \'getAttributeValue\', array($this->view[\'data\'][\'id\'], '.$this->view['id'].')); ?>'); ?>
+</div>
+<?php echo __('Diese Code Schipsel können in die Produkttemplates oder in die Mailtemplates eingebaut werden.', 'wpsg'); ?>

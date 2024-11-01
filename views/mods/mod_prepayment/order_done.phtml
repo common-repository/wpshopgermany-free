@@ -1,0 +1,35 @@
+<?php
+
+	/**
+	 * Template welches bei der Zahlungsart "Vorkasse" nach Abschluss einer Bestellung angezeigt wird
+	 */
+	
+	//wpsg_debug($this->view['wpsg_mod_prepayment']['subject']);
+
+?>
+<?php echo wpsg_translate(__('Sie haben die Zahlungsart "Vorkasse" gewählt. Überweisen Sie daher den Rechnungsbetrag von #1# auf folgendes Konto:', 'wpsg'), wpsg_ff($this->view['basket']['sum']['preis_gesamt_brutto'], $this->get_option('wpsg_currency'))); ?>
+<br /><br />
+<?php echo wpsg_translate(__('Kontoinhaber: #1#', 'wpsg'), $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_kinhaber'))); ?><br /> 
+<?php echo wpsg_translate(__('IBAN: #1#', 'wpsg'), $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_iban'))); ?><br /> 
+<?php echo wpsg_translate(__('Bank: #1#', 'wpsg'), $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_bank'))); ?><br />
+<?php echo wpsg_translate(__('BIC-/SWIFT-Code: #1#', 'wpsg'), $this->replaceUniversalPlatzhalter($this->get_option('wpsg_mod_prepayment_swift'))); ?> 
+<br /><br />
+<?php echo wpsg_translate(__('Bitte als Betreff angeben: "#1#"', 'wpsg'), $this->view['wpsg_mod_prepayment']['subject']); ?>
+
+<?php if (isset($this->view['wpsg_mod_prepayment']['subject'])) { ?>
+	
+	<p>
+		<?php echo __('Wenn Ihre Banking-App Girocode unterstützt, können Sie diesen QRCode scannen.', 'wpsg'); ?>
+	</p>
+	
+	<?php 
+	
+		require_once WPSG_PATH_LIB.'phpgirocode.class.php';
+	
+		$img = $this->callMod('wpsg_mod_prepayment', 'genQRCode', array($this->view['o_id'], $this->view['wpsg_mod_prepayment']['subject'], $this->view['basket']['sum']['preis_gesamt_brutto'], 8, PhpGirocode::OUTPUT_BASE64));
+	
+		echo '<img src="data:image/png;base64,'.$img.'" />';
+		
+	?>
+	
+<?php } ?>

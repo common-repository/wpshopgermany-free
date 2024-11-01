@@ -1,0 +1,25 @@
+<?php
+
+	/**
+	 * Template für die Integration der Bestellbedingungen in die Bestellzusammenfassung
+	 */
+
+	// Die Mindestlänge, damit der Text in einer Scrollbox angezeigt wird
+	$minLength = 1000;
+
+?>
+<?php foreach ($this->view['wpsg_mod_ordercondition']['data'] as $oc) { ?>
+<div class="wpsg_agb" id="wpsg_agb_<?php echo $oc['id']; ?>">
+	<label>
+		<input type="checkbox" value="1" name="wpsg_mod_ordercondition[<?php echo $oc['id']; ?>]" />
+		<?php if (strlen($oc['text']) < $minLength) { ?>
+		<?php echo $oc['text']; ?>
+		<?php } else { ?>
+		<?php echo __($oc['name'], 'wpsg'); ?>
+		<?php } ?>
+	</label>
+	<?php if (strlen($oc['text']) >= $minLength) { ?>
+	<div class="wpsg_mod_ordercondition_hint"><?php echo $oc['text']; ?></div>
+	<?php } ?>
+</div>
+<?php } ?>

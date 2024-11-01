@@ -1,0 +1,144 @@
+<?php
+
+	/**
+	 * Template für die Konfiguration der Füllmenge innerhalb der Produktverwaltung
+	 */
+
+	$fmenge = wpsg_tf(wpsg_getFloat($this->view['data']['fmenge']));
+	
+	$arUnit = $this->view['data']['arFeinheiten'];
+	
+	$feinheit = $arUnit[0];
+	
+	if (is_numeric($this->view['data']['feinheit'])) {
+		
+		// Bis 01/2020 war der Index gespeichert
+		$feinheit_index = intval($this->view['data']['feinheit']);
+		if (isset($arUnit[$feinheit_index])) $feinheit = $arUnit[$feinheit_index];
+		
+	} else if (in_array($this->view['data']['feinheit'], $arUnit)) $feinheit = $this->view['data']['feinheit'];
+			
+	/** @var wpsg_product $oProduct */
+	$oProduct = $this->view['oProduct'];
+	
+	$referenceunit = $oProduct->getMeta('wpsg_mod_fuellmenge_referenceunit');
+	if (!wpsg_isSizedString($referenceunit)) $referenceunit = $feinheit;
+	
+	$referencevalue = $oProduct->getMeta('wpsg_mod_fuellmenge_referencevalue');
+	$conversionvalue = $oProduct->getMeta('wpsg_mod_fuellmenge_conversionvalue');
+	
+?>
+<div id="wpsg_fuellmenge_layer" class="panel panel-default panel-fuellmenge" style="display:none; position:relative;">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">
+			<span><?php echo __('Füllmenge', 'wpsg'); ?> </span>
+
+			<a href="#" data-wpsg-tip="wpsg_mod_fuellmenge_product" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_mod_fuellmenge_product"
+			   class="glyphicon glyphicon glyphicon-question-sign form-control-feedback wpsg_mod_fuellmenge_product-tip" aria-hidden="true"></a>
+			
+		</h3>
+	</div>
+	<div class="panel-body">
+		 
+		<div class="form-group form-group-sm form-select ">
+			<label class="col-sm-6 control-label"><?php echo __('Konfiguration', 'wpsg'); ?></label>
+			<div class="col-sm-6 d-flex align-items_center justify-content_space-between">
+				
+				<input class="form-control input-sm" type="text" name="fmenge" value="<?php echo $fmenge; ?>" class="fmenge" />
+				
+				<select name="feinheit" class="unit">
+					<?php foreach ($arUnit as $k => $v) { ?>
+					<option value="<?php echo $v; ?>" <?php echo (($v === $feinheit)?'selected="selected"':''); ?>><?php echo $v; ?></option>
+					<?php } ?>
+				</select>
+				
+			</div>
+			<div class="clearfix wpsg_clear"></div>
+		</div>
+
+		<div class="form-group form-group-sm form-select fmenge_details fmenge_details_1">
+			<label class="col-sm-6 control-label"><?php echo __('Bezugswert', 'wpsg'); ?></label>
+			<div class="col-sm-6 d-flex align-items_center justify-content_space-between">
+
+				<input class="form-control input-sm" type="text" name="wpsg_mod_fuellmenge_referencevalue" value="<?php echo $referencevalue; ?>" class="referencevalue fmenge_details fmenge_details_1" />
+
+				<select name="referenceunit" class="unit fmenge_details fmenge_details_1">
+					<?php foreach ($arUnit as $v) { ?>
+						<option value="<?php echo $v; ?>" <?php echo (($v === $referenceunit)?'selected="selected"':''); ?>><?php echo $v; ?></option>
+					<?php } ?>
+				</select>
+				
+				<span class="equal conversion" style="display:none;">≙</span>
+
+				<input class="conversion conversionvalue" class="form-control input-sm" type="text" name="wpsg_mod_fuellmenge_conversionvalue" value="<?php echo $conversionvalue; ?>"/>
+				
+				<span class="unit conversion conversion_unit" style="display:none;"></span>
+				
+			</div>
+		</div>
+		
+		<?php echo wpsg_drawForm_Checkbox('fmenge_details', __('Erweitert', 'wpsg'), $oProduct->getMeta('fmenge_details')); ?>
+		
+		<br /><br />
+	
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_fuellmenge"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration des Füllmengenmoduls', 'wpsg'); ?></a>	
+	
+	</div>
+</div>
+
+<style>
+	
+	select.unit { width:75px; margin-left:5px; flex-shrink:0; }
+	span.unit { width:66px; margin-left:5px; flex-shrink:0; }
+	input.fmenge { width:100%; }
+	span.equal { padding:0 5px; }
+	input.referencevalue { width:100%; }
+	input.conversionvalue { width:100%; margin-right:9px; }
+	.wpsg_mod_fuellmenge_product-tip { color:#337ab7 !important; }
+	.wpsg_mod_fuellmenge_product-tip:focus, .wpsg_mod_fuellmenge_product-tip:active, .wpsg_mod_fuellmenge_product-tip:hover { text-decoration:none; }
+	
+</style>
+
+<script>
+	
+	jQuery(document).ready(function() {
+		
+		jQuery('select.unit').on('change', function() {
+			
+			var referenceunit = jQuery('select[name="referenceunit"]').val();
+			var unit = jQuery('select[name="feinheit"]').val();
+					 			
+			if (unit !== referenceunit) {
+
+				jQuery('.conversion').show();	
+				jQuery('.conversion_unit').html(unit);
+				
+			} else {
+
+				jQuery('.conversion').hide();
+				
+			}
+			
+		}).change();
+		
+		jQuery('#fmenge_details').on('change', function() {
+
+			jQuery('.fmenge_details').hide();
+			
+			if (jQuery(this).prop('checked')) {
+				
+				jQuery('.fmenge_details_1').show();
+				
+			} else {
+
+				jQuery('.fmenge_details_1').hide();
+				
+			}
+			
+		}).change();
+		
+		jQuery('#wpsg_fuellmenge_layer').show();
+		
+	})
+	
+</script>

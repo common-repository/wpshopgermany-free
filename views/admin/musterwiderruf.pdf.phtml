@@ -1,0 +1,65 @@
+<?php
+ 
+	/**
+	 * Template für die PDF Rechnung
+	 */
+	
+	require_once WPSG_PATH_LIB.'FPDF_1.81/fpdf.php';
+	require_once WPSG_PATH_LIB.'FPDI_2.2.0/autoload.php'; 
+	require_once WPSG_PATH_LIB.'wpsg_fpdf.class.php';
+    	
+	// Positionierung der Zieladress
+	$adress_left 				= 25;	
+	$adress_top					= 55;
+	$adress_right				= 105;
+	
+	// Positionierund des Textes
+	$tdata_left					= 25;
+	$tdata_top					= 90;
+	 
+	$pdf = new wpsg_fpdf();
+	
+	$pdf->SetAutoPageBreak(true, 5);
+	$pdf->AddPage();
+			
+	// Adresse des Kunden
+	$pdf->SetFont('Arial', '', 12);
+	$pdf->Text($adress_left, $adress_top, $this->get_option('wpsg_shopdata_name'));
+	$pdf->Text($adress_left, $adress_top + 5, $this->get_option('wpsg_shopdata_owner'));
+	$pdf->Text($adress_left, $adress_top + 10, $this->get_option('wpsg_shopdata_street'));
+	$pdf->Text($adress_left, $adress_top + 15, $this->get_option('wpsg_shopdata_zip').' '.$this->get_option('wpsg_shopdata_city'));
+	
+	$pdf->Text($adress_right, $adress_top + 5, __('Telefon: ', 'wpsg'). $this->get_option('wpsg_shopdata_tel'));
+	$pdf->Text($adress_right, $adress_top + 10, __('Fax: ', 'wpsg'). $this->get_option('wpsg_shopdata_fax'));
+	$pdf->Text($adress_right, $adress_top + 15, __('E-Mail: ', 'wpsg'). $this->get_option('wpsg_shopdata_email'));	
+	
+	// Rechnungsdaten
+	$pdf->SetFont('Arial', 'B', 16);
+	$pdf->Text($tdata_left, $tdata_top, 'Widerruf'); 
+	
+	// Text
+	$pdf->SetFont('Arial', '', 12);
+	$pdf->Text($tdata_left, $tdata_top + 10, __('Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf', 'wpsg'));
+	$pdf->Text($tdata_left, $tdata_top + 15, __('der folgenden Waren (*)/die Erbringung der folgenden Dienstleistung.', 'wpsg'));
+	
+	$pdf->Text($tdata_left, $tdata_top + 25, __('Artikelname', 'wpsg'));
+	$pdf->Text($tdata_left + 115, $tdata_top + 25, __('Bestellt am (*)/erhalten am (*)', 'wpsg'));
+	
+	$pdf->Line($tdata_left, $tdata_top + 40, $tdata_left + 170, $tdata_top + 40);
+	$pdf->Line($tdata_left, $tdata_top + 50, $tdata_left + 170, $tdata_top + 50);
+	$pdf->Line($tdata_left, $tdata_top + 60, $tdata_left + 170, $tdata_top + 60);
+	$pdf->Line($tdata_left, $tdata_top + 70, $tdata_left + 170, $tdata_top + 70);
+	$pdf->Line($tdata_left, $tdata_top + 80, $tdata_left + 170, $tdata_top + 80);
+	
+	$pdf->Text($tdata_left, $tdata_top + 100, __('Meine Anschrift', 'wpsg')); 
+	$pdf->Text($tdata_left, $tdata_top + 110, __('Name', 'wpsg').':'); $pdf->Line($tdata_left + 30, $tdata_top + 110, $tdata_left + 100, $tdata_top + 110);
+	$pdf->Text($tdata_left, $tdata_top + 118, __('Straße', 'wpsg').':'); $pdf->Line($tdata_left + 30, $tdata_top + 118, $tdata_left + 100, $tdata_top + 118); 
+	$pdf->Text($tdata_left, $tdata_top + 126, __('PLZ/Ort', 'wpsg').':'); $pdf->Line($tdata_left + 30, $tdata_top + 126, $tdata_left + 100, $tdata_top + 126);
+	
+	$pdf->Line($tdata_left, $tdata_top + 152, $tdata_left + 100, $tdata_top + 152);
+	$pdf->SetFont('Arial', '', 6);
+	$pdf->Text($tdata_left, $tdata_top + 155, __('Datum, Unterschrift', 'wpsg').':');
+	
+	$pdf->Output($this->view['filename'], 'F');
+			 
+?>

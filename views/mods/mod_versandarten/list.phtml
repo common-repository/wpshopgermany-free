@@ -1,0 +1,200 @@
+<?php
+
+	/**
+	 * Template für die Liste der Versandarten 
+	 */
+	
+	$arVzNamen = [];
+	
+?>
+<?php if (!is_array($this->view['data']) || sizeof($this->view['data']) <= 0) { ?>
+<?php echo __('Bisher keine Versandarten angelegt.', 'wpsg'); ?>
+<?php } else { ?>
+
+	<?php foreach ($this->view['arVZ'] as $k=>$vz) { $arVzNamen[$k] = $vz['name']; } ?>
+
+	<?php $i = 0; foreach ($this->view['data'] as $va) { $i ++; ?>
+
+    <hr />
+	<div id="wpsg_mod_versandarten_row_<?php echo $va['id']; ?>">
+
+	    <?php echo wpsg_drawForm_TextStart(); ?>
+    	<?php echo $va['id']; ?>
+		<a data-id="<?php echo $va['id']; ?>" class="wpsg_oc_removeLink" href="#" onclick="return wpsg_removeVA(<?php echo $va['id']; ?>);" title="<?php echo __('Versandart löschen', 'wpsg'); ?>">
+		<span class="wpsg_glyphicon_right glyphicon glyphicon-trash"></span></a>
+    	<?php echo wpsg_drawForm_TextEnd(__('ID', 'wpsg')); ?>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="va_name_<?php echo $va['id']; ?>"><?php echo $va['name']; ?></span>
+        <a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_name" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_name" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_name"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Bezeichnung', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#va_name_<?php echo $va['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'name',
+                    va_id: '<?php echo $va['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+		<input type="checkbox" value="1" <?php echo (($va['aktiv'] == '1')?'checked="checked"':''); ?> id="va_<?php echo $va['id']; ?>_aktiv" />
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_activ" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_activ" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_activ"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Aktiv', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+			jQuery('#va_<?php echo $va['id']; ?>_aktiv').bind('change', function() {
+
+				var value = 0;
+				if (jQuery(this).attr("checked") == "checked") value = 1;
+
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1',
+					data: {
+						field: 'aktiv',
+						va_id: '<?php echo $va['id']; ?>',
+						value: value
+					}	
+				} );
+			} );
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="va_hint_<?php echo $va['id']; ?>"><?php echo wpsg_hspc($va['hint']); ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_hint" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_hint" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_hint"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Hinweistext', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#va_hint_<?php echo $va['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'hint',
+                    va_id: '<?php echo $va['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="va_typ_<?php echo $va['id']; ?>"><?php
+        echo wpsg_hspc($this->view['arTypen'][$va['typ']]);
+        ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_grundlage" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_grundlage" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_grundlage"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Grundlage', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#va_typ_<?php echo $va['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1', {
+                type: 'select',
+				data: <?php echo wpsg_prepare_for_inlineEdit($this->view['arTypen']); ?>,
+	            submitdata: {
+                    field: 'typ',
+                    va_id: '<?php echo $va['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="va_vz_<?php echo $va['id']; ?>"><?php
+				
+				if ($va['vz'] > 0) { 
+					
+					echo wpsg_hspc($this->view['arVZ'][$va['vz']]['name']); 
+        		
+				} else { 
+        	
+					echo __('Alle Versandzonen', 'wpsg'); 
+        	
+				} 
+				
+        ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_versandzone" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_versandzone" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_versandzone"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Versandzone', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#va_vz_<?php echo $va['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1', {
+                type: 'select',
+				data   : <?php echo wpsg_prepare_for_inlineEdit($arVzNamen) ?>,
+	            submitdata: {
+                    field: 'vz',
+                    va_id: '<?php echo $va['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="va_kosten_<?php echo $va['id']; ?>"><?php echo wpsg_hspc($va['kosten']); ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_kostenschluessel" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_kostenschluessel" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_kostenschluessel"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Kostenschlüssel', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#va_kosten_<?php echo $va['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1', {
+                submitdata: {
+                    field: 'kosten',
+                    va_id: '<?php echo $va['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+		<?php if (wpsg_isSizedArray($this->view['arVZ'][$va['vz']]['arPLZ'])) { ?>
+		<?php $index = 1; foreach ((array)$this->view['arVZ'][$va['vz']]['arPLZ'] as $plz_key => $plz) { ?>
+	
+        	<?php echo wpsg_drawForm_TextStart(); ?>
+        	<span id="va_plz_<?php echo $va['id'].'_'.$index; ?>"><?php echo wpsg_hspc(wpsg_getStr($va['kosten_plz'][$plz_key])); ?></span>
+        	<?php echo wpsg_drawForm_TextEnd(__('Kostenschlüssel PLZ', 'wpsg').' ['.$plz.']:'); ?> <?php /*echo $plz*/ ?>
+        	<script type="text/javascript">/* <![CDATA[ */
+            	jQuery('#va_plz_<?php echo $va['id'].'_'.$index; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1', {
+                	submitdata: {
+                    	field: 'kosten_plz',
+                    	va_id: '<?php echo $va['id']; ?>',
+                    	key: '<?php echo $index; ?>'
+                	}
+            	});
+        	/* ]]> */</script>
+
+		<?php $index++; } ?>
+		<?php } ?>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+        <span id="va_mwst_key_<?php echo $va['id']; ?>"><?php
+        	$tax_groups = wpsg_tax_groups();
+        	echo wpsg_hspc($tax_groups[$va['mwst_key']]);
+        ?></span>
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_mwst" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwst" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwst"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Steuersatz', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+            jQuery('#va_mwst_key_<?php echo $va['id']; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1', {
+                type: 'select',
+				data: <?php echo wpsg_prepare_for_inlineEdit(wpsg_tax_groups()); ?>,
+	                submitdata: {
+                    field: 'mwst_key',
+                    va_id: '<?php echo $va['id']; ?>'
+                }
+            });
+        /* ]]> */</script>
+
+        <?php echo wpsg_drawForm_TextStart(); ?>
+		<input type="checkbox" value="1" <?php echo (($va['mwst_laender'] == '1')?'checked="checked"':''); ?> id="va_mwst_laender_<?php echo $va['id']; ?>" />
+		<a class="wpsg_glyphicon_right glyphicon glyphicon-question-sign" data-wpsg-tip="wpsg_shippay_mwstland" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwstland" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=wpsg_shippay_mwstland"></a>
+        <?php echo wpsg_drawForm_TextEnd(__('Keine MwSt. wenn Land steuerfrei', 'wpsg')); ?>
+        <script type="text/javascript">/* <![CDATA[ */
+			jQuery('#va_mwst_laender_<?php echo $va['id']; ?>').bind('change', function() {
+
+				var value = 0;
+				if (jQuery(this).attr("checked") == "checked") value = 1;
+
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_versandarten&do=inlinedit&noheader=1',
+					data: {
+						field: 'mwst_laender',
+						va_id: '<?php echo $va['id']; ?>',
+						value: value
+					}	
+				} );
+			} );
+        /* ]]> */</script>
+		
+		<?php /* Paketverfolgung */ ?>
+		<?php if ($this->hasMod('wpsg_mod_packagetracking') == '1') { ?>
+			<?php echo wpsg_drawForm_TextStart(); ?>
+				<?php $this->callMods('wpsg_mod_versandarten_listrow', [&$va]);  ?>
+       	 	<?php echo wpsg_drawForm_TextEnd(__('Paketverfolgung', 'wpsg')); ?>
+       	<?php } ?>
+        
+	</div>
+	<?php if ($i == sizeof($this->view['data'])) { ?><hr /><?php } ?>
+
+<?php } ?> 
+<?php } ?> 

@@ -1,0 +1,20 @@
+<?php 
+
+	/**
+	 * Template für die Mail einer Anfrage nach einem neuen Passwort (HTML)
+	 */
+
+?>
+<p><?php echo wpsg_translate(__('Hallo #1# #2#,', 'wpsg'), $this->view['kunde']['vname'], $this->view['kunde']['name']); ?></p>  
+ 
+<p><?php echo __('Sie haben eine neues Passwort angefragt.', 'wpsg'); ?></p> 
+ 
+<p><?php echo __('Es wird ihnen ein neues Passwort generiert, wenn sie auf folgenden Link klicken:', 'wpsg'); ?></p> 
+ 
+<a href="<?php echo $this->view['strLink']; ?>"><?php echo __('Neues Passwort generieren', 'wpsg'); ?></a> 
+ 
+<p><?php echo __('Sollten Sie kein neues Passwort angefragt haben können Sie diese Mail ignorieren.', 'wpsg'); ?></p> 
+ 
+<p><?php echo __('Viele Grüße', 'wpsg'); ?></p>  
+ 
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p> 

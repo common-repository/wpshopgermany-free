@@ -1,0 +1,33 @@
+<?php
+
+	/**
+	 * Template für die Ausgabe von Debug Informationen des Micropayment Moduls
+	 */
+
+?>
+<h1>Modul "Micropayment"</h1>
+<pre class="wpsg_debug">
+Billing URL (cc): <?php echo ((array_key_exists('wpsg_mod_micropayment', $this->arModule))?$this->arModule['wpsg_mod_micropayment']->event_creditcard_url:''); ?> 
+Billing URL (dbt): <?php echo ((array_key_exists('wpsg_mod_micropayment', $this->arModule))?$this->arModule['wpsg_mod_micropayment']->event_directdebit_url:''); ?> 
+Billing URL (eb2p): <?php echo ((array_key_exists('wpsg_mod_micropayment', $this->arModule))?$this->arModule['wpsg_mod_micropayment']->event_ebank2pay_url:''); ?> 
+Billing URL (pp): <?php echo ((array_key_exists('wpsg_mod_micropayment', $this->arModule))?$this->arModule['wpsg_mod_micropayment']->event_prepayment_url:''); ?> 
+Billing URL (c2p): <?php echo ((array_key_exists('wpsg_mod_micropayment', $this->arModule))?$this->arModule['wpsg_mod_micropayment']->event_call2pay_url:''); ?> 
+Billing URL (hp): <?php echo ((array_key_exists('wpsg_mod_micropayment', $this->arModule))?$this->arModule['wpsg_mod_micropayment']->event_handypay_url:''); ?> 
+(Infoservice) Account-ID: <?php echo substr($this->get_option('wpsg_mod_micropayment_projectid'), 0, 1).'('.strlen($this->get_option('wpsg_mod_micropayment_handypay_activ')).')'; ?> 
+Accesskey Länge: <?php echo strlen($this->get_option('wpsg_mod_micropayment_accesskey')); ?> 
+Version: <?php echo WPSG_VERSION; ?> 
+Aktivierte Bezahlmodule: <?php 
+	
+	$arPayment = array();
+	if ($this->get_option('wpsg_mod_micropayment_creditcard_activ') == '1') $arPayment[] = 'cc';
+	if ($this->get_option('wpsg_mod_micropayment_directdebit_activ') == '1') $arPayment[] = 'dbt';
+	if ($this->get_option('wpsg_mod_micropayment_ebank2pay_activ') == '1') $arPayment[] = 'eb2p';
+	if ($this->get_option('wpsg_mod_micropayment_prepayment_activ') == '1') $arPayment[] = 'pp';
+	if ($this->get_option('wpsg_mod_micropayment_call2pay_name') == '1') $arPayment[] = 'c2p';
+	if ($this->get_option('wpsg_mod_micropayment_handypay_activ') == '1') $arPayment[] = 'hp';
+
+	if (wpsg_isSizedArray($arPayment)) echo implode(',', $arPayment);
+	else echo 'Keine';
+	
+?> 
+</pre>

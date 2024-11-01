@@ -1,0 +1,310 @@
+<?php
+
+	/**
+	 * Template für die Übersicht der Gutschein
+	 */
+
+?>
+<div class="wpsg_voucher" id="wpsg-bs">
+
+    <nav class="navbar navbar-default">
+
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-customer-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="wpsg-voucher-tab-a active"><a href="#" onclick="return false;"><?php echo __("Gutscheinverwaltung", "wpsg"); ?></a></li>
+					<li role="presentation" class="wpsg-voucher-tab-a wpsg_showhide_filter <?php echo ((($this->view['hasFilter']) && (wpsg_getStr($this->view['arFilter']['s']) != ''))?'active':''); ?>" id="wpsg-voucher-tab-0"><a href="#" onclick="return false;"><span class="glyphicon glyphicon-search"></span><?php echo __("Suche", "wpsg"); ?></a></li>
+                    <li role="presentation" class="wpsg-voucher-add" onclick="return false;"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Voucher&action=add"><span class="glyphicon glyphicon-plus"></span><?php echo __("Hinzufügen", "wpsg"); ?></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+                    <li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'import'))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Voucher&action=import&noheader=1"><span class="glyphicon glyphicon-import"></span><?php echo __("Import", "wpsg"); ?></a></li>
+					<?php if (wpsg_isSizedArray($this->view['arData'])) { ?>
+					<li role="presentation" class="<?php echo ((wpsg_isSizedString($_REQUEST['action'], 'export'))?'active':''); ?>"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Voucher&action=export&noheader=1"><span class="glyphicon glyphicon-export"></span><?php echo __("Export", "wpsg"); ?></a></li>
+					<?php } ?>
+				</ul>
+			</div>
+		</div>
+
+        <div class="wpsg-filter wpsg-customer-tab wpsg-voucher-tab-0 container-fluid form-horizontal" style="display:<?php echo ((($this->view['hasFilter'] === true) && ($this->view['arFilter']['s'] != ''))?'block':'none'); ?>;">
+            <div class="row">
+				<div class="col-lg-4">
+					<form method="post" id="filter_form">
+
+						<input id="wpsg_seite" type="hidden" name="filter[page]" value="<?php echo @$this->view['page']; ?>" class="current-page" />
+                        <input id="wpsg_order" type="hidden" name="filter[order]" value="<?php echo @$this->view['arFilter']['order']; ?>" />
+						<input id="wpsg_ascdesc" type="hidden" name="filter[ascdesc]" value="<?php echo @$this->view['arFilter']['ascdesc']; ?>" />
+
+						<?php echo wpsg_drawForm_Input('filter[s]', __('Suchfeld', 'wpsg'), wpsg_getStr($this->view['arFilter']['s'])); ?>
+
+						<?php echo wpsg_drawForm_SubmitButton(__('Gutscheine suchen')); ?><br />
+						<input type="hidden" id="filterstatus" name="filter[status]" value="<?php echo @$this->view['arFilter']['status']; ?>" />
+
+					</form>
+				</div>
+			</div>
+        </div>
+
+    </nav>
+
+    <div class="wpsg_msg_wrap"><hr class="wp-header-end wpsg-wp-header-end"/></div>
+
+	<div class="pagination_wrap wpsg_status_link_wrap">
+
+		<ul class="pagination">
+			<?php foreach ($this->view['arStatus'] as $status_key => $status_info) { ?>
+			<li class="<?php echo ((wpsg_getStr($this->view['arFilter']['status']) == $status_key)?'active':''); ?>"><a href="#" onclick="return wpsg_setFilterStatus('<?php echo $status_key; ?>');"><?php echo wpsg_translate(__('#1# <span>(#2#)<span>', 'wpsg'), $status_info['label'], $status_info['count']); ?></a></li>
+			<?php } ?>
+		</ul>
+
+	</div>
+    
+    <?php $this->render(WPSG_PATH_VIEW.'/admin/pager.phtml'); ?>
+
+	<div class="content">
+
+        <?php if (is_array($this->view['arData']) && sizeof($this->view['arData']) > 0) { ?>
+
+            <form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Voucher&action=index&noheader=1">
+                <table class="table wpsg-table-order table-bordered table-hover table-striped wpsg-table-customer">
+                    <thead>
+                        <tr>
+                            <th class="col_checkbox"><input type="checkbox" onclick="jQuery('.col_set_checkbox').each(function() { jQuery(this).prop('checked', !jQuery(this).prop('checked')); } );" /></th>
+                            <th class="wpsg_order col_code" data-order="code"><?php echo __("Code", 'wpsg'); ?></th>
+                            <th class="wpsg_order col_start" data-order="start_date"><?php echo __("Start", 'wpsg'); ?></th>
+                            <th class="wpsg_order col_end" data-order="end_date"><?php echo __("Ende", 'wpsg'); ?></th>
+                            <th class="wpsg_order col_value" data-order="value"><?php echo __("Wert", 'wpsg'); ?></th>
+                            <th class="wpsg_order col_status" data-order="status"><?php echo __("Status", 'wpsg'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php /** @var wpsg_voucher $oVoucher */
+							foreach ($this->view['arData'] as $oVoucher) { ?>
+                        <tr>
+                            <td class="col_checkbox">
+
+                                <input class="col_set_checkbox" value="<?php echo $oVoucher->id; ?>" name="wpsg_multido[]" type="checkbox" />
+
+                            </td>
+                            <?php /* <td class="col_code"><?php echo $oVoucher->code; ?></td> */ ?>                            
+                            <td class="col_code">
+
+								<span><?php echo $oVoucher->code; ?></span><br />
+                                
+                                <?php if ($this->hasMod('wpsg_mod_voucherproduct') && $oVoucher->isAutoCreated()) { ?>
+                                &nbsp;[&nbsp;<a href="<?php echo WPSG_URL_WP . 'wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_voucherproduct&gs_id='.$oVoucher->id.'&order_id='.$oVoucher->autocreate_order.'&noheader=1&cmd=getVoucher'; ?>"><?php echo __('PDF', 'wpsg'); ?></a>&nbsp;]
+                                <?php } ?>
+
+								<div class="actions">
+									<span class="edit"><a title="<?php echo __("Diesen Gutschein bearbeiten", "wpsg"); ?>" href="#" class="wpsg_voucher_edit" onclick="return false;" data-voucher_id="<?php echo $oVoucher->getId(); ?>"><?php echo __("Bearbeiten", "wpsg"); ?></a></span>
+									|
+									<span class="delete"><a onclick="return confirm('<?php echo __('Sind Sie sich sicher, dass Sie diesen Gutschein löschen möchten?', 'wpsg'); ?>');" title="<?php echo __('Diese Gutschein löschen', 'wpsg'); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_gutschein&subaction=delete&noheader=1&voucher_id=<?php echo $oVoucher->getId(); ?>"><?php echo __('Löschen', 'wpsg'); ?></a></span>
+								</div>
+                                                        
+                            </td>                            
+                            <td class="col_start"><?php echo wpsg_formatTimestamp($oVoucher->start_date, true); ?></td>
+                            <td class="col_end"><?php echo wpsg_formatTimestamp($oVoucher->end_date, true); ?></td>
+                            <td class="col_value"><span><?php
+
+                                if ($oVoucher->calc_typ == 'w') echo wpsg_ff($oVoucher->getFreeAmount(), $this->get_option('wpsg_currency'));
+                                else if ($oVoucher->calc_typ == 'p') echo wpsg_ff($oVoucher->value, '%');
+                                
+                                if ($oVoucher->calc_typ == 'w' && $oVoucher->getUsedAmount() > 0 && !$oVoucher->isMultiUsable()) echo ' <span title="'.__('Original Betrag', 'wpsg').'">('.wpsg_ff($oVoucher->value, $this->get_option('wpsg_currency')).')</span>';
+
+                            ?></span><?php 
+							
+								if ($oVoucher->isCoupon()) {
+									
+									echo '<br />'.__('Wertgutschein', 'wpsg');
+									
+								}
+								
+							?></td>
+                            <td class="col_status">
+
+                                <?php $comment = $oVoucher->comment; if (wpsg_isSizedString($comment)) { ?>
+                                <a title="<?php echo __("Kommentar (Admin): ", "wpsg").htmlspecialchars($comment); ?>" onclick="return false;" class="glyphicon glyphicon-question-sign admincomment" href="#"></a>
+                                <?php } ?>
+
+                                <?php echo $oVoucher->getStatusLabel(); ?>
+
+                                <?php $used = $oVoucher->getUsed(); if (wpsg_isSizedInt($used)) { ?>
+                                <?php echo wpsg_translate(__('#1# mal benutzt.', 'wpsg'), $used); ?>
+                                <?php } ?>
+
+                                <?php if ($oVoucher->multi === '1') { ?>
+                                <span title="<?php echo __('Mehrfach benutzbar', 'wpsg'); ?>">&nbsp;[M]</span>
+                                <?php } ?>
+
+                            </td>
+                        </tr>
+                        <?php } ?>					
+                    </tbody>
+                </table>
+
+                 <div class="alignleft actions">
+
+                    <input onclick="if (!confirm('<?php echo __('Sind Sie sich sicher?', 'wpsg'); ?>')) return false;" type="submit" value="<?php echo __('Markierte Gutscheine löschen', 'wpsg'); ?>" class="button-secondary action" id="doaction" name="submit-multidelete" />
+
+                </div>
+			</form>
+        
+        	<?php $this->render(WPSG_PATH_VIEW.'/admin/pager.phtml'); ?>
+
+        <?php } else { ?>
+ 
+			<div class="table wpsg_clear">
+            
+				<?php echo wpsg_drawForm_AdminboxStart(); ?>
+    			<?php echo __('Keine Gutscheine in der Datenbank.', 'wpsg'); ?>
+            	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+			</div>
+
+        <?php } ?>
+
+    </div>
+
+</div>
+
+<!-- Modaldialog für Gutscheine -->
+<div class="modal fade" id="wpsg_voucher_dialog" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel"><?php echo __('Gutschein hinzufügen/bearbeiten', 'wpsg'); ?></h4>
+			</div>
+			<div class="modal-body"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo __('Abbrechen', 'wpsg'); ?></button>
+				<button type="button" class="btn btn-primary wpsg-voucher-save" onclick="return false;"><?php echo __('OK', 'wpsg'); ?></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+    <?php if (wpsg_isSizedString($this->view['arFilter']['order']) && wpsg_isSizedString($this->view['arFilter']['ascdesc'])) { ?>
+    jQuery('th[data-order="<?php echo $this->view['arFilter']['order']; ?>"]').addClass('wpsg_order_<?php echo strtolower($this->view['arFilter']['ascdesc']); ?>');
+    <?php } ?>
+	
+	jQuery('.wpsg-voucher-add').on('click', function() {
+
+		jQuery('#wpsg_voucher_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		jQuery('#wpsg_voucher_dialog').modal( { } ).modal('show');
+
+		jQuery.ajax({
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_gutschein&subaction=addedit&noheader=1',
+			success: function(data) {
+
+				jQuery('#wpsg_voucher_dialog .modal-body').html(data);
+				
+			}
+		});
+		
+		return false;
+		
+	}).attr("onclick", null);
+
+	jQuery('.wpsg_voucher_edit').on('click', function() {
+
+		jQuery('#wpsg_voucher_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		jQuery('#wpsg_voucher_dialog').modal( { } ).modal('show');
+
+		jQuery.ajax({
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_gutschein&subaction=addedit&noheader=1&voucher_id=' + jQuery(this).data("voucher_id"),
+			success: function(data) {
+
+				jQuery('#wpsg_voucher_dialog .modal-body').html(data);
+
+			}
+		});
+
+		return false;
+		
+	}).attr("onclick", null);
+	
+	jQuery('.wpsg-voucher-save').on('click', function() {
+
+		//jQuery('#wpsg_voucher_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		//jQuery('#wpsg_voucher_dialog').modal('hide');
+		
+		wpsg_loading('#wpsg_voucher_dialog .modal-body');
+		
+		jQuery.ajax({
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_gutschein&subaction=save&noheader=1',
+			data: {
+				form_data: jQuery('#wpsg_voucher_form').serialize()
+			},
+			success: function(data) {
+
+				wpsg_loading_done('#wpsg_voucher_dialog .modal-body');
+								
+				if (data !== "1") alert(data);
+				else {
+				
+					location.reload();
+					
+				}
+
+			}
+		});
+		
+		return false;
+		
+	}).attr("onclick", null);
+	
+	function wpsg_setFilterStatus(state)
+	{
+
+		jQuery('#filterstatus').val(state);
+
+		jQuery('#seite').val(1);
+		jQuery('#filter_form').submit();
+
+		return false;
+
+	}
+
+	function goPage(page)
+	{
+
+		//if (page <= 0 || page == <?php echo $this->view['arFilter']['page']; ?> || page > <?php echo $this->view['pages']; ?>) return;
+
+		jQuery('#wpsg_seite').val(page);
+		jQuery('#filter_form').submit();
+
+		return false;
+
+	} // function goPage(page)
+
+    jQuery(document).ready(function() {
+
+        jQuery('.wpsg-order-tab-mods').bind('click', function() {
+
+            if (jQuery(this).hasClass('active'))
+            {
+
+                jQuery(this).removeClass('active');
+                jQuery('.' + jQuery(this).attr("id")).slideUp(250);
+
+            }
+            else
+            {
+
+                jQuery(this).addClass('active');
+                jQuery('.' + jQuery(this).attr("id")).slideDown(250);
+
+            }
+
+            return false;
+
+        } );
+
+    } );
+
+/* ]]> */</script>

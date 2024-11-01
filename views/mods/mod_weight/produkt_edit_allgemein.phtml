@@ -1,0 +1,8 @@
+<?php
+
+	/**
+	 * Template für die Integration des Produktgewichts in die Produktverwaltung
+	 */
+
+?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_weight[weight]', __('Produktgewicht', 'wpsg'), wpsg_ff($this->view['wpsg_mod_weight']['weight']), array('unit' => $this->get_option('wpsg_mod_weight_unit'))); ?>

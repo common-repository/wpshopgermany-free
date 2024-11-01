@@ -1,0 +1,28 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@daschmi.de)
+     * Date: 06.08.2016
+     * Time: 11:24
+     */
+
+?>
+
+<?php echo wpsg_drawForm_AdminboxStart(__('Bestellprotokoll', 'wpsg')); ?>
+<div class="panel-group">
+    <?php foreach ($this->view['oOrder']->getLog() as $k => $ol) { ?>
+    <div class="panel panel-default">
+        <div class="panel-heading" data-toggle="collapse" href="#collapse<?php echo $k; ?>" style="cursor:pointer;">
+            <h4 class="panel-title" style="float:right;"><?php echo wpsg_formatTimestamp($ol['cdate']); ?></h4>
+            <h4 class="panel-title"><?php echo $ol['title']; ?></h4>
+        </div>
+        <div id="collapse<?php echo $k; ?>" class="panel-collapse collapse">
+            <div class="panel-body">
+                <pre><?php echo $ol['mailtext']; ?></pre>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+</div>
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+

@@ -1,0 +1,19 @@
+<?php
+
+	/**
+	 * Template für die Rabattdefinition innerhalb der Einstellungen der Produktgruppe
+	 */
+
+?>
+<?php /* Rabatt START */ ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Produktgruppen Rabatt'));  ?>
+
+	<div class="inside">
+		<?php echo wpsg_drawForm_Checkbox('wpsg_mod_discount[discount_aktiv]', __('Aktion aktiv', 'wpsg'), $this->view['wpsg_mod_discount']['data'][0]); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_from]', __('Start (TT.MM.JJJJ)', 'wpsg'), wpsg_hspc(wpsg_getStr($this->view['wpsg_mod_discount']['data'][1]))); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_to]', __('Ende (TT.MM.JJJJ)', 'wpsg'), wpsg_hspc(wpsg_getStr($this->view['wpsg_mod_discount']['data'][2]))); ?>
+		<?php echo wpsg_drawForm_Input('wpsg_mod_discount[discount_value]', __('Rabatt', 'wpsg'), wpsg_ff(wpsg_getStr($this->view['wpsg_mod_discount']['data'][3]))); ?>
+	</div>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php /* Rabatt ENDE */ ?>

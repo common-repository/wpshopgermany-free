@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * Dieses Template wird für die HTML Mail bei einer Statusänderung verwendet
+ */
+
+/* Wichtig, da die Module sonst kein HTML zurückgeben */
+$this->htmlMail = true;
+
+$oCustomer = wpsg_customer::getInstance($this->view['kunde']['id']);
+
+include(WPSG_PATH_VIEW . 'mailtemplates/html/logo.phtml');
+
+?>
+<p><?php echo wpsg_translate(__('Hallo #1# #2# #3#,', 'wpsg'), $oCustomer->getTitle(), $oCustomer->getFirstname(), $oCustomer->getName()); ?></p>
+
+<br />
+  
+<p><?php echo wpsg_translate(
+	__('Der Status Ihrer Bestellung mit der Bestellnummer #1# hat sich von "#2#" auf "#3#" geändert.', 'wpsg'), 
+	$this->view['order']['onr'], 
+	__($this->view['status_alt'], 'wpsg'), 
+	__($this->view['status_neu'], 'wpsg'),
+	__($this->view['state_new_id'], 'wpsg')); ?></p> 
+   
+<?php $this->callMods('mail_status', array(&$this->view['order'], &$this->view['kunde'])); ?>
+
+<?php if ($this->view['state_new_id'] == '1') { ?>
+	<p><?php echo __('Ihr Auftrag wurde akzeptiert', 'wpsg'); ?></p>
+<?php } ?>    
+    
+<?php if ($this->view['state_new_id'] == '2') { ?>
+	<p><?php echo __('Ihre Bestellung ist unvollständig. Bitte prüfen Sie die Daten!', 'wpsg'); ?></p>			   
+<?php } ?>
+
+<?php if ($this->view['state_new_id'] == '100') { ?>
+	<p><?php echo __('Ihre Zahlung wurde akzeptiert. Vielen Dank!', 'wpsg'); ?></p>
+<?php } ?>
+				
+<?php if ($this->view['state_new_id'] == '200') { ?>
+	<p><?php echo __('Ihre Zahlung wurde nicht akzeptiert. Bitte prüfen Sie den Zahlungsvorgang.', 'wpsg'); ?></p>	   
+<?php } ?>
+				
+<?php if ($this->view['state_new_id'] == '250') { ?>
+    <p><?php echo __('Ihre Ware wurde versendet!', 'wpsg'); ?></p>
+<?php } ?>
+			    
+<?php if ($this->view['state_new_id'] == '300')	{ ?>
+	<p><?php echo __('Ihre Ware wurde zugestellt!', 'wpsg'); ?></p>
+<?php } ?>
+				
+<?php if ($this->view['state_new_id'] == '400') { ?>
+	<p><?php echo __('Ihre Zahlung wurde zurückgezahlt!', 'wpsg'); ?></p>
+<?php } ?>
+				
+<?php if ($this->view['state_new_id'] == '500') { ?>
+	<p><?php echo __('Ihre Bestellung wurde storniert!', 'wpsg'); ?></p>
+<?php } ?>
+
+
+<?php if ($this->view['state_new_id'] == '600') { ?>
+	<p><?php echo __('Ihr Abo ist aktiv!', 'wpsg'); ?></p>
+<?php } ?>
+
+
+<?php if ($this->view['state_new_id'] == '610')	{ ?>
+	<p><?php echo __('Ihre Abokündigung steht noch offen.', 'wpsg'); ?></p>
+<?php } ?>
+
+
+<?php if ($this->view['state_new_id'] == '620') { ?>
+	<p><?php echo __('Ihr Abo wurde erfolgreich gekündigt!', 'wpsg'); ?></p>
+<?php } ?>
+
+<p><?php echo __('Mit freundlichen Grüßen', 'wpsg'); ?></p>
+
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p>

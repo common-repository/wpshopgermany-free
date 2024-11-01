@@ -1,0 +1,43 @@
+<?php
+
+    /**
+     * Template für die Pager im Backend
+     */
+
+?>
+
+<?php if ($this->view['pages'] > 1) { ?>
+    <nav class="pagination_wrap">
+        <ul class="pagination">
+                
+            <?php $offset = 5; ?>
+            
+            <?php if ($this->view['arFilter']['page'] > 2) { $offset --; ?>
+                <li><a onclick="return goPage(1);" href="#" aria-label="<?php echo __('Erste Seite'); ?>"><span aria-hidden="true"><i class="glyphicon glyphicon-step-backward"></i></span></a></li>
+            <?php } ?>
+            
+            <?php if ($this->view['arFilter']['page'] > 1) { $offset --; ?>
+                <li><a onclick="return goPage(<?php echo $this->view['arFilter']['page'] - 1; ?>);" href="#" aria-label="<?php echo __('Vorherige Seite'); ?>"><span aria-hidden="true"><i class="glyphicon glyphicon-backward"></i></span></a></li>
+            <?php } ?>                
+            
+            <?php for ($i = 1; $i <= $this->view['pages']; $i ++) { ?>
+                
+                <?php if ($i > $this->view['arFilter']['page'] - $offset && $i < $this->view['arFilter']['page'] + $offset) { ?>
+                <li class="<?php echo (($i == $this->view['arFilter']['page'])?'active':''); ?>"><a onclick="return goPage(<?php echo $i; ?>);" href="#"><?php echo $i; ?></a></li>
+                <?php } else if ($i == $this->view['arFilter']['page'] - $offset || $i == $this->view['arFilter']['page'] + $offset) { ?>
+                <li class=""><span class="more">..</span></li>
+                <?php } ?>
+                    
+            <?php } ?>
+            
+            <?php if ($this->view['arFilter']['page'] + 1 <= $this->view['pages']) { ?>
+                <li><a onclick="return goPage(<?php echo $this->view['arFilter']['page'] + 1; ?>);" href="#" aria-label="<?php echo __('Nächste Seite'); ?>"><span aria-hidden="true"><i class="glyphicon glyphicon-play"></i></span></a></li>
+            <?php } ?>
+            
+            <?php if ($this->view['arFilter']['page'] + 2 <= $this->view['pages']) { ?>
+                <li><a onclick="return goPage(<?php echo $this->view['pages']; ?>);" href="#" aria-label="<?php echo __('Letzte Seite'); ?>"><span aria-hidden="true"><i class="glyphicon glyphicon-step-forward"></i></span></a></li>
+            <?php } ?>
+            
+        </ul>            
+    </nav>
+<?php } ?>

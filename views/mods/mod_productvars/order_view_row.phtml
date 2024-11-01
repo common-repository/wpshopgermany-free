@@ -1,0 +1,65 @@
+<?php
+
+	/**
+	 * Template für die Darstellung der Produktvariablen in der Bestellansicht
+	 */
+
+	$product_index = $this->view['wpsg_mod_productvars']['p']['product_index'];
+ 
+?>
+<?php foreach ((array)$this->view['wpsg_mod_productvars']['data'] as $k => $pv) { ?>
+<tr class="wpsg_<?php echo (($this->view['wpsg_mod_productvars']['i'] == 0)?'odd':'even'); ?> wpsg_productvars">
+	<td class="wpsg_cell_name"><?php echo __($pv['name'], 'wpsg'); ?></td>	
+	<td align="right" colspan="<?php echo $this->view['colspan']; ?>">
+		
+		<div class="wpsg_editable" id="wpsg_productvar_<?php echo $k.'_'.$product_index; ?>"><?php echo wpsg_hspc($pv['value']); ?></div>
+		
+		<script type="text/javascript">
+
+			<?php if ($pv['typ'] == 2) { /* Textfeld */ ?> 		                                            
+			jQuery('#wpsg_productvar_<?php echo $k.'_'.$product_index; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_productvars&do=inlinedit&noheader=1', {
+				submitdata: {
+					order_id: <?php echo $_REQUEST['edit_id']; ?>,
+					pv_id: '<?php echo $k; ?>',
+					p_id: '<?php echo $this->view['wpsg_mod_productvars']['p']['product_index']; ?>'
+				},
+				submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+				placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+				indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+		    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+			});
+			<?php } else if ($pv['typ'] == 1) { /* Auswahl */ ?>			
+			jQuery('#wpsg_productvar_<?php echo $k.'_'.$product_index; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_productvars&do=inlinedit&noheader=1', { 
+				submitdata: {
+					order_id: <?php echo $_REQUEST['edit_id']; ?>,
+					pv_id: '<?php echo $k; ?>',
+					p_id: '<?php echo $this->view['wpsg_mod_productvars']['p']['product_index']; ?>'
+				},
+				submit  : '<?php echo __('Speichern', 'wpsg'); ?>',
+				data   : <?php echo wpsg_prepare_for_inlineEdit(wpsg_array_merge((array)$pv['auswahl'], array('not_set' => __('Keine Angabe', 'wpsg')))); ?>,
+				type   : 'select',
+				placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+				indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+		    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+			});					
+			<?php } else if ($pv['typ'] == 3) { /* Checkbox */ ?>
+			jQuery('#wpsg_productvar_<?php echo $k.'_'.$product_index; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_productvars&do=inlinedit&noheader=1', { 
+				submitdata: {
+					order_id: <?php echo $_REQUEST['edit_id']; ?>,
+					pv_id: '<?php echo $k; ?>',
+					p_id: '<?php echo $this->view['wpsg_mod_productvars']['p']['product_index']; ?>'
+				},
+				submit  : '<?php echo __('Speichern', 'wpsg'); ?>',
+				data   : <?php echo wpsg_prepare_for_inlineEdit(array('1' => __('Ja', 'wpsg'), '0' => __('Nein', 'wpsg'))); ?>,
+				type   : 'select',
+				placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+				indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+		    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+			});
+			<?php } ?>
+        
+		</script>
+		
+	</td>
+</tr>
+<?php } ?>

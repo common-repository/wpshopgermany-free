@@ -1,0 +1,148 @@
+<?php
+	
+	/**
+	 * Template für die Eingabe der Zahlungs- und Versandinformationen
+	 */
+
+	//wpsg_debug($this->view['basket']['checkout']);
+	//die();
+	
+?>
+<div class="wpsg wpsg_checkout2">
+
+	<?php echo $this->writeFrontendMessage(); ?>
+	
+	<?php $GLOBALS['step'] = 3; $this->render(WPSG_PATH_VIEW.'/warenkorb/progress.phtml'); ?>
+		
+	<form id="wpsg_checkout_form" method="post" action="<?php echo $this->getURL(wpsg_ShopController::URL_BASKET); ?>">
+
+		<input type="hidden" value="1" name="wpsg[checkout][send]" />
+	
+		<div class="wpsg_shipping"> 
+  
+ 			<h2><?php echo __('Versandarten', 'wpsg'); ?></h2>
+ 			
+ 			<div class="shippay_wrap">
+ 				<?php foreach ($this->view['arShipping'] as $s) { ?>
+ 				<div class="shippay_item_wrap">
+
+					<input <?php echo (($this->view['basket']['checkout']['shipping'] == $s['id'] || sizeof($this->view['arShipping']) == 1)?'checked="checked"':''); ?> type="radio" value="<?php echo $s['id']; ?>" name="wpsg[checkout][shipping]" id="shipping_<?php echo $s['id']; ?>" />
+ 				
+ 					<?php if (wpsg_isSizedString($s['logo'])) { ?>
+					<img class="wpsg_payship_logo" src="<?php echo $s['logo']; ?>" alt="<?php echo $s['name']; ?>" />
+					<?php } else { ?>
+					<div class="wpsg_payship_name"><?php echo __($s['name'], 'wpsg'); ?></div>				
+					<?php } ?> 
+ 					<?php if ((isset($s['hint']) && trim($s['hint']) != '') || wpsg_getFloat($s['price']) > 0) { ?>					
+					<div id="shipping_<?php echo $s['id']; ?>_hint" class="shippay_hint">
+						<?php if ($s['price'] > 0) { ?>
+						<?php echo __('Gebühr', 'wpsg'); ?>: <?php echo wpsg_ff($s['price'], $this->get_option('wpsg_currency')); ?><br />
+						<?php } ?>
+						<?php echo $this->replaceUniversalPlatzhalter(__($s['hint'], 'wpsg')); ?>
+					</div>
+					<?php } ?>
+					
+					<div class="shippay_checkmark"></div>
+					
+ 				</div>
+ 				<?php } ?>
+ 			</div>
+		
+		</div>
+						 
+		<?php if ($this->callMods('checkout_handlePayment') === true) { ?>
+				
+			<?php if (!$this->hasMod('wpsg_mod_crefopay')) { ?>
+			<div class="wpsg_payment">
+			
+				<h2><?php echo __('Zahlungsarten', 'wpsg'); ?></h2>
+				
+				<div class="shippay_wrap">
+ 				<?php foreach ($this->view['arPayment'] as $p) { ?>
+ 				<div class="shippay_item_wrap">
+
+					<input <?php echo (($this->view['basket']['checkout']['payment'] == $p['id'] || sizeof($this->view['arPayment']) == 1)?'checked="checked"':''); ?> type="radio" value="<?php echo $p['id']; ?>" name="wpsg[checkout][payment]" id="payment_<?php echo $p['id']; ?>" />
+ 				
+ 					<div class="wpsg_payship_name"><?php echo __($p['name'], 'wpsg'); ?></div>
+ 				
+ 					<?php if (wpsg_isSizedString($p['logo'])) { ?>
+					<img class="wpsg_payship_logo" src="<?php echo $p['logo']; ?>" alt="<?php echo $p['name']; ?>" />
+					<?php } ?>
+					 
+ 					<?php if ((isset($p['hint']) && trim($p['hint']) != '') || $p['price'] > 0) { ?>					
+					<div id="payment_<?php echo $p['id']; ?>_hint" class="shippay_hint">
+						<?php if ($p['price'] > 0) { ?>
+						<?php echo __('Gebühr', 'wpsg'); ?>: <?php echo wpsg_ff($p['price'], $this->get_option('wpsg_currency')); ?><br />
+						<?php } ?>
+						<?php echo $this->replaceUniversalPlatzhalter(__($p['hint'], 'wpsg')); ?>
+					</div>
+					<?php } ?>
+					
+					<div class="shippay_checkmark"></div>
+					
+ 				</div>
+ 				<?php } ?>
+ 			</div>
+			
+			</div>
+			<?php } ?>
+			
+		<?php } ?>
+		
+		<div class="wpsg_clear"></div>
+		
+		<br />
+
+		<?php $this->callMods('checkout2_inner_prebutton', array(&$this->view)); ?>
+		
+		<input type="submit" id="wpsg_checkout2button" class="wpsg_button wpsg_overviewbutton" value="<?php echo __('weiter', 'wpsg'); ?>" name="wpsg_checkout2" />
+		<input type="submit" class="wpsg_button wpsg_checkoutbutton" value="<?php echo __('zurück', 'wpsg'); ?>" name="wpsg_redirect_checkout" />
+	
+		<div class="wpsg_clear"></div>
+	
+	</form>
+	
+	<script type="text/javascript">/* <![CDATA[ */
+
+		function wpsg_setShipPay(jqElement)
+		{
+
+			jqElement.parents('.shippay_wrap').find('.shippay_item_wrap').removeClass('shippay_active');
+			jqElement.addClass('shippay_active');
+
+			jqElement.find('input').prop('checked', true);
+
+			return true;
+			
+		}
+    
+		jQuery(document).ready(function() {
+
+			jQuery('.shippay_wrap .shippay_item_wrap').bind('click', function() {
+
+				wpsg_setShipPay(jQuery(this)); 
+				
+				jQuery.ajax( {
+					'url': wpsg_ajax.ajaxurl,
+					'method': 'get',
+					'data': {
+						'wpsg[action]': 'updateCheckout',
+						'wpsg_form_data': jQuery('#wpsg_checkout_form').serialize()						
+					},
+					'async': true,
+					'success': function(data) { }
+				} );
+				 
+			} );
+
+			jQuery('.shippay_wrap .shippay_item_wrap').each(function() {
+
+				if (jQuery(this).find('input[type="radio"]').prop('checked')) wpsg_setShipPay(jQuery(this));
+				
+			} );
+			 		 	
+		} );
+			
+	/* ]]> */</script>
+
+</div>

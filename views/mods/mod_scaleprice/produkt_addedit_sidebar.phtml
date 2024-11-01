@@ -1,0 +1,207 @@
+<?php
+
+	/**
+	 * Template für die Integration der Staffelpreise in die Produktverwaltung
+	 */
+
+?>
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+ 
+		jQuery('#wpsg_mod_scaleprice_activ').bind('change', function() {
+ 
+			if (jQuery(this).attr('checked') == 'checked') jQuery('#wpsg_mod_scaleprice_layer').show();
+			else jQuery('#wpsg_mod_scaleprice_layer').hide();
+			
+		} ).change();
+
+		jQuery('#wpsg_mod_scaleprice_typ').bind('change', function() { wpsg_mod_scaleprice_refresh(); } );
+		jQuery('#wpsg_mod_scaleprice_calc').bind('change', function() { wpsg_mod_scaleprice_saveAjax(); } );
+		
+		<?php /* echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_downloadprodukte&edit_id=<?php echo $this->view['data']['id'] ?>&noheader=1&cmd=upload_file*/?>
+				
+	} );
+
+	function wpsg_mod_scaleprice_add()
+	{
+
+		var wpsg_scale = jQuery('#wpsg_mod_scaleprice_scale').val();
+		var wpsg_value = jQuery('#wpsg_mod_scaleprice_value').val();
+		 
+		jQuery('#wpsg_mod_scaleprice_target').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_scaleprice&edit_id=<?php echo $this->view['wpsg_mod_scaleprice']['product']['id']; ?>&noheader=1&cmd=add',
+			data: { 
+				'scale': wpsg_scale,
+				'value': wpsg_value
+			},
+			success: function(data) {
+				
+				jQuery('#wpsg_mod_scaleprice_target').html(data);
+				wpsg_mod_scaleprice_clearErrorField();
+				 				
+			}
+		} );
+
+		return false;
+		
+	} // function wpsg_mod_scaleprice_add() 
+
+	function wpsg_mod_scaleprice_refresh()
+	{
+ 
+		jQuery('#wpsg_mod_scaleprice_target').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+		
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_scaleprice&edit_id=<?php echo $this->view['wpsg_mod_scaleprice']['product']['id']; ?>&noheader=1&cmd=refresh',
+			data: {
+				typ: jQuery('#wpsg_mod_scaleprice_typ').val(),
+				calc: jQuery('#wpsg_mod_scaleprice_calc').val()
+			},
+			success: function(data) {
+				
+				jQuery('#wpsg_mod_scaleprice_target').html(data);
+				wpsg_mod_scaleprice_clearErrorField();
+				
+			}
+		} );
+
+		return false;
+		
+	} // function wpsg_mod_scaleprice_refresh() 
+
+	function wpsg_mod_scaleprice_saveAjax()
+	{
+ 
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_scaleprice&edit_id=<?php echo $this->view['wpsg_mod_scaleprice']['product']['id']; ?>&noheader=1&cmd=ajaxSave',
+			data: {
+				typ: jQuery('#wpsg_mod_scaleprice_typ').val(),
+				calc: jQuery('#wpsg_mod_scaleprice_calc').val()
+			},
+			success: function(data) {
+
+				wpsg_mod_scaleprice_clearErrorField();
+			
+			}			
+		} );
+		
+	} // function wpsg_mod_scaleprice_saveAjax()
+
+	function wpsg_mod_scaleprice_clearErrorField()
+	{
+
+		var wpsg_product_edit_change_new = Array();
+
+		for (var i = 0; i < wpsg_product_edit_change.length; i++)
+		{
+
+			if (!wpsg_product_edit_change[i].match(/^wpsg_mod_scaleprice/))
+			{
+
+				wpsg_product_edit_change_new.push(wpsg_product_edit_change[i]);
+				
+			}
+			
+		} 
+
+		wpsg_product_edit_change = wpsg_product_edit_change_new;
+				
+	}
+	
+	function wpsg_mod_scaleprice_change(ev)
+	{
+ 
+		if (!wpsg_in_array(ev.target.id, wpsg_product_edit_change) && jQuery(ev.target).val() != "")
+		{
+
+			wpsg_product_edit_change.push(ev.target.id);
+			 
+		}
+		else if (jQuery(ev.target).val() == "" && wpsg_in_array(ev.target.id, wpsg_product_edit_change))
+		{
+ 
+		    for (var i = 0; i < wpsg_product_edit_change.length; i++) 
+			{
+		    	
+		        if (wpsg_product_edit_change[i] == ev.target.id)
+		        {
+
+			    	wpsg_product_edit_change.splice(i, 1);
+			    	jQuery('#' + ev.target.id).removeClass('wpsg_change_error');
+			         
+		        } 
+		    	
+		    }
+			
+		}
+		
+	} // function wpsg_mod_scaleprice_change(ev)
+	
+	function wpsg_mod_scaleprice_remove(scale_id)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass sie diese Staffel entfernen möchten?', 'wpsg'); ?>')) return false;
+ 
+		jQuery.ajax( {
+			url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=ajax&mod=wpsg_mod_scaleprice&edit_id=<?php echo $this->view['wpsg_mod_scaleprice']['product']['id']; ?>&noheader=1&cmd=remove',
+			data: {
+				scale_id: scale_id
+			},
+			success: function(data) {
+				
+				jQuery('#wpsg_mod_scaleprice_row_' + scale_id).remove();
+				
+			}
+		} );
+
+		return false;
+		
+	} // function wpsg_mod_scaleprice_remove(scale_id)
+         
+/* ]]> */</script>
+
+<div class="panel panel-default">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">
+			<span><?php echo __('Staffelpreise', 'wpsg'); ?></span>
+		</h3>
+	</div> 
+	
+		<div class="panel-body">
+	
+		<?php if ($this->view['wpsg_mod_scaleprice']['product']['id'] <= 0) { ?>
+		<p><?php echo __('Staffelpreise können erst nach einmaligem Speichern des Produktes definiert werden.', 'wpsg'); ?>
+		<?php } else { ?>
+
+		<?php echo wpsg_drawForm_Checkbox('wpsg_mod_scaleprice_activ', __('Staffelpreise aktiv', 'wpsg'), $this->view['wpsg_mod_scaleprice']['product']['wpsg_mod_scaleprice_activ']); ?>
+		
+		<div id="wpsg_mod_scaleprice_layer">
+		 
+		 	<?php if (wpsg_isSizedArray($this->view['wpsg_mod_scaleprice']['arTyp']) && sizeof($this->view['wpsg_mod_scaleprice']['arTyp']) > 0) { ?>
+			<?php echo wpsg_drawForm_Select('wpsg_mod_scaleprice_typ', __('Bezugsgröße', 'wpsg'), array(
+				wpsg_mod_scaleprice::TYP_QUANTITY => __('Menge', 'wpsg'),
+				wpsg_mod_scaleprice::TYP_WEIGHT => __('Gewicht', 'wpsg')
+			), $this->view['wpsg_mod_scaleprice']['product']['wpsg_mod_scaleprice_typ']); ?>
+			<?php } else { ?>
+			<input type="hidden" name="wpsg_mod_scaleprice_typ" id="wpsg_mod_scaleprice_typ" value="0" />
+			<?php } ?>
+			
+			<?php echo wpsg_drawForm_Select('wpsg_mod_scaleprice_calc', __('Berechnung', 'wpsg'), array(
+				wpsg_mod_scaleprice::CALC_REPLACE => __('Ersetzung', 'wpsg'),
+				wpsg_mod_scaleprice::CALC_ADD => __('Addition', 'wpsg')
+			), $this->view['wpsg_mod_scaleprice']['product']['wpsg_mod_scaleprice_calc']); ?>
+			 									
+			<div id="wpsg_mod_scaleprice_target"><?php echo $this->view['wpsg_mod_scaleprice']['list']; ?></div>
+			
+		</div>
+		
+		<?php } ?>
+		<br /><br />
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_scaleprice"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Konfiguration der Staffelpreise', 'wpsg'); ?></a>			 
+	</div>
+	
+	
+</div>

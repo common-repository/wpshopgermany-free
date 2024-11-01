@@ -1,0 +1,110 @@
+<?php
+
+	/**
+	 * Template für die Integration der Versandadresse in die Bestellansicht
+	 */
+	
+?>
+
+<script>
+
+	function wpsg_saveShippingAdress() {
+
+        jQuery('#wpsg_backend_loading').show();
+
+        jQuery.ajax( {
+            url: '<?php 
+				
+				echo wpsg_admin_url('Order', 'ajax', ['mod' => 'wpsg_mod_shippingadress', 'edit_id' => $this->view['data']['id']], ['noheader' => '1'], true);
+				
+			?>',
+            data: {
+                form_data: jQuery('#shipping_dialog_content input, #shipping_dialog_content select').serialize()
+            },
+            success: function() {
+
+				location.reload();
+
+            }
+        } );
+
+		return false;
+		
+	} 
+
+</script>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="wpsg_customer_shipping_edit">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><?php echo __('Lieferanschrift bearbeiten', 'wpsg'); ?></h4>
+            </div>
+            <div class="modal-body">
+
+                <div id="shipping_dialog_content">
+                    <?php echo wpsg_drawForm_Input('dialog_shipping_firma', __('Firma', 'wpsg'), $this->view['wpsg_mod_shippingadress']['shipping_firma']); ?>
+                    <?php echo wpsg_drawForm_Select('dialog_shipping_title', __('Anrede', 'wpsg'), $this->view['arTitles'], $this->view['wpsg_mod_shippingadress']['shipping_title'], array('noIndex' => true)); ?>
+                    <?php echo wpsg_drawForm_Input('dialog_shipping_vname', __('Vorname', 'wpsg'), $this->view['wpsg_mod_shippingadress']['shipping_vname']); ?>
+                    <?php echo wpsg_drawForm_Input('dialog_shipping_name', __('Name', 'wpsg'), $this->view['wpsg_mod_shippingadress']['shipping_name']); ?>
+                    <?php echo wpsg_drawForm_Input('dialog_shipping_strasse', __('Straße', 'wpsg'), $this->view['wpsg_mod_shippingadress']['shipping_strasse']); ?>
+						
+					<?php if (wpsg_getStr($this->view['pflicht']['wpsg_showNr']) === '1') { ?>
+	
+						<?php echo wpsg_drawForm_Input('dialog_shipping_nr', __('Hausnummer', 'wpsg'), $this->view['wpsg_mod_shippingadress']['shipping_nr']); ?>
+						
+					<?php } ?>
+						
+                    <?php echo wpsg_drawForm_Input('dialog_shipping_plz', __('Postleitzahl', 'wpsg'), $this->view['wpsg_mod_shippingadress']['shipping_plz']); ?>
+                    <?php echo wpsg_drawForm_Input('dialog_shipping_ort', __('Ort', 'wpsg'), $this->view['wpsg_mod_shippingadress']['shipping_ort']); ?>
+                    <?php echo wpsg_drawForm_Select('dialog_shipping_land', __('Land', 'wpsg'), $this->view['arCountry'], $this->view['wpsg_mod_shippingadress']['shipping_land']); ?>
+					
+					<br />
+					
+					<?php echo wpsg_drawForm_Checkbox('dialog_delete', __('Lieferadresse löschen', 'wpsg'), false); ?>
+					
+                </div>
+
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo __('Schließen', 'wpsg'); ?></button>
+                <button type="button" class="btn btn-primary" onclick="return wpsg_saveShippingAdress();"><?php echo __('Speichern', 'wpsg'); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php echo wpsg_drawForm_TextStart(); ?>
+
+	<?php if (wpsg_isSizedArray($this->view['wpsg_mod_shippingadress'])) { ?>
+	
+		<?php if (trim($this->view['wpsg_mod_shippingadress']['shipping_firma']) != '') { ?>
+		<?php echo wpsg_hspc($this->view['wpsg_mod_shippingadress']['shipping_firma']); ?><br />
+		<?php } ?>
+		<?php
+	
+			if (wpsg_isSizedString($this->view['wpsg_mod_shippingadress']['shipping_title']) && $this->view['wpsg_mod_shippingadress']['shipping_title'] != '-1')
+				echo $this->view['arTitles'][$this->view['wpsg_mod_shippingadress']['shipping_title']];
+	
+		?> <?php echo wpsg_hspc($this->view['wpsg_mod_shippingadress']['shipping_vname']); ?> <?php echo wpsg_hspc($this->view['wpsg_mod_shippingadress']['shipping_name']); ?><br />
+		<?php echo wpsg_hspc($this->view['wpsg_mod_shippingadress']['shipping_strasse'].rtrim(' '.wpsg_getStr($this->view['wpsg_mod_shippingadress']['shipping_nr']))); ?><br />
+		<?php $lk = $this->view['wpsg_mod_shippingadress']['oCountry']->getShorttext(); ?>
+		<?php echo wpsg_hspc($this->view['wpsg_mod_shippingadress']['shipping_plz']); ?> <?php echo wpsg_hspc($this->view['wpsg_mod_shippingadress']['shipping_ort']); ?> <?php echo wpsg_hspc($lk); ?><br />
+		<a style="position: absolute; right:25px; top:10px; display:inline-block;" data-toggle="modal" data-target="#wpsg_customer_shipping_edit" href="#" title="<?php echo __('Lieferanschrift ändern', 'wpsg'); ?>">
+			<span class="glyphicon glyphicon-pencil"></span>
+		</a>
+
+	<?php } else { ?>
+			
+		<?php echo __('Keine abweichende Lieferadresse angegeben.', 'wpsg'); ?>
+		
+		<a style="position: absolute; right:25px; top:10px; display:inline-block;" data-toggle="modal" data-target="#wpsg_customer_shipping_edit" href="#" title="<?php echo __('Lieferanschrift ändern', 'wpsg'); ?>">
+			<span class="glyphicon glyphicon-pencil"></span>
+		</a>
+		
+	<?php } ?>
+
+<?php echo wpsg_drawForm_TextEnd(__('Lieferadresse', 'wpsg')); ?>
+

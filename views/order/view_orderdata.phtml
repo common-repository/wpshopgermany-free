@@ -1,0 +1,412 @@
+<?php
+
+    /**
+     * User: Daschmi (daschmi@dsachmi.de)
+     * Date: 06.08.2016
+     * Time: 13:45
+     */
+         
+?>
+<div id="wpsg_produkte_table">
+
+	<?php echo wpsg_drawForm_AdminboxStart(__('Bestelldaten', 'wpsg')); ?>
+    
+	<div id="wpsg_product_table_wrap">
+        <?php $this->render(WPSG_PATH_VIEW.'order/product_table.phtml'); ?>
+    </div>
+
+	<script type="text/javascript">
+	
+		var WPSG_BE = {
+			
+			updateCalculation: function() {
+
+				var tax_mode = jQuery('#tax_mode').val();
+				
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=updateCalculation&noheader=1&edit_id=<?php echo $_REQUEST['edit_id']; ?>',
+					data: {
+						tax_mode: tax_mode
+					},
+					success: function(data) {
+
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+
+					}
+				} );
+
+				return false;
+				
+			}
+			
+		};
+		
+		var WPSG_BE_Pay_Ship = {
+				 
+			changeShippingPayment: function (id, oid) {
+	
+				jQuery('#wpsg_shipping_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				jQuery('#wpsg_shipping_dialog').modal( { } ).modal('show');
+								
+				jQuery.ajax( {
+					url: '<?php 
+						
+						echo wpsg_admin_url('Order', 'view', ['subaction' => 'editPayShipping', 'edit_id' => $_REQUEST['edit_id']], ['noheader' => '1'], true);
+					
+					?>',
+					success: function(data) {
+	
+						jQuery('#wpsg_shipping_dialog .modal-body').html(data);
+	
+					}
+				} );
+	
+				return false;
+				 
+			}, // function changeShipping(id, oid)
+	
+			/**
+			 * Ändern der Versanddaten im Backend
+			 */
+			updateShippingPayment: function() {
+				
+				var data = {
+					submit: '1',
+					shipping_key: jQuery('#edit_shipping_type').val(),
+					shipping_price: jQuery('#edit_shipping_price').val(),
+					payment_key: jQuery('#edit_payment_type').val(),
+					payment_price: jQuery('#edit_payment_price').val()
+				};
+				
+				jQuery('#wpsg_shipping_dialog').modal('hide');
+				
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=updateOrder&subaction=editPayShipping&edit_id=<?php echo $_REQUEST['edit_id']; ?>&noheader=1',
+					data: data,
+					success: function(data) {
+						
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+						
+					}
+				} );
+				
+				return false; 
+	
+			} // function dialogShippingOK()
+	  
+		}	 
+	
+		var WPSG_BE_Product = {
+	
+			addProduct: function() {
+		
+				jQuery('#wpsg_product_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				jQuery('#wpsg_product_dialog').modal( { } ).modal('show');
+				jQuery('#wpsg_product_dialog .btn-primary').prop('disabled', true);
+				
+				jQuery.ajax( {
+					url: '<?php 
+						
+						echo wpsg_admin_url('Order', 'view', ['subaction' => 'addProduct', 'edit_id' => $_REQUEST['edit_id']], ['noheader' => '1'], true); 
+						
+					?>',
+					success: function(data) {
+		
+						jQuery('#wpsg_product_dialog .modal-body').html(data);
+		
+					}
+				} );
+		
+				return false;
+				
+			},
+
+			removeProduct: function(order_product_id) {
+	
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				
+				jQuery.ajax( {
+					url: '<?php 
+						
+						echo wpsg_admin_url('Order', 'view', ['subaction' => 'removeProduct', 'edit_id' => $_REQUEST['edit_id']], ['noheader' => '1'], true);
+						
+					?>',
+					data: { 
+						order_product_id: order_product_id
+					},
+					success: function(data) {
+	
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+	
+					}
+				} );
+				
+				return false;
+				
+			},
+			
+			editProduct: function(order_product_id) {
+	
+				jQuery('#wpsg_product_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				jQuery('#wpsg_product_dialog').modal( { } ).modal('show');
+				jQuery('#wpsg_product_dialog .btn-primary').prop('disabled', true);
+	
+				jQuery.ajax( {
+					url: '<?php
+					
+						echo wpsg_admin_url('Order', 'view', ['subaction' => 'addProduct', 'edit_id' => $_REQUEST['edit_id']], ['noheader' => '1'], true);
+					
+					?>',
+					data: {
+						order_product_id: order_product_id  
+					},
+					success: function(data) {
+	
+						jQuery('#wpsg_product_dialog .modal-body').html(data);
+	
+					}
+				} );
+	
+				return false;
+				
+			},
+	
+			saveProduct: function() {
+	 
+				jQuery('#wpsg_product_dialog').modal('hide');
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+	
+				jQuery.ajax( {
+					url: '<?php 
+					
+						echo wpsg_admin_url('Order', 'view', ['edit_id' => $_REQUEST['edit_id'], 'do' => 'submit', 'subaction' => 'addProduct'], ['noheader' => '1'], true);
+						
+					?>',
+					data: jQuery('#wpsg_product_add_form').serialize(),
+					success: function(data) {
+	
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+	
+					}
+				} );
+	
+				return false;
+	
+			}
+		
+		};
+	
+		var WPSG_BE_Voucher = {
+			
+			editVoucher: function(order_voucher_id) {
+	
+				jQuery('#wpsg_voucher_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				jQuery('#wpsg_voucher_dialog').modal( { } ).modal('show');
+	
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=editVoucher&edit_id=<?php echo $_REQUEST['edit_id']; ?>&order_voucher_id=' + order_voucher_id + '&noheader=1',
+					success: function(data) {
+	
+						jQuery('#wpsg_voucher_dialog .modal-body').html(data);
+	
+					}
+				} );
+	
+				return false;
+				
+			},
+			
+			removeVoucher: function(order_voucher_id) {
+	
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+	
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=editVoucher&do=remove&edit_id=<?php echo $_REQUEST['edit_id']; ?>&order_voucher_id=' + order_voucher_id + '&noheader=1',
+					success: function(data) {
+	
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+	
+					}
+				} );
+	
+				return false;
+				
+			},
+			
+			saveVoucher: function() {
+	
+				jQuery('#wpsg_voucher_dialog').modal('hide');
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+	
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=editVoucher&do=submit&edit_id=<?php echo $_REQUEST['edit_id']; ?>&noheader=1',
+					data: jQuery('#wpsg_be_voucher_form').serialize(),
+					success: function(data) {
+	
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+	
+					}
+				} );
+	
+				return false;
+				
+			}
+			
+		}
+		
+		var WPSG_BE_Discount = {
+		
+			editDiscount: function() {
+	
+				jQuery('#wpsg_discount_dialog .modal-body').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				jQuery('#wpsg_discount_dialog').modal( { } ).modal('show'); 
+	
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=editDiscount&edit_id=<?php echo $_REQUEST['edit_id']; ?>&noheader=1',                 
+					success: function(data) {
+	
+						jQuery('#wpsg_discount_dialog .modal-body').html(data);
+	
+					}
+				} );
+	
+				return false;
+			
+			},
+		 
+			removeDiscount: function() {
+	
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+	
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=editDiscount&do=remove&edit_id=<?php echo $_REQUEST['edit_id']; ?>&noheader=1',
+					success: function(data) {
+	
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+	
+					}
+				} );
+				
+				return false;
+				
+			},
+		
+			saveDiscount: function() {
+	
+				jQuery('#wpsg_discount_dialog').modal('hide');
+				jQuery('#wpsg_product_table_wrap').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+	
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=view&subaction=editDiscount&do=submit&edit_id=<?php echo $_REQUEST['edit_id']; ?>&noheader=1',
+					data: jQuery('#wpsg_be_discount_form').serialize(),
+					success: function(data) {
+	
+						jQuery('#wpsg_product_table_wrap').html(data.product_table);
+	
+					}
+				} );
+	
+				return false;
+			
+			}
+		
+		}
+
+		var WPSG_BE_Mail = {
+			
+			sendCustomerMail: function(order_id) {
+
+				jQuery.ajax( {
+					url: '<?php 
+						
+						echo wpsg_admin_url('Order', 'view', ['subaction' => 'sendMail', 'do' => 'customer', 'edit_id' => $_REQUEST['edit_id']], ['noheader' => '1'], true);				
+						
+					?>',
+					data: jQuery('#wpsg_be_discount_form').serialize(),
+					success: function(data) { alert(data); }
+				} );
+
+				return false;
+				
+			}
+			
+		}
+		
+	</script>
+	
+	<?php wpsg_drawForm_AdminboxEnd(); ?>
+
+</div>
+
+<!-- Modaldialog für Gutscheine -->
+<div class="modal fade" id="wpsg_voucher_dialog" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel"><?php echo __('Gutschein hinzufügen/bearbeiten', 'wpsg'); ?></h4>
+			</div>
+			<div class="modal-body"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="return WPSG_BE_Voucher.saveVoucher();">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modaldialog für Rabatt -->
+<div class="modal fade" id="wpsg_discount_dialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><?php echo __('Rabatt hinzufügen/bearbeiten', 'wpsg'); ?></h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="return WPSG_BE_Discount.saveDiscount();">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modaldialog für Produkte -->
+<div class="modal fade" id="wpsg_product_dialog" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><?php echo __('Produkt hinzufügen/bearbeiten', 'wpsg'); ?></h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="return WPSG_BE_Product.saveProduct();">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modaldialog für Versandart / Zahlungsart -->
+<div class="modal fade" id="wpsg_shipping_dialog" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><?php echo __('Versandart', 'wpsg'); ?></h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="return WPSG_BE_Pay_Ship.updateShippingPayment();">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+

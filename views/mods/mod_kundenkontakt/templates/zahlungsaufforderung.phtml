@@ -1,0 +1,32 @@
+<?php 
+	
+	global $template_name, $template_betreff, $absender_name, $absender_email;
+
+	/**
+	 * Betreff des Templates
+	 */
+
+	$template_betreff = __('wpShopGermany: Zahlungsaufforderung', 'wpsg');
+		
+	/*
+	 * $this->view['basket'] enthält Angaben über den Warenlorb
+	 * $this->view['kunde'] Enthält den Kundendatensatz aus der Datenbank
+	 * $this->view['order'] Enthält den Bestelldatensatz aus der Datenbank
+	 * $this->view['datum'] Enthält das aktuelle Datum (Timestemp)
+	 */
+	$arPflicht = $this->loadPflichtFeldDaten();
+	$arTitle = explode('|', $arPflicht['anrede_auswahl']);
+	
+?><?php echo wpsg_translate(__('Hallo #1# #2# #3#,', 'wpsg'), @$arTitle[$this->view['basket']['checkout']['title']], $this->view['basket']['checkout']['vname'], $this->view['basket']['checkout']['name']); ?>
+ 
+<?php echo __('Sie sind Ihren Zahlungsverpflichtungen nicht nachgekommen. Bitte begleichen Sie umgehend den Rechnungsbetrag von', 'wpsg') ?> <?php echo wpsg_ff($this->view['basket']['sum']['preis_gesamt_brutto'], $this->get_option('wpsg_currency')); ?>
+ 
+<?php echo __('Bestelldaten', 'wpsg'); ?>: 
+%basket_txt%
+
+<?php echo __('Nutzen Sie bitte folgenden Link um den Zahlvorgang abschließen zu können', 'wpsg'); ?>:
+<?php echo $this->getDoneURL($this->view['order']['id']); ?> 
+
+<?php echo __('Mit freundlichen Grüßen', 'wpsg') ?>
+ 
+<?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?>

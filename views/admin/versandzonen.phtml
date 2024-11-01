@@ -1,0 +1,136 @@
+<?php
+
+	/**
+	 * Template für die Verwaltung der Versandzonen
+	 */
+
+?>
+
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div> 
+			
+</div>
+
+<div class="wpsg_admin_content form-horizontal">
+	
+	<?php echo wpsg_drawForm_AdminboxStart(__('Versandzonen', 'wpsg')); ?>
+	
+		<span id="wpsg_vz_list"><?php $this->view['adminController']->vz_listAction(); ?></span>
+	
+		<a href="#" onclick="return wpsg_addVZ();"><span class="wpsg-glyphicon glyphicon glyphicon-plus"></span><?php echo __('Neue Versandzone anlegen.', 'wpsg'); ?></a><br />
+	    <br />
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&subaction=laender"><span class="wpsg-glyphicon glyphicon glyphicon-wrench"></span><?php echo __('Zur Länderverwaltung', 'wpsg'); ?></a>
+	
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+	
+</div>
+
+<script>
+
+	/**
+	 * Wird aufgerufen um einen neuen Satz hinzu zufügen und die Liste neu zu laden.
+	 */
+	function wpsg_addVZ()
+	{
+
+		jQuery('#wpsg_vz_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" /><br />');
+		
+		jQuery.ajax( {
+			url: '<?php 
+				
+				echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=vz&do=add&noheader=1', 'wpsg-admin-versandzonen-add'));
+				
+			?>',
+			success: function(data) {
+				jQuery('#wpsg_vz_list').html(data);
+			}
+		} );
+
+		return false;
+		
+	} // function wpsg_addVZ()
+
+	/**
+	 * Wird aufgerufen wenn eine Versandzone gelöscht werden soll
+	 */
+	function wpsg_removeVZ(vz_id)
+	{
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass Sie diese Versandzone löschen möchten?', 'wpsg'); ?>')) return false;
+
+		jQuery('#wpsg_vz_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" /><br />');
+		
+		jQuery.ajax( {
+			url: '<?php 
+				
+				echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=vz&do=remove&noheader=1', 'wpsg-admin-versandzonen-delete'));
+				
+			?>',
+			data: {
+				vz_id: vz_id
+			},
+			success: function(data) {
+				jQuery('#wpsg_vz_list').html(data);
+			}
+		} );
+
+		return false;
+		
+	} // function wpsg_removeVZ(vz_id)
+
+	function wpsg_editPLZ(vz_id) {
+		
+		jQuery('#vz_' + vz_id + '_plz').attr('style', 'display:display');
+
+		return false;
+	}
+
+	function wpsg_savePLZ(vz_id) {
+	
+		jQuery.ajax( {
+			url: '<?php 
+				
+				echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=vz&do=save_plz&noheader=1', 'wpsg-admin-versandzonen-save_plz'));
+				
+			?>',
+			data: {
+				vz_id: vz_id,
+				textarea: jQuery('#vz_' + vz_id + '_plz textarea').val()
+			},
+			success: function(data) {
+				jQuery('#vz_' + vz_id + '_plz').attr('style', 'display:none'); 
+			}
+		} );
+
+		return false;
+		
+	}
+
+	function wpsg_loadStandard() {
+
+		if (!confirm('<?php echo __('Sind Sie sich sicher, dass sie die Standard Versandzonen und Länder laden möchten? Die alten Versandzonen und Länder gehen verloren.', 'wpsg'); ?>')) return false;
+		
+		jQuery('#wpsg_vz_list').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+
+		jQuery.ajax( {
+			url: '<?php 
+				
+				echo html_entity_decode(wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=vz&do=loadStandard&noheader=1', 'wpsg-admin-versandzonen-loadStandard'));
+			
+			?>',
+			success: function(data) {
+				jQuery('#wpsg_vz_list').html(data);
+			}
+		} );
+		
+		return false;
+		
+	} // function wpsg_loadStandard()
+	
+</script>

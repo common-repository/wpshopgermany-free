@@ -1,0 +1,37 @@
+<?php
+
+	/**
+	 * Template für den Import von Gutscheinen über CSV Datei
+	 */
+
+?>
+
+<div class="wrap wpsg_mod_gutschein">
+	<div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
+	<h2>
+		<?php echo __('Gutscheinverwaltung - CSV Import', 'wpsg'); ?>
+	</h2>
+	<form name="wpsg_form" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Voucher&action=import&noheader=1'); ?>">
+	
+		<?php echo wpsg_formNounce('Voucher','import'); ?>
+		
+		<?php echo wpsg_drawForm_Select('gs_exists', __('Bestehende Codes', 'wpsg'), array('0' => __('Überschreiben', 'wpsg'), '1' => __('Ignorieren', 'wpsg')), '1'); ?>
+	
+		<br />
+		<div class="wpsg_form_field">
+			<div class="wpsg_form_left">
+				<label for="abo_file"><?php echo __('CSV Quell Datei', 'wpsg'); ?>:</label>
+			</div>
+			<div class="wpsg_form_right">
+				<input type="file" name="wpsg_file" />			
+			</div>
+			<div class="wpsg_clear"></div>
+		</div>
+	
+		<p class="submit">
+			<input id="wpsg_submit" type="submit" value="<?php echo __('Import starten', 'wpsg'); ?>" class="button-primary" name="submit" />
+			<input type="button" class="button" value="<?php echo __('Zurück zur Gutscheinverwaltung', 'wpsg'); ?>" onclick="location.href = '<?php echo wpsg_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Voucher'); ?>';" />
+		</p>
+		
+	</form>
+</div>

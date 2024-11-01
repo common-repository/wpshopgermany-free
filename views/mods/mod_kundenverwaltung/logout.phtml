@@ -1,0 +1,10 @@
+<?php
+	
+	/**
+	 * Wird angezeigt, wenn die Registrierungsseite aufgerufen wird und man bereits eingelogt ist
+	 */
+
+?>
+<div class="wpsg_logout wpsg">
+	<?php echo wpsg_translate(__('Sie können sich nicht registrieren, da sie derzeit eingelogt sind. Klicken Sie <a href="#1#">hier</a> um sich abzumelden.', 'wpsg'), $this->callMod('wpsg_mod_kundenverwaltung', 'getLogoutURL')); ?>
+</div>

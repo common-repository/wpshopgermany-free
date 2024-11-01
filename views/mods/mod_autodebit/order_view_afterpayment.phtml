@@ -1,0 +1,23 @@
+<?php
+
+	/**
+	 * Das Template wird in der Bestellansicht eingebunden und zeigt die Kontodaten des Kunden an, die er während der Bestellung angegeben hat
+	 */
+
+?>
+<br />
+<?php echo wpsg_drawForm_Text(__('Name der Bank', 'wpsg'), $this->view['wpsg_mod_autodebit']['name']); ?>
+
+<?php if ($this->get_option('wpsg_mod_autodebit_iban') == '1') { ?>
+<?php echo wpsg_drawForm_Text(__('BIC der Bank', 'wpsg'), $this->view['wpsg_mod_autodebit']['bic']); ?>
+<?php } else { ?>
+<?php echo wpsg_drawForm_Text(__('BLZ der Bank', 'wpsg'), $this->view['wpsg_mod_autodebit']['blz']); ?>
+<?php } ?>
+
+<?php echo wpsg_drawForm_Text(__('Inhaber', 'wpsg'), $this->view['wpsg_mod_autodebit']['inhaber']); ?>
+
+<?php if ($this->get_option('wpsg_mod_autodebit_iban') == '1') { ?>
+<?php echo wpsg_drawForm_Text(__('IBAN Nr.', 'wpsg'), $this->view['wpsg_mod_autodebit']['iban']); ?>
+<?php } else { ?>
+<?php echo wpsg_drawForm_Text(__('Kontonummer', 'wpsg'), $this->view['wpsg_mod_autodebit']['knr']); ?>
+<?php } ?>

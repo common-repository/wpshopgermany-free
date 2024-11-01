@@ -1,0 +1,16 @@
+<?php
+
+	/**
+	 * Template für die Ausgabe der DEBUG Informationen die über die Admin Bar erreichbar sind
+	 */
+
+	require_once WPSG_PATH_WP.'/wp-admin/includes/plugin.php';
+
+?>
+<?php $this->callMods('admin_debugInfo'); ?>
+
+<?php 
+
+	$arPlugins = $this->get_option('active_plugins');
+	
+?> 

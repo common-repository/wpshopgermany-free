@@ -1,0 +1,286 @@
+<?php
+
+	/**
+	 * Template für die E-Mail Konfiguration
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>
+			<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>
+		<?php } ?>
+	</div>
+
+</div>
+
+<script>
+
+    var uploadData = {};
+    
+</script>
+
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=emailconf&noheader=1'); ?>">
+
+		<?php wp_nonce_field('wpsg-admin-emailconf'); ?>
+		
+		<?php echo wpsg_drawForm_AdminboxStart('Allgemeine Einstellungen', 'wpsg'); ?>
+		<?php $logoPath = wpsg_getUploadDir('wpsg_mailconf').'wpsg_email_logo.jpg'; ?>
+
+		<?php echo wpsg_drawForm_Checkbox(
+			'wpsg_htmlmail',
+			__('HTML Mails versenden', 'wpsg'),
+			$this->get_option('wpsg_htmlmail')
+		); ?>
+
+
+		<div class="col-emaillogo">
+
+			<?php if(file_exists($logoPath)) { ?>
+                
+				<?php echo wpsg_drawForm_Checkbox(
+					'wpsg_email_logo_activated',
+					__("E-Maillogo anzeigen"),
+					$this->get_option('wpsg_email_logo_activated')
+				); ?>
+
+				<?php echo wpsg_drawForm_Checkbox(
+					'wpsg_email_logo_watermark',
+					__("E-Maillogo als Wasserzeichen anzeigen"),
+					$this->get_option('wpsg_email_logo_watermark')
+				); ?>
+                
+			<?php } ?>
+
+			<br />
+			
+			<div class="form-group">
+				<div class="col-sm-6 control-label control-label-email-conf">
+					<label><?php echo __("E-Maillogo (JPG)"); ?></label>
+				</div>
+				<div class="col-sm-6">
+					<?php if(file_exists($logoPath)) { ?>
+						<a href="<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=emailconf&getEmailLogo=1&noheader=1'; ?>" target="_blank"><?php echo __('Derzeitiges Logo', 'wpsg'); ?></a><br>
+					<?php } ?>
+					<input type="file" name="wpsg_email_logo">
+				</div>
+
+				<?php if(file_exists($logoPath)) { ?>
+					<?php echo wpsg_drawForm_Checkbox(
+						'wpsg_email_logo_del',
+						__("Logo Löschen"),
+						0
+					); ?>
+				<?php } ?>
+
+			</div> <!-- .form-group -->
+			
+			<br />
+			
+			<?php if(file_exists($logoPath)) { ?>
+
+				<div class="form-group col-logo-alignment">
+					<div class="col-sm-6 control-label control-label-email-conf">
+						<label><?php echo __("Ausrichtung des Maillogos"); ?></label>
+					</div>
+					<div class="col-sm-6 email-logo-alignment">
+						<?php $logoAlignment = $this->get_option('wpsg_email_logo_alignment'); ?>
+						<?php $standardAlignment = false; ?>
+						<?php if(!wpsg_isSizedString($logoAlignment)) $standardAlignment = true; ?>
+						<input type="radio" name="wpsg_email_logo_alignment" value="left" <?php if($logoAlignment === "left"):?>checked<?php endif;?>> <span>&#xf036 <?php echo __("Linksbündig"); ?></span> <br>
+						<input type="radio" name="wpsg_email_logo_alignment" value="center" <?php if($logoAlignment === "center"):?>checked<?php endif;?>> <span>&#xf037 <?php echo __("Zentriert"); ?></span> <br>
+						<input type="radio" name="wpsg_email_logo_alignment" value="right" <?php if($logoAlignment === "right" || $standardAlignment):?>checked<?php endif;?>> <span>&#xf038 <?php echo __("Rechtsbündig"); ?></span>
+					</div>
+				</div>
+				
+				<br />
+				
+				<?php $logoTransparency = $this->get_option('wpsg_email_logo_transparency'); ?>
+				<?php if(!wpsg_isSized($logoTransparency)) $logoTransparency = "100%"; ?>
+				<?php echo wpsg_drawForm_Input(
+					'wpsg_email_logo_transparency',
+					__("Deckkraft des Logos"),
+					strpos($logoTransparency, "%") !== false ? $logoTransparency : $logoTransparency."%"
+				); ?>
+
+			<?php } ?>
+
+		</div>
+		<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+		<?php echo wpsg_drawEMailConfig(
+			'global',
+			__('Globale Vorgaben', 'wpsg'),
+			__('Werden keine Angaben für die folgenden E-Mails gemacht, so gelten die globalen Angaben.', 'wpsg')); ?>
+
+		<?php echo wpsg_drawEMailConfig(
+			'adminmail',
+			__('Bestellbestätigung (Admin)', 'wpsg'),
+			__('Diese Mail bekommt der Admin beim Eingang einer neuen Bestellung.', 'wpsg'),
+			true); ?>
+
+		<?php echo wpsg_drawEMailConfig(
+			'kundenmail',
+			__('Bestellbestätigung (Kunde)', 'wpsg'),
+			__('Diese Mail bekommt der Kunde nach Durchführung der Bestellung.', 'wpsg'),
+			false,
+			true); ?>
+
+		<?php echo wpsg_drawEMailConfig(
+			'status',
+			__('Statusänderung (Kunde)', 'wpsg'),
+			__('Diese Mail bekommt der Kunde bei der Änderung des Bestellstatus.', 'wpsg')); ?>
+
+		<?php $this->callMods('admin_emailconf'); ?>
+
+		<div class="wpsg_hinweis"><?php echo __('Klicken Sie auf die jeweilige Mail um die Einstellungen angezeigt zu bekommen bzw. zu ändern.', 'wpsg'); ?></div>
+
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+
+	</form>
+</div>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+	/**
+	 * Speichert die Informationen ob die Mailboxen auf oder zugeklappt sind in dem Cookie
+	 */
+	function wpsg_mail_save_cookie()
+	{
+
+		var wpsg_mail_open = Array();
+
+		jQuery('.wpsg_email_box .panel-body:visible').each(function() {
+
+			wpsg_mail_open.push(jQuery(this).prev().attr("id"));
+
+		} );
+
+		jQuery.cookie('wpsg_mail', wpsg_mail_open.join(','));
+
+	} // function wpsg_mail_save_cookie()
+    
+    function wpsg_removeAttachemnt(a) {
+	     
+	    var id = parseInt(a.getAttribute('data-id'));
+	    var key = a.getAttribute('data-key');
+ 
+        uploadData[key].forEach(function(item, index, object) {
+
+            if (parseInt(item.id) === id) {
+ 
+                object.splice(index, 1);
+                
+            }
+            
+        } ); 
+                
+        return false;
+	    
+    }
+    
+    var wpframe;
+	
+	jQuery(document).ready(function() {
+	    
+        jQuery(".btnAddAttachment").click(function(event) {
+
+            var source = event.target || event.srcElement;
+            var key = jQuery(source).attr("data-key");
+            
+            event.preventDefault();
+
+            if (wpframe) { wpframe.open(); return; }
+ 
+            wpframe = wp.media.frames.file_frame = wp.media({
+                title: "<?php echo __('Auswählen oder Hochladen von Medien', 'wpsg'); ?>",
+                button: { text: "<?php echo __('Medien benutzen', 'wpsg'); ?>" },
+                multiple: true  
+            });
+ 
+            wpframe.on('select', function() {
+
+                var attachments = wpframe.state().get('selection').map( function(attachment) {
+
+                    attachment.toJSON();
+ 
+                    var bDrin = false;
+                
+                    for (var i in uploadData[key]) {
+                        
+                        if (uploadData[key][i].id === attachment.id) {
+                            
+                            bDrin = true;
+                            
+                            break;
+                            
+                        }
+                        
+                    }
+                    
+                    if (!bDrin) {
+                    
+                        uploadData[key].push( {
+                            id: attachment.id, 
+                            filename: attachment.attributes.filename,
+                            url: attachment.attributes.url
+                        } );
+                        
+                    }
+                    
+                    return attachment;
+                    
+                } ); 
+                
+            } );
+ 
+            wpframe.open();
+
+        } );
+	    
+		jQuery('.wpsg_email_box .panel-heading').bind('click', function() {
+
+			jQuery(this).next().toggle();
+
+			wpsg_mail_save_cookie();
+
+		} ).css( { 'cursor': 'pointer' } ).disableSelection().next().hide();
+
+		if (jQuery.cookie('wpsg_mail') != null)
+		{
+
+			var arOpen = jQuery.cookie('wpsg_mail').split(',');
+
+			for (var i = 0; i < arOpen.length; i ++)
+			{
+
+				jQuery('#' + arOpen[i]).next().show();
+				jQuery('#' + arOpen[i]).css('border-bottom', '0px');
+
+			}
+
+		}
+
+		jQuery("#wpsg_htmlmail").click(function() {
+
+			if(jQuery("#wpsg_htmlmail")[0].checked == false) jQuery(".col-emaillogo").css("display", "none");
+			else $(".col-emaillogo").css("display", "block");
+
+		});
+		if(jQuery("#wpsg_htmlmail")[0].checked == false) jQuery(".col-emaillogo").css("display", "none");
+
+		jQuery("#wpsg_email_logo_watermark").click(function() {
+
+			if(jQuery("#wpsg_email_logo_watermark")[0].checked == true) jQuery(".col-logo-alignment").hide();
+			else jQuery(".col-logo-alignment").show()
+
+		});
+		
+		if(jQuery("#wpsg_email_logo_watermark").first().checked == true) jQuery(".col-logo-alignment").hide();
+
+	} );
+
+	/* ]]> */</script>

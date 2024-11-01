@@ -1,0 +1,35 @@
+<?php
+
+	/**
+	 * Template für die Integration des Produktexportes in die Bestellvarwaltung im unteren Bereich
+	 */
+
+?>
+<form class="container-fluid form-horizontal" method="post" action="<?php echo WPSG_URL_WP ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_export&do=handleExport&noheader=1" onsubmit="wpsg_mod_export_serializefilter();">
+
+    <div class="row">
+		<div class="col-lg-4">
+
+            <?php foreach ($this->view['wpsg_mod_export']['arProfile'] as $p) { ?>
+                <?php echo wpsg_drawForm_Checkbox('wpsg_mod_export_profile[]', $p['name'], false, array('value' => $p['id'], 'noHidden' => true)); ?>
+            <?php } ?>
+
+            <br /><?php echo wpsg_drawForm_SubmitButton(__('Export starten')); ?>
+
+        </div>
+    </div>
+
+    <input type="hidden" name="filter" id="wpsg_mod_export_filter" value="" />
+
+</form>
+
+<script type="text/javascript">/* <![CDATA[ */
+
+    function wpsg_mod_export_serializefilter()
+    {
+
+        jQuery('#wpsg_mod_export_filter').val(jQuery('#filter_form').serialize());
+
+    }
+
+/* ]]> */</script>

@@ -1,0 +1,41 @@
+<?php
+
+	/**
+	 * Dieses Template wird für die HTML Mail beim Erreichen des Mindestlagerbestandes eines Produktes verwendet
+	 */
+
+	$this->htmlMail = true;
+
+	include(WPSG_PATH_VIEW . 'mailtemplates/html/logo.phtml');
+
+?>
+
+<p><?php echo __('Hallo ', 'wpsg').$GLOBALS['stockemail_prodvariant']['admin_name'].','; ?></p>
+
+<?php
+	if(isset($GLOBALS['stockemail_prodvariant']) && wpsg_isSizedArray($GLOBALS['stockemail_prodvariant']))
+	{
+
+		echo wpsg_translate(__('Eine Produktvariation hat das Erreichen des minimalen Lagerbestands am #1# um #2# Uhr gemeldet.', 'wpsg'), date('d.m.Y'), date('H:i'));
+		echo '<br />';
+		echo __("Produkt").': '.$GLOBALS['stockemail_prodvariant']['produkt']['id'].' '.$GLOBALS['stockemail_prodvariant']['produkt']['name'].' ';
+		echo '<br />';
+		echo __("Produktvariation").': '.$GLOBALS['stockemail_prodvariant']['variant']['id'].' '.$GLOBALS['stockemail_prodvariant']['variant']['name'];
+
+	}
+	else
+	{
+
+		echo wpsg_translate(__('Ein Produkt hat das Erreichen des minimalen Lagerbestand am #1# um #2# Uhr gemeldet.', 'wpsg'), date('d.m.Y'), date('H:i'));
+		echo ('<br />');
+		foreach ((array)$this->basket->arProdukte as $p)
+			$id = $p['id'];
+			echo ('<br />');
+			echo __('Produkt').': '.$p['id'].'  '.$p['name'];
+
+	}
+?>
+
+<p><?php echo __('Mit freundlichen Grüßen', 'wpsg'); ?></p>
+
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p>

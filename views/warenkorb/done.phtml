@@ -1,0 +1,48 @@
+<?php 
+
+	/**
+	 * Template, welches nach erfolgreicher Bestellung angezeigt wird
+	 */
+ 
+	/*
+	BestellID: <?php echo $this->view['o_id']; ?>
+	Menge aller Produkte: <?php echo $this->view['menge']; ?>
+	Array mit bestellten Produkten: <?php print_r($this->view['basket']['produkte']); ?>
+	Array mit den MwSt Sätzen: <?php print_r($this->view['basket']['mwst']); ?>
+	Array mit den calculierten Preisen: <?php print_r($this->view['basket']['sum']); ?>
+	Netto Bestellsumme: <?php echo $this->view['basket']['sum']['preis_gesamt_netto']; ?>
+	Brutto Bestellsumme / Rechnungsbetrag: <?php echo $this->view['basket']['sum']['preis_gesamt_brutto']; ?>
+	Gesamtgewicht (wenn aktiviert): <?php echo $this->view['basket']['sum']['weight']; ?>
+	Gesamtsteuer: <?php echo $this->view['basket']['sum']['mwst']; ?>
+	Kosten Versand: <?php echo $this->view['basket']['sum']['preis_shipping']; ?>
+	Kosten Zahlart: <?php echo $this->view['basket']['sum']['preis_payment']; ?>
+	Kundendaten: <?php print_r($this->view['basket']['checkout']); ?>
+	Name des Kunden: <?php echo $this->view['basket']['checkout']['name']; ?>
+	Vorname des Kunden: <?php echo $this->view['basket']['checkout']['vname']; ?>
+	E-Mail des Kunden: <?php echo $this->view['basket']['checkout']['email']; ?>
+	Straße des Kunden: <?php echo $this->view['basket']['checkout']['strasse']; ?>
+	Ort des Kunden: <?php echo $this->view['basket']['checkout']['ort']; ?>
+	PLZ des Kunden: <?php echo $this->view['basket']['checkout']['plz']; ?>
+	Name der Versandadresse (wenn angegeben): <?php echo $this->view['basket']['checkout']['shipping_name']; ?>
+	Vorname der Versandadresse (wenn angegeben): <?php echo $this->view['basket']['checkout']['shipping_vname']; ?>
+	Straße der Versandadresse (wenn angegeben): <?php echo $this->view['basket']['checkout']['shipping_strasse']; ?>
+	Ort der Versandadresse (wenn angegeben): <?php echo $this->view['basket']['checkout']['shipping_ort']; ?>
+	PLZ der Versandadresse (wenn angegeben): <?php echo $this->view['basket']['checkout']['shipping_plz']; ?>
+	Kundennummer: <?php echo $this->view['customer']['knr']; ?>
+	Bestellnummer: <?php echo $this->view['order']['onr']; ?>
+	Zahlungsart: <?php echo $this->arShipping[$this->view['basket']['checkout']['payment']]['name']; ?>
+	Versandart: <?php echo $this->arShipping[$this->view['basket']['checkout']['shipping']]['name']; ?>
+	*/
+	
+?>
+<div class="wpsg wpsg_done">
+
+	<?php echo $this->writeFrontendMessage(); ?>
+	
+	<p><?php echo __('Vielen Dank für Ihre Bestellung!', 'wpsg'); ?></p>
+	<p><?php $this->callMods('order_done', array(&$this->view['o_id'], &$this->view)); ?></p>
+	
+	<br />
+	<div class="wpsg_clear"></div>
+	
+</div>

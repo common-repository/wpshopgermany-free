@@ -1,0 +1,110 @@
+<?php
+
+	/**	
+	 * Template für die Mail, die bei einer neuen Bestellung an den Kunde geht 
+	 */
+
+	$this->htmlMail = false;
+	
+	$arPflicht = $this->loadPflichtFeldDaten();
+	$arTitle = explode('|', $arPflicht['anrede_auswahl']);
+		
+	//wpsg_debug($this->view);
+
+?><?php echo wpsg_translate(__('Hallo #1# #2# #3#,', 'wpsg'), @$arTitle[$this->view['basket']['checkout']['title']], $this->view['basket']['checkout']['vname'], $this->view['basket']['checkout']['name']); ?> 
+ 
+<?php echo __('vielen Dank für Ihre Bestellung.', 'wpsg'); ?>
+
+<?php if ($this->hasMod('wpsg_mod_shippingadress') && $this->callMod('wpsg_mod_shippingadress', 'check_different_shippingadress', array('k_id' => $this->view['basket']['checkout']['k_id'], 'o_id' => $this->view['o_id']))) { ?>
+
+<?php echo __('Rechnungsadresse:', 'wpsg'); ?> 
+
+<?php echo wpsg_pad_right(__('Firma', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['firma']; ?> 
+<?php echo wpsg_pad_right(__('Name', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['vname']; ?> <?php echo $this->view['basket']['checkout']['name']; ?> 
+<?php echo wpsg_pad_right(__('Straße', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['strasse'].rtrim(' '.$this->view['basket']['checkout']['nr']); ?>    
+<?php echo wpsg_pad_right(__('Land', 'wpsg').':', 35); ?><?php echo $this->db->fetchOne("SELECT `name` FROM `".WPSG_TBL_LAND."` WHERE `id` = '".wpsg_q($this->view['basket']['checkout']['land'])."' "); ?> 
+<?php if (trim($this->view['basket']['checkout']['ustidnr']) != "") { ?>
+<?php echo wpsg_pad_right(__('USt.IdNr.', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['ustidnr']; ?> 
+<?php } ?>
+
+<?php echo wpsg_pad_right(__('Ort', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['plz']; ?> <?php echo $this->view['basket']['checkout']['ort']; ?>  
+<?php echo wpsg_pad_right(__('Telefon', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['tel']; ?> 
+<?php echo wpsg_pad_right(__('Fax', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['fax']; ?> 
+<?php echo wpsg_pad_right(__('E-Mail Adresse', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['email']; ?>  
+
+<?php echo __('Lieferadresse:', 'wpsg'); ?> 
+
+<?php echo wpsg_pad_right(__('Firma', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['shipping_firma']; ?> 
+<?php echo wpsg_pad_right(__('Name', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['shipping_vname']; ?> <?php echo $this->view['basket']['checkout']['shipping_name']; ?> 
+<?php echo wpsg_pad_right(__('Straße', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['shipping_strasse']; ?>    
+<?php echo wpsg_pad_right(__('Ort', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['shipping_plz']; ?> <?php echo $this->view['basket']['checkout']['shipping_ort']; ?>
+
+<?php echo wpsg_pad_right(__('Land', 'wpsg').':', 35); ?><?php echo $this->db->fetchOne("SELECT `name` FROM `".WPSG_TBL_LAND."` WHERE `id` = '".wpsg_q($this->view['basket']['checkout']['shipping_land'])."' "); ?> 
+
+<?php } else { ?> 
+ 
+<?php echo __('Rechnungs-/Lieferadresse:', 'wpsg'); ?> 
+ 
+<?php echo wpsg_pad_right(__('Firma', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['firma']; ?> 
+<?php echo wpsg_pad_right(__('Name', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['vname']; ?> <?php echo $this->view['basket']['checkout']['name']; ?> 
+<?php echo wpsg_pad_right(__('Straße', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['strasse'].rtrim(' '.$this->view['basket']['checkout']['nr']); ?>    
+<?php if (trim($this->view['basket']['checkout']['ustidnr']) != "") { ?>
+<?php echo wpsg_pad_right(__('USt.IdNr.', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['ustidnr']; ?> 
+<?php } ?>
+ 
+<?php echo wpsg_pad_right(__('Ort', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['plz']; ?> <?php echo $this->view['basket']['checkout']['ort']; ?>  
+<?php echo wpsg_pad_right(__('Land', 'wpsg').':', 35); ?><?php echo $this->db->fetchOne("SELECT `name` FROM `".WPSG_TBL_LAND."` WHERE `id` = '".wpsg_q($this->view['basket']['checkout']['land'])."' "); ?> 
+<?php echo wpsg_pad_right(__('Telefon', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['tel']; ?> 
+<?php echo wpsg_pad_right(__('Fax', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['fax']; ?> 
+<?php echo wpsg_pad_right(__('E-Mail Adresse', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['email']; ?>  
+ 
+<?php } ?> 
+ 	
+<?php echo wpsg_pad_right(__('Kundennummer', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['knr']; ?> 
+<?php echo wpsg_pad_right(__('Bestellnummer', 'wpsg').':', 35); ?><?php echo $this->view['basket']['checkout']['onr']; ?> 
+<?php echo wpsg_pad_right(__('Bestelldatum', 'wpsg').':', 35); ?><?php echo date("d.m.Y H:i:s", $this->view['basket']['checkout']['datum']); ?> 
+<?php echo wpsg_pad_right(__('Rechnungsbetrag', 'wpsg').':', 35); ?><?php echo wpsg_ff($this->view['basket']['arCalculation']['sum']['topay_brutto'], $this->get_option('wpsg_currency')); ?> 
+<?php if ($this->get_option('wpsg_kleinunternehmer')) { ?>
+
+<?php echo $this->get_option('wpsg_kleinunternehmer_text'); ?>
+
+<?php } else { ?>
+<?php echo wpsg_pad_right(__('Steueranteil', 'wpsg').':', 35); ?><?php echo wpsg_ff($this->view['basket']['sum']['mwst'], $this->get_option('wpsg_currency')); ?>  
+<?php } ?>
+
+<?php echo wpsg_pad_right(__('Versandart', 'wpsg').':', 35); ?><?php echo $this->arShipping[$this->view['basket']['checkout']['shipping']]['name']; ?>
+<?php $this->callMods('mail_shipping'); ?> 
+<?php echo wpsg_pad_right(__('Zahlungsart', 'wpsg').':', 35); ?><?php echo $this->arPayment[$this->view['basket']['checkout']['payment']]['name']; ?>  
+<?php $this->callMods('mail_payment'); ?>
+    
+<?php echo __('Bestellung', 'wpsg'); ?>:   
+<?php echo $this->render(WPSG_PATH_VIEW.'/mailtemplates/order.phtml'); ?>
+  
+<?php if ($this->view['basket']['checkout']['comment'] != '') { ?>
+ 
+<?php echo __('Bestellkommentar', 'wpsg') ?>: <?php echo $this->view['basket']['checkout']['comment'] ?>
+ 
+<?php } ?>
+
+<?php echo __('Wir bedanken uns fuer Ihre Bestellung.', 'wpsg'); ?> 
+ 
+<?php echo __('Bitte beachten Sie, dass es sich bei dieser E-Mail um eine Bestellbestaetigung und keine bindende Auftragsbestaetigung handelt. Preisirrtuemer sind leider nicht vollstaendig auszuschliessen.', 'wpsg'); ?>
+ 
+<?php echo __('Es gelten unsere Allgemeinen Geschaeftsbedingungen (AGB).', 'wpsg'); ?>  
+ 
+<?php echo $this->getURL(wpsg_ShopController::URL_AGB); ?>       
+ 
+<?php $this->CallMods('kundenmail_afteragb', array(&$this->view['basket']['checkout']['o_id'])); ?>
+-- <?php echo __("Widerrufsbelehrung", "wpsg"); ?> --
+
+<?php if (trim($this->get_option("wpsg_ps_mailwiderruf")) != "") { ?>
+<?php echo $this->get_option("wpsg_ps_mailwiderruf"); ?> 
+<?php } else { ?>
+<?php echo __("...hier steht der Text zum Widerrufsrecht...", "wpsg"); ?>
+<?php } ?>
+ 
+-- <?php echo __("Ende der Widerrufsbelehrung", "wpsg"); ?> --
+
+<?php echo __('Mit freundlichen Grüßen', 'wpsg'); ?> 
+ 
+<?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?>

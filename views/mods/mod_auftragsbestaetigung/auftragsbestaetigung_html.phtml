@@ -1,0 +1,51 @@
+<?php 
+
+	/* Wichtig, da die Module sonst kein HTML zurückgeben */
+	$this->htmlMail = true;
+	include(WPSG_PATH_VIEW . 'mailtemplates/html/logo.phtml');
+
+?><?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/html_head.phtml'); ?>
+
+<h1><?php echo __("Auftragsbestätigung", "wpsg"); ?></h1> 
+ 
+<p><?php echo __("Vielen Dank für Ihre Bestellung. Sie erhalten hiermit die Auftragsbestätigung mit allen wichtigen Informationen zu Ihrer Bestellung.", "wpsg"); ?></p>
+
+<?php if (wpsg_isSizedString($this->view['auftrag_note'])) { ?>
+<h2><?php echo __('Kommentar Auftragsbestätigung', 'wpsg'); ?></h2> 
+<p><?php echo $this->view['auftrag_note'] ?></p>
+<?php }?>
+
+<?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/customer.phtml'); ?>
+
+<h2><?php echo __('Warenkorb', 'wpsg'); ?>:</h2>
+
+<?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/order.phtml'); ?> 
+
+<?php $this->callMods('mail_aftercalculation', array(&$this->view['basket']['checkout']['o_id'])); ?>
+
+<?php if (wpsg_isSizedString($this->view['basket']['checkout']['comment'])) { ?>
+<h2><?php echo __('Bestellkommentar', 'wpsg') ?></h2>
+<p><?php echo $this->view['basket']['checkout']['comment'] ?></p>
+<?php } ?>
+
+<br />
+
+<p><?php echo __('Wir bedanken uns fuer Ihre Bestellung.', 'wpsg'); ?></p>
+
+<p><?php echo wpsg_translate(__('Es gelten unsere <a href="#1#">Allgemeinen Geschaeftsbedingungen</a> (<a href="#1#">AGB</a>).', 'wpsg'), $this->getURL(wpsg_ShopController::URL_AGB)); ?></p>  
+   
+<h3><?php echo __("Widerrufsbelehrung", "wpsg"); ?></h3>
+
+<?php if (wpsg_isSizedString($this->get_option("wpsg_ps_mailwiderruf"))) { ?>
+<p><?php echo $this->get_option("wpsg_ps_mailwiderruf"); ?></p> 
+<?php } else { ?>
+<?php echo __("...hier steht der Text zum Widerrufsrecht...", "wpsg"); ?>
+<?php } ?>
+ 
+<h3><?php echo __("Ende der Widerrufsbelehrung", "wpsg"); ?></h3>
+
+<p><?php echo __('Mit freundlichen Grüßen', 'wpsg'); ?></p>
+<p><?php echo __($this->get_option('wpsg_shopdata_name'), 'wpsg'); ?> - <?php echo __('Team', 'wpsg'); ?></p>
+
+<?php $this->render(WPSG_PATH_VIEW.'/mailtemplates/html/html_foot.phtml'); ?>
+ 

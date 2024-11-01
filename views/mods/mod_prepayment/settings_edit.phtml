@@ -1,0 +1,25 @@
+<?php 
+
+	/**
+	 * Templatedatei für die Einstellungen des Vorkasse Moduls
+	 */
+
+?>
+
+<?php echo wpsg_drawForm_Input('wpsg_mod_prepayment_bezeichnung', __('Bezeichnung', 'wpsg'), $this->get_option('wpsg_mod_prepayment_bezeichnung'), array('help' => 'wpsg_mod_prepayment_bezeichnung')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_prepayment_aktiv', __('Aktiv', 'wpsg'), $this->get_option('wpsg_mod_prepayment_aktiv'), array('help' => 'wpsg_mod_prepayment_aktiv')); ?>
+
+<?php echo wpsg_drawForm_Textarea('wpsg_mod_prepayment_hint', __('Hinweistext', 'wpsg'), $this->get_option('wpsg_mod_prepayment_hint'), array('help' => 'wpsg_mod_prepayment_hint')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_prepayment_subject', __('Betreff für Überweisungen', 'wpsg'), $this->get_option('wpsg_mod_prepayment_subject'), array('help' => 'mod_prepayment_subject')); ?>
+
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_prepayment_gebuehr', __('Gebühr/Rabatt', 'wpsg'), wpsg_ff($this->get_option('wpsg_mod_prepayment_gebuehr'), true), array('help' => 'wpsg_mod_prepayment_gebuehr','unit' => $this->get_option('wpsg_currency').' / %')); ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_prepayment_mwst', __('Mehrwertsteuersatz', 'wpsg'), wpsg_tax_groups(), $this->get_option('wpsg_mod_prepayment_mwst'), array('help' => 'wpsg_mod_prepayment_mwst')); ?>
+<?php echo wpsg_drawForm_Checkbox('wpsg_mod_prepayment_mwstland', __('Keine MwSt. wenn Land steuerfrei', 'wpsg'), $this->get_option('wpsg_mod_prepayment_mwstland'), array('help' => 'wpsg_mod_prepayment_mwstland')); ?>
+
+<br />
+<?php echo wpsg_drawForm_Input('wpsg_mod_prepayment_kinhaber', __('Kontoinhaber', 'wpsg'), $this->get_option('wpsg_mod_prepayment_kinhaber'), array('help' => 'wpsg_mod_prepayment_kinhaber')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_prepayment_bank', __('Bank', 'wpsg'), $this->get_option('wpsg_mod_prepayment_bank'), array('help' => 'wpsg_mod_prepayment_bank')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_prepayment_iban', __('IBAN', 'wpsg'), $this->get_option('wpsg_mod_prepayment_iban'), array('help' => 'wpsg_mod_prepayment_iban')); ?>
+<?php echo wpsg_drawForm_Input('wpsg_mod_prepayment_swift', __('BIC-/SWIFT Code', 'wpsg'), $this->get_option('wpsg_mod_prepayment_swift'), array('help' => 'wpsg_mod_prepayment_swift')); ?>
+ 

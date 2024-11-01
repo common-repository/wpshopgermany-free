@@ -1,0 +1,153 @@
+<?php
+
+    /**
+     * Template für die Liste der Module
+     * wird in der Modulverwaltungsübersicht und in der Lizenzverwaltung verwendet
+     */
+
+    $wpsg_update_data = wpsg_get_update_data();
+
+    if (get_class($this) === "wpsg_ShopController") 
+    {
+    
+        $source = 'module';
+        @$this->shop = &$this;
+
+    }
+    else
+    {
+
+        $source = 'licence';
+
+    }
+
+?>
+
+<?php if (wpsg_isSizedArray($wpsg_update_data['modulinfo'])) { ?>
+  
+    <?php /* foreach ($wpsg_update_data['modulinfo'] as $modul_key => $modul_info) { if ($modul_info['active'] !== true) unset($wpsg_update_data['modulinfo'][$modul_key]); }  */ ?>
+    
+    <table class="table modultable">
+        <thead>
+            <tr>
+                <th><?php echo __('Modulname', 'wpsg'); ?></th>
+                <th><?php echo __('Version', 'wpsg'); ?></th>
+                <th><?php echo __('Lizenz', 'wpsg');  ?></th>
+                <th><?php echo __('verfügbare Version', 'wpsg'); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($wpsg_update_data['modulinfo'] as $modul_key => $modul_info) { ?>
+            <tr style="font-style:normal;" class="<?php 
+            
+                if ($modul_info['free'] === true) echo 'active';
+				else if ($modul_info['active'] === true) echo 'success'; 
+                else echo 'info'; 
+                ?>">
+                <td>
+                
+                    <?php if ($this->shop->hasModInstalled($modul_key)) { ?>
+                    <a href="<?php echo  WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=<?php echo $modul_key; ?>">
+                    <?php } ?>
+                    
+                    <?php echo $modul_info['label']; ?> 
+                
+                    <?php if ($this->shop->hasModInstalled($modul_key)) { ?>
+                    </a>    
+                    <?php } ?>
+                        
+                </td>
+                <td>
+                    
+                    <?php if ($this->shop->hasModInstalled($modul_key)) { ?>
+                        <?php echo $this->shop->arAllModule[$modul_key]->version; ?>
+                    <?php } ?>
+                    
+                </td>								
+                <td>
+                    
+                    <?php if ($modul_info['free'] === true) { ?>
+                        <?php echo __('kostenlos', 'wpsg'); ?>
+                    <?php } else if ($modul_info['active'] === true) { ?>
+                        <?php echo __('enthalten', 'wpsg'); ?>
+                    <?php } else { ?>
+                        
+                        <?php if (wpsg_isSizedString($modul_info['shop_url'])) { ?>
+                        <a href="<?php echo $modul_info['shop_url']; ?>" target="_blank"><?php echo __('Modulcode erwerben', 'wpsg'); ?></a>
+                        <?php } else { ?>
+                        <a href="https://shop.maennchen1.de" target="_blank"><?php echo __('Modulcode erwerben', 'wpsg'); ?></a>
+                        <?php } ?>
+                        
+                    <?php } ?>
+                    
+                    <?php if (!$this->shop->hasModInstalled($modul_key)) { ?>
+                    
+                        <br />
+                        <?php if ($modul_info['active'] === true || $modul_info['free'] === true) { ?>
+                            <?php echo wpsg_translate(__('<a href="#1#">Version installieren</a>', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=installModul&modul='.$modul_key.'&source='.$source); ?>
+                        <?php } else { ?>
+                            <?php echo wpsg_translate(__('<a href="#1#">Demo installieren</a>', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=installModul&modul='.$modul_key.'&source='.$source); ?>
+                        <?php } ?>
+                        
+                    <?php } ?>
+                    
+                </td>
+                <td><?php 
+                                         
+                    if ($modul_info['active'] === true && $modul_info['version'] != $modul_info['version_latest'] && version_compare($modul_info['version_latest'], $this->shop->arAllModule[$modul_key]->version) < 0)
+                    {
+                        
+                        echo $modul_info['version_latest'];
+                         
+                        echo ' - <strong class="wpsg_error">'.__('neue Version verfügbar', 'wpsg').'</strong>';
+                        echo '<br />';
+                        echo wpsg_translate(__('<a href="#1#">Version installieren</a>.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=installModul&modul='.$modul_key.'&source='.$source);
+                        
+                        echo '<br /><br />';
+                        
+                    }
+                    
+                    echo $modul_info['version'];
+                    
+                    if ($this->shop->hasModInstalled($modul_key) && $modul_info['version'] === $this->shop->arAllModule[$modul_key]->version)
+                    {
+                        
+                        echo ' - <strong class="wpsg_message_ok">'.__('aktuell', 'wpsg').'</strong>';
+                        
+                    }
+                    else if ($this->shop->hasModInstalled($modul_key) && version_compare($modul_info['version'], WPSG_VERSION) > 0) 
+                    {
+                        
+                        echo ' - <strong class="wpsg_error">'.__('neue Version verfügbar', 'wpsg').'</strong><br />'.wpsg_translate(__('<a href="#1#">wpShopGermany Update</a> notwendig', 'wpsg'), WPSG_URL_WP.'wp-admin/plugins.php');
+                        
+                    }
+                    else if ($this->shop->hasModInstalled($modul_key) && version_compare($modul_info['version'], $this->shop->arAllModule[$modul_key]->version) > 0) 
+                    {
+                        
+                        echo ' - <strong class="wpsg_error">'.__('neue Version verfügbar', 'wpsg').'</strong>';
+                        
+                        if ($modul_info['active'] === true) 
+                        {
+                        
+                            echo '<br />';
+                            echo wpsg_translate(__('<a href="#1#">Version installieren</a>.', 'wpsg'), WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&action=registrierung&noheader=1&do=installModul&modul='.$modul_key.'&source='.$source);
+                            
+                        }
+                        
+                    }
+                    
+                ?></td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+            
+<?php } else { ?>
+
+    <?php echo __('Mit einer Lizenz (Pro, Enterprise) machst du aus deinem wpShopGermany mehr.', 'wpsg'); ?><br /><br />
+    <?php echo __('Du erhältst neben kostenlosem Support (per Mail oder Forum, 1 Jahr Updates frei) auch die Möglichkeit, die Vielzahl der zusätzlich erhältlichen wpShopGermany Module zu nutzen.', 'wpsg'); ?>
+
+    <a href="https://shop.maennchen1.de/produkt/wpshopgermany4-lizenzkey/" target="_blank"><?php echo __('wpShopGermany im Shop ansehen', 'wpsg'); ?></a>
+
+
+<?php } ?>

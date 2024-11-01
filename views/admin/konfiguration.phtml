@@ -1,0 +1,92 @@
+<?php 
+
+	/**
+	 * Templatedatei für die Einstellungsseite im Backend
+	 */
+
+?>
+<div class="wpsg_admin_submenu">
+	 
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div>
+			
+</div>
+		
+<div class="wpsg_admin_content form-horizontal">
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo wpsg_hspc(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=konfiguration&noheader=1'); ?>">
+
+        <?php wp_nonce_field('wpsg-save-config'); ?>
+        
+    	<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Allgemeine Einstellungen', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">		  						
+				<?php if ($this->get_option("wpsg_version_installed", true) != WPSG_VERSION) { ?>
+				<div class="wpsg_form_field">
+					<div class="wpsg_form_left">
+						<span style="color:red;"><?php echo __("Update", "wpsg"); ?>:</span>
+					</div>
+					<div class="wpsg_form_right">
+						
+						<p>
+							<?php echo wpsg_translate(
+								__('Die Version der Datenbank stimmt nicht mit der installierten Version überein!<br />Bitte klicken Sie auf <a href="#1#">Aktualisieren</a> Produkte etc. werden dabei nicht gelöscht.', 'wpsg'),
+								wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=allgemein&do=update&submit=1&noheader=1', 'wpsg-admin-db-update')							
+							); ?>
+						</p>
+						
+						<a rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=DBUpdate" href="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=DBUpdate" class="wpsg_glyphicon_right glyphicon glyphicon-question-sign"></a>
+						
+					</div>
+					<div class="wpsg_clear"></div>
+				</div>
+				<?php } else { ?>
+				<?php wpsg_drawForm_TextStart(); ?>		
+				<?php echo WPSG_VERSION; ?>&nbsp;<a href="<?php 
+				
+					echo wp_nonce_url(WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Admin&subaction=allgemein&do=update&submit=1&noheader=1', 'wpsg-admin-db-update');
+					
+				?>"><?php echo __("Aktualisieren", "wpsg"); ?></a>
+				<?php echo wpsg_drawForm_TextEnd(__('Installierte DB Version', 'wpsg'), array('help' => 'DBUpdate')); ?>	
+				<?php } ?>
+				
+				<?php echo wpsg_drawForm_Input('wpsg_currency', __('Währung', 'wpsg'), $this->get_option('wpsg_currency'), array('help' => 'Einstellungen_Allgemein_Waehrung')); ?>
+				
+				<?php if (wpsg_isSizedArray($this->view['arLanguages'])) { ?>
+				<?php echo wpsg_drawForm_Select('wpsg_backend_language', __('Standardsprache (Backend)', 'wpsg'), $this->view['arLanguages'], $this->get_option('wpsg_backend_language'), array('help' => 'Einstellungen_Allgemein_Standardsprachebackend')); ?>
+				<?php } ?>
+							
+				<?php echo wpsg_drawForm_Input('wpsg_produkte_perpage', __('Produkte pro Seite', 'wpsg'), $this->get_option('wpsg_produkte_perpage'), array('help' => 'ProduktePerPage')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_order_perpage', __('Bestellungen pro Seite', 'wpsg'), $this->get_option('wpsg_order_perpage'), array('help' => 'Bestellung_pro_Seite')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_showincompleteorder', __('Unvollständige Best. in Bestellverwaltung anzeigen', 'wpsg'), $this->get_option('wpsg_showincompleteorder'), array('help' => 'unvollstaendige_Bestellung')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_emptyorder_clear', wpsg_translate(__('Bestellungen für 0 #1# direkt abschließen', 'wpsg'), $this->get_option('wpsg_currency')), $this->get_option('wpsg_emptyorder_clear'), array('help' => 'Bestellung_0')); ?>
+				<?php echo wpsg_drawForm_Select('wpsg_afterinsert', __('Nach neuem Produkt im Warenkorb', 'wpsg'), array(
+					'0' => __('Auf Seite bleiben', 'wpsg'),
+					'1' => __('Zum Warenkorb leiten', 'wpsg'),
+					'2' => __('Warenkorb im Fenster anzeigen', 'wpsg'),
+					'3' => __('Lightbox Meldung', 'wpsg')
+				), $this->get_option('wpsg_afterinsert'), array('help' => 'nach_Produkt_in_Warenkorb')); ?>		
+				<?php echo wpsg_drawForm_Select('wpsg_afterorder', __('Kundendaten nach Bestellung', 'wpsg'), array(
+					'0' => __('In Session belassen', 'wpsg'),
+					'1' => __('Löschen', 'wpsg')
+				), $this->get_option('wpsg_afterorder'), array('help' => 'Kundendaten_nach_Bestellung')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_format_knr', __('Formatierung Kundennummer', 'wpsg'), $this->get_option('wpsg_format_knr'), array('help' => 'Formatierung_Kundennummer')); ?>
+				<?php echo wpsg_drawForm_Select('wpsg_order_knr', __('Sortierung Kundennummer (Backend)', 'wpsg'), array('0' => __('Numerisch', 'wpsg'), '1' => __('Alphabetisch', 'wpsg')), $this->get_option('wpsg_order_knr'), array('help' => 'Kundennummersortierung')); ?>		
+				<?php echo wpsg_drawForm_Input('wpsg_customer_start', __('Start für Kundennummer', 'wpsg'), $this->get_option('wpsg_customer_start'), array('help' => 'Kundennummerstart')); ?>		
+				<?php echo wpsg_drawForm_Input('wpsg_format_onr', __('Formatierung Bestellnummer', 'wpsg'), $this->get_option('wpsg_format_onr'), array('help' => 'Formatierung_Bestellnummer')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_order_start', __('Start für Bestellnummer', 'wpsg'), $this->get_option('wpsg_order_start'), array('help' => 'Bestellnummerstart')); ?>
+				<?php echo wpsg_drawForm_Checkbox('wpsg_skip_checkout2', __('Auswahl der Zahlung/Versandart überspringen wenn möglich', 'wpsg'), $this->get_option('wpsg_skip_checkout2')); ?>
+			</div>
+		</div>	 
+		
+		<input type="hidden" name="subaction" value="konfiguration" />
+			
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+			
+	</form>		
+</div>

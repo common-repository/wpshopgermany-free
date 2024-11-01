@@ -1,0 +1,131 @@
+<?php
+
+	/**
+	 * Template für die allgemeinen Shopdaten
+	 */
+
+?> 
+
+<div class="wpsg_admin_submenu">
+	 
+	<div class="list-group">
+		<span class="list-group-head list-group-item"><?php echo __('Konfiguration'); ?></span>		
+		<?php foreach ($this->view['arSubAction'] as $k => $v) { ?>		 
+		<a class="list-group-item <?php echo (($k == $this->view['subAction'])?'active':''); ?>" href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $k; ?>"><?php echo $v['Menutext']; ?></a>		
+		<?php } ?>
+	</div>
+			
+</div>
+
+<div class="wpsg_admin_content form-horizontal">	
+	<form name="form1" method="post" enctype="multipart/form-data" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&amp;subaction=<?php echo $_REQUEST['subaction']; ?>&amp;noheader=1">
+		
+		<?php \wp_nonce_field('wpsg-save-admin-shopdata'); ?>
+		
+  		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Allgemeine Angaben', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">				
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_name', __('Name des Shops / Firma', 'wpsg'), $this->get_option('wpsg_shopdata_name'), array('help' => 'wpsg_shopdata_name')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_owner', __('Inhaber des Shops', 'wpsg'), $this->get_option('wpsg_shopdata_owner'), array('help' => 'wpsg_shopdata_owner')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_tel', __('Telefonnummer', 'wpsg'), $this->get_option('wpsg_shopdata_tel'), array('help' => 'wpsg_shopdata_tel')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_fax', __('Faxnummer', 'wpsg'), $this->get_option('wpsg_shopdata_fax'), array('help' => 'wpsg_shopdata_fax')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_email', __('E-Mail', 'wpsg'), $this->get_option('wpsg_shopdata_email'), array('help' => 'wpsg_shopdata_email')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_taxnr', __('Steuernummer', 'wpsg'), $this->get_option('wpsg_shopdata_taxnr'), array('help' => 'wpsg_shopdata_taxnr')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_ustidnr', __('USt-IdNr.', 'wpsg'), $this->get_option('wpsg_shopdata_ustidnr'), array('help' => 'wpsg_shopdata_ustidnr')); ?>		
+			</div>
+		</div>
+		
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Anschrift', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+		
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_street', __('Straße', 'wpsg'), $this->get_option('wpsg_shopdata_street'), array('help' => 'wpsg_shopdata_street')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_zip', __('Postleitzahl', 'wpsg'), $this->get_option('wpsg_shopdata_zip'), array('help' => 'wpsg_shopdata_zip')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_city', __('Ort', 'wpsg'), $this->get_option('wpsg_shopdata_city'), array('help' => 'wpsg_shopdata_city')); ?>			
+				<?php echo wpsg_drawForm_Select('wpsg_shopdata_eu', __('Hauptsitz des Shopbetreiber befindet sich:', 'wpsg'), Array(	
+					wpsg_AdminController::SHOPDATA_EU_GERMANY => __('in Deutschland', 'wpsg'),
+					wpsg_AdminController::SHOPDATA_EU_EU => __('innerhalb der EU', 'wpsg'),
+					wpsg_AdminController::SHOPDATA_EU_WORLD => __('im europäischen Ausland', 'wpsg')	
+				), $this->get_option('wpsg_shopdata_eu'), array('help' => 'wpsg_shopdata_eu')); ?>
+
+			</div>
+		</div>
+		
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Zweigstelle', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+				<?php echo wpsg_drawForm_Checkbox('wpsg_shopdata_2', __('Zweigstelle vorhanden', 'wpsg'), $this->get_option('wpsg_shopdata_2')); ?>
+					<div class="wpsg_shopdata_2_activ" style="display:none;">
+        				<?php echo wpsg_drawForm_Input('wpsg_shopdata_2_street', __('Straße', 'wpsg'), $this->get_option('wpsg_shopdata_2_street'), array('help' => 'wpsg_shopdata_2_street')); ?>
+        				<?php echo wpsg_drawForm_Input('wpsg_shopdata_2_zip', __('Postleitzahl', 'wpsg'), $this->get_option('wpsg_shopdata_2_zip'), array('help' => 'wpsg_shopdata_2_zip')); ?>
+        				<?php echo wpsg_drawForm_Input('wpsg_shopdata_2_city', __('Ort', 'wpsg'), $this->get_option('wpsg_shopdata_2_city'), array('help' => 'wpsg_shopdata_2_city')); ?>		
+        				<?php echo wpsg_drawForm_Input('wpsg_shopdata_2_country', __('Land', 'wpsg'), $this->get_option('wpsg_shopdata_2_country'), array('help' => 'wpsg_shopdata_2_country')); ?>		
+        				<?php echo wpsg_drawForm_Input('wpsg_shopdata_2_tel', __('Telefon', 'wpsg'), $this->get_option('wpsg_shopdata_2_tel'), array('help' => 'wpsg_shopdata_2_tel')); ?>
+        				<?php echo wpsg_drawForm_Input('wpsg_shopdata_2_fax', __('Fax', 'wpsg'), $this->get_option('wpsg_shopdata_2_fax'), array('help' => 'wpsg_shopdata_2_fax')); ?>
+        				<?php echo wpsg_drawForm_Input('wpsg_shopdata_2_email', __('E-Mail', 'wpsg'), $this->get_option('wpsg_shopdata_2_email'), array('help' => 'wpsg_shopdata_2_email')); ?>		
+					</div>
+			</div>
+		</div>
+		
+		<div class="panel panel-default">
+  			<div class="panel-heading clearfix">
+          		<h3 class="panel-title"><?php echo __('Bankdaten', 'wpsg'); ?></h3>
+        	</div>
+  			<div class="panel-body">
+		
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_bank_name', __('Name der Bank', 'wpsg'), $this->get_option('wpsg_shopdata_bank_name'), array('help' => 'wpsg_shopdata_bank_name')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_bank_owner', __('Kontoinhaber', 'wpsg'), $this->get_option('wpsg_shopdata_bank_owner'), array('help' => 'wpsg_shopdata_bank_owner')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_bank_iban', __('IBAN Nummer', 'wpsg'), $this->get_option('wpsg_shopdata_bank_iban'), array('help' => 'wpsg_shopdata_bank_iban')); ?>
+				<?php echo wpsg_drawForm_Input('wpsg_shopdata_bank_bic', __('BIC Nummer', 'wpsg'), $this->get_option('wpsg_shopdata_bank_bic'), array('help' => 'wpsg_shopdata_bank_bic')); ?>
+			
+			</div>
+		</div>
+		
+		<?php /* only Standort = Ausland */ ?>
+		<div class="wpsg_shopdata_eu wpsg_shopdata_eu_<?php echo wpsg_AdminController::SHOPDATA_EU_WORLD; ?>" style="display:<?php echo (($this->get_option('wpsg_shopdata_eu') == wpsg_AdminController::SHOPDATA_EU_WORLD || $this->get_option('wpsg_shopdata_eu') === false)?'block':'none'); ?>;">		
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+					<h3 class="panel-title"><?php echo __('EU-Vertreter', 'wpsg'); ?></h3>
+				</div>
+				<div class="panel-body">				
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_name', __('Name des EU-Vertreters', 'wpsg'), $this->get_option('wpsg_shopdata_eu_name'), array('help' => 'wpsg_shopdata_eu_name')); ?>
+					<br />
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_street', __('Straße', 'wpsg'), $this->get_option('wpsg_shopdata_eu_street'), array('help' => 'wpsg_shopdata_eu_street')); ?>
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_zip', __('Postleitzahl', 'wpsg'), $this->get_option('wpsg_shopdata_eu_zip'), array('help' => 'wpsg_shopdata_eu_zip')); ?>
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_city', __('Stadt', 'wpsg'), $this->get_option('wpsg_shopdata_eu_city'), array('help' => 'wpsg_shopdata_eu_city')); ?>
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_country', __('Land', 'wpsg'), $this->get_option('wpsg_shopdata_eu_country'), array('help' => 'wpsg_shopdata_eu_country')); ?>
+					<br />				
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_tel', __('Telefonnummer', 'wpsg'), $this->get_option('wpsg_shopdata_eu_tel'), array('help' => 'wpsg_shopdata_eu_tel')); ?>
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_fax', __('Faxnummer', 'wpsg'), $this->get_option('wpsg_shopdata_eu_fax'), array('help' => 'wpsg_shopdata_eu_fax')); ?>
+					<?php echo wpsg_drawForm_Input('wpsg_shopdata_eu_email', __('E-Mail', 'wpsg'), $this->get_option('wpsg_shopdata_eu_email'), array('help' => 'wpsg_shopdata_eu_email')); ?>
+				</div>
+			</div>
+		</div>
+	
+		<p class="submit"><input type="submit" value="<?php echo __('Einstellungen speichern', 'wpsg'); ?>" class="button-primary" id="submit" name="submit" /></p>
+		
+		<script type="text/javascript">/* <![CDATA[ */
+ 
+			jQuery(document).ready(function() {
+
+				jQuery('#wpsg_shopdata_2').bind('change', function() {
+
+					if (jQuery(this).is(':checked')) jQuery('.wpsg_shopdata_2_activ').show();
+					else jQuery('.wpsg_shopdata_2_activ').hide();
+					
+				} ).change();
+				
+
+			} );
+		
+		/* ]]> */</script>
+		
+  	</form>
+  	
+</div>

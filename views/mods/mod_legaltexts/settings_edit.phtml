@@ -1,0 +1,77 @@
+<?php
+
+	/**
+	 * Template für das Modul "Rechtstexte"
+	 */
+		
+?>
+
+<div class="wpsg_mod_legaltext_select">
+	
+	<label class="bg-info mark <?php echo (($this->view['wpsg_mod_legaltexts_provider'] == wpsg_mod_legaltexts::PROVIDER_ITRECHT)?'open':''); ?>" title="<?php echo __('Premiumpartner', 'itrecht'); ?>">
+		
+		<input type="radio" <?php echo (($this->view['wpsg_mod_legaltexts_provider'] == wpsg_mod_legaltexts::PROVIDER_ITRECHT)?'checked="checked"':''); ?> name="wpsg_mod_legaltexts_provider" class="wpsg_mod_legaltexts_provider" value="<?php echo wpsg_mod_legaltexts::PROVIDER_ITRECHT; ?>" />
+		<span class="name"><?php echo __('IT-Recht Kanzlei München') ?></span>
+		<span class="grow"></span>
+		<span class="text-info glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+				
+	</label>
+	
+	<div class="wpsg_provider_target wpsg_provider_target_<?php echo wpsg_mod_legaltexts::PROVIDER_ITRECHT; ?>"></div>
+
+	<label class="<?php echo (($this->view['wpsg_mod_legaltexts_provider'] == wpsg_mod_legaltexts::PROVIDER_PROTECTEDSHOPS)?'open':''); ?>">
+
+		<input type="radio" <?php echo (($this->view['wpsg_mod_legaltexts_provider'] == wpsg_mod_legaltexts::PROVIDER_PROTECTEDSHOPS)?'checked="checked"':''); ?> name="wpsg_mod_legaltexts_provider" class="wpsg_mod_legaltexts_provider" value="<?php echo wpsg_mod_legaltexts::PROVIDER_PROTECTEDSHOPS; ?>" />
+		<span class="name"><?php echo __('Protected Shops') ?></span>
+
+	</label>
+
+	<div class="wpsg_provider_target wpsg_provider_target_<?php echo wpsg_mod_legaltexts::PROVIDER_PROTECTEDSHOPS; ?>"></div>
+
+	<label class="<?php echo (($this->view['wpsg_mod_legaltexts_provider'] == wpsg_mod_legaltexts::PROVIDER_HAENDLERBUND)?'open':''); ?>">
+
+		<input type="radio" <?php echo (($this->view['wpsg_mod_legaltexts_provider'] == wpsg_mod_legaltexts::PROVIDER_HAENDLERBUND)?'checked="checked"':''); ?> name="wpsg_mod_legaltexts_provider" class="wpsg_mod_legaltexts_provider" value="<?php echo wpsg_mod_legaltexts::PROVIDER_HAENDLERBUND; ?>" />
+		<span class="name"><?php echo __('Händlerbund') ?></span>
+
+	</label>
+
+	<div class="wpsg_provider_target wpsg_provider_target_<?php echo wpsg_mod_legaltexts::PROVIDER_HAENDLERBUND; ?>"></div>
+	
+</div> 
+ 
+<script type="text/javascript">/* <![CDATA[ */
+
+	jQuery(document).ready(function() {
+
+		jQuery('.wpsg_mod_legaltexts_provider').bind('change', function() {
+
+			if (parseInt(jQuery('input[name=wpsg_mod_legaltexts_provider]:checked').val()) > 0) {
+
+				jQuery('.wpsg_mod_legaltext_select > label').removeClass('open');
+				jQuery('.wpsg_provider_target').slideUp(125);
+				
+				var target = '.wpsg_provider_target_' + jQuery('input[name=wpsg_mod_legaltexts_provider]:checked').val();
+				
+				jQuery(target).html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+				
+				jQuery.ajax( {
+					url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Admin&action=module&modul=wpsg_mod_legaltexts&noheader=1&do=add',
+					data: {
+						'provider': jQuery('input[name=wpsg_mod_legaltexts_provider]:checked').val()
+					},
+					success: function(data) {
+	
+						jQuery(target).prev().addClass('open');
+						jQuery(target).html(data);
+						jQuery(target).slideDown(125);
+						
+					}
+				} );
+				
+			}
+			
+		} ).change();
+		
+	} );
+
+/* ]]> */</script>

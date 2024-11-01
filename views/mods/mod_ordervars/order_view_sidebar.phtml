@@ -1,0 +1,64 @@
+<?php
+
+	/**
+	 * Template für die Integration der Bestellvariablen in die Bestellverwaltung
+	 */
+
+?>
+	
+	<?php echo wpsg_drawForm_AdminboxStart(__('Bestellvariablen', 'wpsg')); ?>
+	
+		<?php foreach ($this->view['wpsg_mod_ordervars']['data'] as $ov_id => $ov) { ?>
+			
+			<?php echo wpsg_drawForm_Text(
+				$this->callMod('wpsg_mod_ordervars', 'getNameById', array($ov['id'])),
+				$this->callMod('wpsg_mod_ordervars', 'getValueByIdAndOrder', array($ov_id, $_REQUEST['edit_id'])),
+				'wpsg_ordervar_'.$ov_id
+			); ?>
+			
+			<script type="text/javascript">/* <![CDATA[ */
+
+				<?php if ($ov['typ'] == '1') { /* Auswahl */ ?>
+				jQuery('#wpsg_ordervar_<?php echo $ov_id; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_ordervars&do=inlinedit&noheader=1', { 
+					submitdata: {
+						order_id: <?php echo $_REQUEST['edit_id']; ?>,
+						ov_id: '<?php echo $ov['id']; ?>'
+					},
+					submit  : '<?php echo __('Speichern', 'wpsg'); ?>',
+					data   : <?php echo wpsg_prepare_for_inlineEdit(wpsg_array_merge((array)$ov['auswahl'], array('not_set' => __('Keine Angabe', 'wpsg')))); ?>,
+					type   : 'select',
+					placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+					indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+			    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+				});		
+				<?php } else if ($ov['typ'] == '2') { /* Text */ ?>			                                            
+				jQuery('#wpsg_ordervar_<?php echo $ov_id; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_ordervars&do=inlinedit&noheader=1', {
+					submitdata: {
+						order_id: <?php echo $_REQUEST['edit_id']; ?>,
+						ov_id: '<?php echo $ov['id']; ?>'
+					},
+					submit: '<?php echo __('Speichern', 'wpsg'); ?>',
+					placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+					indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+			    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+				});
+				<?php } else if ($ov['typ'] == '3') { /* Checkbox */ ?>
+				jQuery('#wpsg_ordervar_<?php echo $ov_id; ?>').wpsg_editable('<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_ordervars&do=inlinedit&noheader=1', { 
+					submitdata: {
+						order_id: <?php echo $_REQUEST['edit_id']; ?>,
+								ov_id: '<?php echo $ov['id']; ?>'
+					},
+					submit  : '<?php echo __('Speichern', 'wpsg'); ?>',
+					data   : <?php echo wpsg_prepare_for_inlineEdit(array('1' => __('Ja', 'wpsg'), '0' => __('Nein', 'wpsg'))); ?>,
+					type   : 'select',
+					placeholder: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>',
+					indicator: '<?php echo __('Speicher ...', 'wpsg'); ?>',
+			    	tooltip: '<?php echo __('Zum Bearbeiten anklicken ...', 'wpsg'); ?>'
+				});
+				<?php } ?>
+        
+			/* ]]> */</script>
+			
+		<?php } ?>
+	
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>

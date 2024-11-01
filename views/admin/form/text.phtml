@@ -1,0 +1,44 @@
+<div class="form-group form-group-text form-group-sm <?php echo ((wpsg_isSizedString($this->view['field_config']['help']))?'has-feedback':''); ?> <?php echo wpsg_getStr($this->view['field_config']['class_wrap']); ?>">
+
+	<label class="col-sm-6 control-label" for=""><?php echo $this->view['field_label']; ?></label>
+	
+	<div class="col-sm-6 <?php echo wpsg_getStr($this->view['field_config']['class_content_wrap']); ?>">
+		<div class="wpsg_field_wrap">
+
+            <?php if (wpsg_isTrue($this->view['field_config']['noP'])) { ?>
+            <span <?php echo ((wpsg_isSizedString($this->view['field_id']))?' id="'.$this->view['field_id'].'" ':''); ?>><?php echo $this->view['field_value']; ?></span>
+            <?php } else { ?>
+			<p <?php echo ((wpsg_isSizedString($this->view['field_id']))?' id="'.$this->view['field_id'].'" ':''); ?> class="form-control-static"><?php echo $this->view['field_value']; ?></p>
+            <?php } ?>
+				
+			<?php if (wpsg_isSizedString($this->view['field_config']['help'])) { ?>
+				<a href="#" data-wpsg-tip="<?php echo $this->view['field_config']['help']; ?>" rel="?page=wpsg-Admin&subaction=loadHelp&noheader=1&field=<?php echo $this->view['field_config']['help']; ?>" class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+			<?php } ?>
+            
+		</div>
+	</div>
+
+    <?php if (wpsg_isTrue($this->view['field_config']['inlineEdit'])) { ?>
+    <script type="text/javascript">/* <![CDATA[ */
+
+        jQuery(document).ready(function() {
+
+            jQuery('#<?php echo $this->view['field_id']; ?>').wpsg_editable('<?php echo $this->view['field_config']['inlineEdit_url']; ?>', {
+                'placement': 'bottom'
+                <?php if (wpsg_isSizedString($this->view['field_config']['inlineEdit_type'])) { ?>
+                ,'type': '<?php echo $this->view['field_config']['inlineEdit_type']; ?>'                
+                <?php } ?>
+                <?php if (wpsg_isSizedString($this->view['field_config']['inlineEdit_source'])) { ?>
+                , 'data': <?php echo $this->view['field_config']['inlineEdit_source']; ?>
+                <?php } ?>
+                <?php if (wpsg_isSizedString($this->view['field_config']['inlineEdit_callback'])) { ?>
+                , 'callback': function(response, newValue) { <?php echo $this->view['field_config']['inlineEdit_callback']; ?>(response, newValue); }
+                <?php } ?>
+            } );
+
+        } );
+
+    /* ]]> */</script>
+    <?php } ?>
+	
+</div>

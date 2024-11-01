@@ -1,0 +1,35 @@
+<?php
+
+	/**
+	 * Template für die Liste der Profile
+	 */
+
+    $arProfilSelect = array();
+
+    foreach ($this->view['arProfile'] as $p)
+	{
+	
+		$arProfilSelect[$p['id']] = $p['name'];
+		
+		if ($p['export_type'] === wpsg_mod_export::TYPE_ORDER) $arProfilSelect[$p['id']] .= ' ('.__('Bestellexport', 'wpsg').')';
+		else if ($p['export_type'] === wpsg_mod_export::TYPE_PRODUCT) $arProfilSelect[$p['id']] .= ' ('.__('Produktexport', 'wpsg').')';
+		else if ($p['export_type'] === wpsg_mod_export::TYPE_CUSTOMER) $arProfilSelect[$p['id']] .= ' ('.__('Kundenexport', 'wpsg').')';
+		
+	}
+
+?>
+
+<?php if (sizeof($this->view['arProfile']) > 0) { ?>
+<?php echo wpsg_drawForm_Select('wpsg_mod_export[profil]', __('Exportprofile', 'wpsg'), $arProfilSelect, @$this->view['profil_id'], array('id' => 'wpsg_mod_export_profil', 'onchange' => 'wpsg_mod_export_profilSwitch();')); ?>
+<div id="profil_content" style="padding:15px 0px 15px 0px;"></div>
+<?php } else { ?>
+<p><?php echo __('Bisher noch keine Profile angelegt.', 'wpsg'); ?></p>
+<?php } ?>
+
+<script type="text/javascript">
+
+	jQuery(document).ready(function() {
+		wpsg_mod_export_profilSwitch();
+	} );
+
+</script>

@@ -1,0 +1,256 @@
+<script type="text/javascript">
+				
+	jQuery(document).ready(function() { 
+ 
+		kk_switchTemplate();
+						
+	} );	
+
+	/**
+	 *
+	 */
+	function kk_switchTemplate()
+	{
+ 
+		var template_val = jQuery("#kk_template").val();
+
+		if (template_val != "-1")
+		{
+
+			jQuery.ajax( { 
+				url: "<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_kundenkontakt&edit_id='.$this->view['data']['id'].'&noheader=1&do=kk_switchTemplate' ?>",
+				dataType: 'json',
+				data: {					
+					template_file: template_val
+				},
+				success: function(data) {
+					
+					jQuery("#kk_subject").val(data.subject);
+					
+					<?php if ($this->get_option('wpsg_htmlmail') === '1') { ?>
+					jQuery('#kk_html').html(data.content); 
+					tinyMCE.get("kk_html").setContent(data.content);					
+					<?php } else { ?>
+					jQuery("#kk_text").text(data.content);
+					<?php } ?>					
+					
+				}
+			} ); 
+			
+		}
+		else
+		{
+			
+			jQuery("#kk_subject").val('');			
+			jQuery("#kk_template").val(-1);
+
+			<?php if ($this->get_option('wpsg_htmlmail') === '1') { ?>
+			jQuery('#kk_html').html(''); 
+			//tinyMCE.get("kk_html").setContent('');
+			<?php } else { ?>
+			jQuery("#kk_text").text('');
+			<?php } ?>
+			
+		}
+		
+	}
+
+	/**
+	 *
+	 */
+	function kk_sendMail()
+	{
+		
+		if (jQuery('#kk_subject').val() == '')
+		{
+
+			alert("<?php echo __('Bitte einen Betreff angeben!', 'wpsg'); ?>");
+			return;
+			
+		}
+
+		if (jQuery('#kk_text').val() == '')
+		{
+
+			alert("<?php echo __('Bitte einen Text angeben!', 'wpsg'); ?>");
+			return;
+			
+		}
+
+		var text = "";
+
+		<?php if ($this->get_option('wpsg_htmlmail') === '1') { ?>
+		text = tinyMCE.get('kk_html').getContent();
+		<?php } else { ?>
+		text = jQuery('#kk_text').val();
+		<?php } ?>
+		
+		jQuery.ajax( {
+			url: "<?php echo WPSG_URL_WP.'wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_kundenkontakt&edit_id='.$this->view['data']['id'].'&noheader=1&do=kk_sendMail' ?>",
+			method: 'post',
+			data: {
+				text: text,				
+				absendermail: jQuery('#kk_absendermail').val(),
+				absendername: jQuery('#kk_absendername').val(),
+				subject: jQuery('#kk_subject').val(),
+				empfaenger: "<?php echo $this->view['data']['email']; ?>"
+			},
+			success: function(data) {
+				
+				if (data != '1')
+				{
+					alert("<?php echo __("Mail konnte nicht versendet werden es ist ein Fehler aufgetreten!", "wpsg"); ?>");
+				}
+				else
+				{
+
+					<?php if ($this->get_option('wpsg_htmlmail') === '1') { ?>
+					tinyMCE.get('kk_html').setContent('');
+					<?php } else { ?>
+					jQuery('#kk_text').html('');
+					<?php } ?>
+					
+					jQuery('#kk_subject').val('');
+					jQuery('#kk_absendermail').val('');
+					jQuery('#kk_absendername').val('');
+					jQuery('#kk_template').val(-1);
+
+					alert("<?php echo __('Mail wurde erfolgreich an den Kunden gesendet.', 'wpsg'); ?>");
+
+					location.reload();
+					
+				}
+				
+			}
+			
+		} );	
+		
+	}
+	
+	
+</script>
+<?php //wpsg_debug($this->view) ?>
+<?php echo wpsg_drawForm_AdminboxStart(__('Kundenkontakt', 'wpsg'));?>
+	
+	<div class="inside">						
+		<div style="padding:5px;">
+			
+			<form method="post" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_kundenkontakt&edit_id=<?php echo $this->view['data']['id']; ?>&noheader=1">	
+					
+				<label><?php echo __("Template", "wpsg"); ?>:</label>
+				<select name="kk_template" class="wpsg_kundenkontakt_template" id="kk_template" onchange="kk_switchTemplate();">
+					<option value="-1"><?php echo __("Bitte auswählen", "wpsg"); ?></option>
+					<?php foreach ($this->view['arTemplates'] as $k => $v) { ?>
+						<option value="<?php echo rawurlencode($v['filename']); ?>"><?php echo htmlspecialchars($v['name']); ?></option>
+					<?php } ?>
+				</select>			
+				<div class="wpsg_clear"></div>
+									
+				<label><?php echo __("Betreff", "wpsg"); ?>:</label>
+				<input type="text" name="kk_subject" class="wpsg_kundenkontakt_betreff" id="kk_subject" />
+				<div class="wpsg_clear"></div>
+							
+				<?php if ($this->get_option('wpsg_htmlmail') === '1') { ?>				
+				
+					<?php echo __('Text (HTML)', 'wpsg'); ?>:<br /><br />		
+					
+					<?php wp_editor('', 'kk_html'); ?>
+					
+				
+				<div class="wpsg_clear"></div>
+				<?php } else { ?>			
+				<label><?php echo __("Text", "wpsg"); ?>:<br /></label>
+				<textarea id="kk_text" class="wpsg_kundenkontakt_textarea"></textarea>
+				<div class="wpsg_clear"></div>
+				<?php } ?>
+									
+				<br />
+				<input type="button" class="button" onclick="kk_sendMail(); return false;" value="<?php echo __("Absenden", "wpsg"); ?>" style="float:right;" />
+				<div class="wpsg_clear"></div>
+				
+			</form>
+						
+		</div>
+	</div>
+
+<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+
+<?php if ($this->get_option('wpsg_mod_kundenkontakt_smsflatrate_active') === '1') { ?>
+	<?php echo wpsg_drawForm_AdminboxStart(__('SMS Versand', 'wpsg'));?>
+	
+		<div class="inside">
+			<div style="padding:5px;">
+		
+				<form id="sms_form" method="post" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_kundenkontakt&edit_id=<?php echo $this->view['data']['id']; ?>&do=sms_submit&noheader=1">
+		
+					<input type="hidden" name="_wpnonce" value="<?php echo \wp_create_nonce('wpsg_mod_kundenkontakt_sms_form_'.$this->view['data']['id']); ?>" />
+					
+					<p>Mit diesem Formular kann eine SMS an den Kunden versendet werden.</p>
+										
+					<br />
+				
+					<div id="numbercheck">
+						<?php if ($this->view['valid'] === true) { ?>
+						
+							<div class="alert alert-success">
+								<?php echo wpsg_translate(__('Die Telefonnummer #1# ist gültig.', 'wpsg'), $this->view['phone']); ?>
+							</div>
+							
+						<?php } else { ?>
+		
+							<div class="alert alert-danger">
+								<?php echo wpsg_translate(__('Die Telefonnummer #1# ist nicht gültig.', 'wpsg'), $this->view['phone']); ?>
+							</div>
+						
+						<?php } ?>
+					</div>			
+	
+					<br />
+					
+					<?php echo wpsg_drawForm_Input('phone', __('Empfänger', 'wpsg'), $this->view['phone']); ?>
+					
+					<br />
+		
+					<textarea id="text" name="text" <?php echo (($this->view['valid'] === true)?'':'disabled="disabled"'); ?> style="width:100%; height:100px;"></textarea>
+		
+					<input type="submit" id="sms_submit" <?php echo (($this->view['valid'] === true)?'':'disabled="disabled"'); ?> value="<?php echo __('SMS Senden', 'wpsg'); ?>" class="button" style="float:right; margin-top:15px;" />
+		
+					<script>
+						
+						jQuery('#phone').on('input', function() {
+	
+							jQuery('#numbercheck').html('<img src="<?php echo WPSG_URL; ?>views/gfx/ajax-loader.gif" alt="<?php echo __('Bitte warten ...', 'wpsg'); ?>" />');
+							
+							jQuery('#text').prop('disabled', true);
+							jQuery('#sms_submit').prop('disabled', true);
+							
+							jQuery.ajax( {
+								url: '<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Order&action=ajax&mod=wpsg_mod_kundenkontakt&noheader=1&edit_id=<?php echo $_REQUEST['edit_id']; ?>&do=validateNumber',
+								data: {
+									'phone': jQuery('#phone').val()
+								},
+								success: function(data) {
+	
+									if (data.valid) {
+									
+										jQuery('#text').prop('disabled', false);
+										jQuery('#sms_submit').prop('disabled', false);
+										
+									}
+	
+									jQuery('#numbercheck').html(data.text);
+									
+								}
+							} );
+							
+						} );
+						
+					</script>
+					
+				</form>		
+			
+			</div>
+		</div>
+	
+	<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+<?php } ?>

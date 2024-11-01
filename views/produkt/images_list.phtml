@@ -1,0 +1,36 @@
+<?php
+	
+	/**
+	 * Template für die Liste der Bilder eines Produkts
+	 */
+
+?>
+
+<?php if (wpsg_isSizedArray($this->view['productImages'])) { ?>
+
+	<?php foreach ($this->view['productImages'] as $attachment_id) { ?>
+	
+		<div id="produktbild_div_<?php echo $attachment_id; ?>" class="wpsg_mod_produktbilder_admin_bild">
+
+			<a id="produktbild_<?php echo $attachment_id; ?>" onclick="return wpsg_remove_bild_MT('<?php echo $attachment_id; ?>');" href="#" title="<?php echo __('Dieses Bild löschen.', 'wpsg'); ?>">
+				
+				<div class="box_img_wrap wpsg_be_imagelist_image">
+												
+					<?php echo wp_get_attachment_image($attachment_id, 'medium'); ?>
+						
+				</div>
+				  
+				<span><span class="glyphicon glyphicon-trash"></span></span>
+			</a>
+			
+		</div>
+	
+	<?php } ?>
+    
+	<div class="wpsg_clear"></div>
+
+<?php } else { ?>
+    
+    <p><?php echo __('Bisher keine Produktbilder hochgeladen.', 'wpsg'); ?></p>
+    
+<?php } ?>

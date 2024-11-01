@@ -1,0 +1,103 @@
+<?php
+
+	/**
+	 * Template für den Reiter "Allgemein" der Produktverwaltung
+	 */
+
+?>
+
+<div class="general-panel-block">
+	<div class="general-panel-general">
+		<?php echo wpsg_drawForm_AdminboxStart(__('Allgemein', 'wpsg')); ?>
+
+		<?php echo wpsg_drawForm_Input('name', __('Produktname', 'wpsg'), wpsg_getStr($this->view['data']['name']), array('placeholder' => __('Bitte hier den Produktnamen eingeben', 'wpsg'))); ?>
+
+		<?php echo wpsg_drawForm_Select('disabled', __('Produktstatus', 'wpsg'), array('0' => __('veröffentlicht', 'wpsg'), '1' => __('Entwurf', 'wpsg')), wpsg_getStr($this->view['data']['disabled'])); ?>
+
+		<?php if ($this->isMultiLingual()) { ?>
+		<?php echo wpsg_drawForm_TextStart(); ?>
+		<?php foreach ($this->getStoreLanguages() as $a) { ?>
+		<?php if ((isset($_REQUEST['wpsg_lang']) && $_REQUEST['wpsg_lang'] != $a['lang']) || (!isset($_REQUEST['wpsg_lang']) && $a['lang'] != $this->getDefaultLanguageCode())) { ?>
+		<?php if (isset($_REQUEST['wpsg_lang']) && $a['lang'] == $this->getDefaultLanguageCode()) { ?>
+		<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id=<?php echo $_REQUEST['edit_id']; ?>" title="<?php echo wpsg_translate(__('Zu Sprache #1# wechseln.', 'wpsg'), $a['name']); ?>">
+			<?php } else { ?>
+			<a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&action=edit&edit_id=<?php echo $_REQUEST['edit_id']; ?>&wpsg_lang=<?php echo $a['lang']; ?>" title="<?php echo wpsg_translate(__('Zu Sprache #1# wechseln.', 'wpsg'), $a['name']); ?>">
+				<?php } ?>
+				<img src="<?php echo $this->getFlagURL().$a['flag']; ?>" alt="<?php echo wpsg_translate(__('Zu Sprache #1# wechseln.', 'wpsg'), $a['name']); ?>" />
+			</a>
+			<?php } ?>
+			<?php } ?>
+			<?php echo wpsg_drawForm_TextEnd(__('Übersetzungen', 'wpsg')); ?>
+			<?php } ?>
+			<?php echo wpsg_drawForm_Input('detailname', __('Produktname (Detail)', 'wpsg'), wpsg_getStr($this->view['data']['detailname'])); ?>
+			<?php echo wpsg_drawForm_Input('shortdesc', __('Produktbeschreibung (Kurz)', 'wpsg'), wpsg_getStr($this->view['data']['shortdesc'])); ?>
+			<?php if (wpsg_isSizedInt($this->view['data']['id']) && !isset($_REQUEST['wpsg_lang'])) { ?>
+				<?php echo wpsg_drawForm_Input(false, __('Produkt ID', 'wpsg'), wpsg_getStr($this->view['data']['id']), array('readonly' => true)); ?>
+			<?php } ?>
+			<?php if (!isset($_REQUEST['wpsg_lang'])) { ?>
+				<?php echo wpsg_drawForm_Input('anr', __('Artikelnummer', 'wpsg'), wpsg_getStr($this->view['data']['anr'])); ?>
+				<?php if (!is_array($this->view['templates']) || sizeof($this->view['templates']) <= 0) { ?>
+					<?php echo wpsg_drawForm_Text(__('Produkttemplate', 'wpsg'), __('Keine Templatesdateien gefunden!', 'wpsg'), array('class_content_wrap' => 'wpsg_error')); ?>
+				<?php } else { ?>
+					<?php /* $this->view['templates'][-1] = __('Bitte auswählen', 'wpsg'); ksort($this->view['templates']); */ ?>
+					<?php echo wpsg_drawForm_Select('ptemplate_file', __('Produkttemplate', 'wpsg'), $this->view['templates'], wpsg_getStr($this->view['data']['ptemplate_file']), array('noKeys' => true)); ?>
+				<?php } ?>
+			<?php } ?>
+			<?php if (!$this->hasMod('wpsg_mod_produktartikel')) { ?>
+				<?php echo wpsg_drawForm_Select('partikel', __('Zugeordneter Wordpress Artikel', 'wpsg'), $this->view['partikel_select'], wpsg_getStr($this->view['data']['partikel']), array('optgroup' => true)); ?>
+			<?php } ?>
+			<?php if (!isset($_REQUEST['wpsg_lang'])) { ?>
+				<?php echo wpsg_drawForm_Select('basket_multiple', __('Verhalten im Warenkorb', 'wpsg'), array(
+					'0' => __('Nur einmal mit beliebiger Menge (Standard)', 'wpsg'),
+					'4' => __('Nur einmal mit Menge 1', 'wpsg'),
+					'1' => __('Mehrfach mit beliebiger Menge', 'wpsg'),
+					'2' => __('Mehrfach mit Menge 1', 'wpsg')
+				), wpsg_getStr($this->view['data']['basket_multiple']), array('help' => 'basket_multiple')); ?>
+			<?php } ?>
+
+			<br />
+
+			<?php if (wpsg_isSizedInt($this->view['data']['id'])) { ?>
+				<?php echo wpsg_drawForm_TextStart(); $url = $this->getProduktLink(array('id' => ((wpsg_isSizedInt($this->view['data']['id']))?$this->view['data']['id']:$this->view['data']['id']))); ?>
+				<a href="<?php echo $url; ?>"><?php echo wpsg_hspc($url); ?></a>
+				<?php echo wpsg_drawForm_TextEnd(__('URL', 'wpsg')); ?>
+			<?php } ?>
+
+			<?php /* Shortcode */ ?>
+			<?php if (wpsg_isSizedInt($this->view['data']['id'])) { ?>
+				<?php echo wpsg_drawForm_Input(false, __('Shortcode', 'wpsg'), '[wpshopgermany product="'.$this->view['data']['id'].'"]', array('readonly' => true)); ?>
+			<?php } ?>
+
+			<?php if (!isset($_REQUEST['wpsg_lang'])) { ?>
+				<?php $arSelect = array('0' => __('Nicht anzeigen', 'wpsg'), '1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'); ?>
+				<?php if (defined('STO_PATH')) $arSelect['-1'] = __('Aus Kommentarbewertung', 'wpsg'); ?>
+				<?php echo wpsg_drawForm_Select('rating', __('Bewertungspunkte', 'wpsg'), $arSelect, wpsg_getInt($this->view['data']['rating'])); ?>
+			<?php } ?>
+
+			<?php $this->callMods('produkt_edit_allgemein', array(&$this->view['data'])); ?>
+
+			<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+	</div>
+
+	<div class="general-panel-subblock">
+		<div class="general-panel-ordercondition">
+			<?php if ($this->hasMod('wpsg_mod_ordercondition')) { ?>
+
+				<?php $this->callMod('wpsg_mod_ordercondition', 'produkt_edit_sidebar', array(&$this->view['data'])); ?>
+
+			<?php } ?>
+		</div>
+
+		<div class="general-panel-urlnotification">
+			<?php if (!isset($_REQUEST['wpsg_lang'])) { ?>
+			<?php echo wpsg_drawForm_AdminboxStart(__('URL Benachrichtigung', 'wpsg')); ?>
+				<?php echo wpsg_drawForm_Input('posturl', __('URL', 'wpsg'), wpsg_getStr($this->view['data']['posturl']), array('help' => 'URLBenachrichtigung')); ?>
+				<?php echo wpsg_drawForm_Checkbox('posturl_verkauf', __('Beim Verkauf', 'wpsg'), wpsg_getStr($this->view['data']['posturl_verkauf'])); ?>
+				<?php echo wpsg_drawForm_Checkbox('posturl_bezahlung', __('Bei Bezahlung', 'wpsg'), wpsg_getStr($this->view['data']['posturl_bezahlung'])); ?>
+			<?php echo wpsg_drawForm_AdminboxEnd(); ?>
+			<?php } ?>
+		</div>
+	</div>
+
+</div>
+

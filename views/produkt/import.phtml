@@ -1,0 +1,77 @@
+<?php
+
+	/**
+	 * Template für die Importmaske in der Produktverwaltung
+	 */
+
+?>
+<div class="wpsg_productgroups" id="wpsg-bs">
+
+    <nav class="navbar navbar-default">
+
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#"><?php echo __('wpShopGermany', 'wpsg'); ?></a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-customer-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li role="presentation" class="wpsg-customer-tab-a active"><a href="#" onclick="return false;"><?php echo __("Produktverwaltung - Produktdatenimport", "wpsg"); ?></a></li>
+	          		</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li role="presentation" class="wpsg-customer-tab-a wpsg_showhide_filter" id="wpsg-customer-tab-0"><a href="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&amp;action=index" class="add-new-h2"><span class="glyphicon glyphicon-search"></span><?php echo __("Zurück zur Produktverwaltung", "wpsg"); ?></a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	<div class="wpsg-filter wpsg-customer-tab wpsg-customer-tab-0 container-fluid from horizontal" >
+		<div class="row">	
+			<div class="col-lg-4">
+					
+				<form method="POST" action="<?php echo WPSG_URL_WP; ?>wp-admin/admin.php?page=wpsg-Produkt&amp;action=import&noheader=1" id="import_form" enctype="multipart/form-data">
+				
+					<?php echo wp_nonce_field('wpsg-product-import-do'); ?>
+					
+					<div class="wpsg_hinweis"><?php echo __('Laden Sie ein vorher exportiertes CSV File hoch, die Produktdaten werden dann aus dieser Datei importiert.', 'wpsg'); ?></div>
+					<br />
+				
+					<input type="file" id="wpsg_importfile" name="wpsg_importfile" />
+					
+					<br /><br />
+					<input type="submit" class="button-primary" value="<?php echo __('Import der Produktedaten starten', 'wpsg'); ?>" name="wpsg_import" />
+					
+				</form>
+				
+				<script type="text/javascript">/* <![CDATA[ */
+							  
+					jQuery('#import_form').on('submit', function(evt) {
+									 
+						var file = jQuery('#wpsg_importfile')[0].files[0];
+									
+						if (file && file.size < <?php echo wpsg_get_file_upload_max_size(); ?>){
+										
+							return true;
+										
+						} else if (file) {
+										
+							alert("<?php echo wpsg_translate(__('Dateigröße übersteigt Upload Limit von #1#.', 'wpsg'), wpsg_formatSize(wpsg_get_file_upload_max_size())); ?>");
+										
+							evt.preventDefault();
+							return false;
+								
+						} else {
+						
+							alert("<?php echo wpsg_translate(__('Es wurde keine Datei ausgewählt.', 'wpsg')); ?>");
+										
+							evt.preventDefault();
+							return false;
+											
+						}
+															
+					} );
+													
+				/* ]]> */</script>
+				
+			</div>
+		</div>
+	</div>
+</div>

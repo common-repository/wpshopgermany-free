@@ -1,0 +1,33 @@
+<?php
+
+ /**
+  * Template für die Registrierung während des Checkouts
+  * wird von checkout.phtml eingebunden
+  */
+
+?>
+<label for="checkout_login" style="line-height:35px; margin-top:25px; cursor:pointer;">    
+	<?php /* display:none, bis Option aktiv */ ?>   
+  	<input <?php echo ((in_array("mod_kundenverwaltung_pwd1", (array)$this->view['error']))?'checked="checked"':''); ?> type="checkbox" id="checkout_login" value="" onclick="jQuery('#checkout_login_fields').toggle();">&nbsp;
+ <span class="wpsg-checkbox-label">Ich möchte ein Kundenkonto anlegen.</span>
+</label>         
+
+<?php /* aktiv bei Registrierungszwang - aktiv bei Fehlermeldung */ ?>
+<div id="checkout_login_fields" style="display:<?php echo ((in_array("mod_kundenverwaltung_pwd1", (array)$this->view['error']))?'block':'none'); ?>;">    
+ <div class="wpsg_checkoutblock">
+  <label for="wpsg_mod_kundenverwaltung_pwd1"><?php echo __("Passwort", "wpsg"); ?>
+  <?php if ($this->get_option('wpsg_mod_kundenverwaltung_showCheckoutRegisterzwang') == '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+  </label>
+  <input class="wpsg_checkout <?php echo (($this->get_option('wpsg_mod_kundenverwaltung_showCheckoutRegisterzwang') == '1')?'validate[required]':''); ?> <?php echo ((in_array("mod_kundenverwaltung_pwd1", (array)$this->view['error']))?'wpsg_error':''); ?>" type="password" id="mod_kundenverwaltung_pwd1" name="wpsg[mod_kundenverwaltung][pwd1]" value="" />   
+ </div>
+
+ <div class="wpsg_checkoutblock">  
+  <label for="wpsg_mod_kundenverwaltung_pwd2"><?php echo __("Passwort wiederholen", "wpsg"); ?>
+  <?php if ($this->get_option('wpsg_mod_kundenverwaltung_showCheckoutRegisterzwang') == '1') { ?><span class="wpsg_required">*</span><?php } ?>:
+  </label>
+  <input class="wpsg_checkout <?php echo (($this->get_option('wpsg_mod_kundenverwaltung_showCheckoutRegisterzwang') == '1')?'validate[required]':''); ?> <?php echo ((in_array("mod_kundenverwaltung_pwd2", (array)$this->view['error']))?'wpsg_error':''); ?>" type="password" id="wpsg_mod_kundenverwaltung_pwd2" name="wpsg[mod_kundenverwaltung][pwd2]" value="" />
+ </div>
+
+ <div class="wpsg_clear"></div>
+ 
+</div>

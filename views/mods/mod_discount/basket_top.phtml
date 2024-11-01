@@ -1,0 +1,14 @@
+<?php
+	
+	/**
+	 * Template für die Integration des nächsten Warenkorbrabattes über dem Warenkorb
+	 */
+
+?>
+<div id="wpsg_notice">
+	<p><?php echo wpsg_translate(
+			__('Ab einem Bestellwert von #1# erhalten Sie einen Rabatt von #2#. Ihnen fehlen dazu noch #3# im Warenkorb.', 'wpsg'), 
+			wpsg_ff($this->view['wpsg_mod_discount']['value'], $this->get_option('wpsg_currency')),
+			wpsg_ff($this->view['wpsg_mod_discount']['discount'], $this->get_option('wpsg_currency')),
+			wpsg_ff($this->view['wpsg_mod_discount']['discountdifference'], $this->get_option('wpsg_currency'))); ?></p>
+</div>

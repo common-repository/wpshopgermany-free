@@ -1,0 +1,13 @@
+<?php
+
+	/**
+	 * Template für die Erweiterung des Hinweistextes bei der Versandart. Es wird standardmäßig die Zieladresse aus dem Backend dort noch einmal angezeigt
+	 */
+
+?> 
+<?php echo __('Die Ware kann dann an folgender Adresse abgeholt werden:', 'wpsg'); ?><br /><br />
+<span class="wpsg_mod_willcollect_adress">
+<?php echo wpsg_hspc($this->view['wpsg_mod_willcollect']['adress']); ?><br />
+<?php echo wpsg_hspc($this->view['wpsg_mod_willcollect']['street']); ?><br />
+<?php echo wpsg_hspc($this->view['wpsg_mod_willcollect']['plzort']); ?>
+</span>

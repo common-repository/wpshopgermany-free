@@ -1,0 +1,22 @@
+<?php
+
+	/**
+	 * Template für die Integration in html/order.phtml (Kundenmail, Adminmail, Auftragsbestätigung ...)
+	 */
+
+?>
+<tr class="productrow productrow2 <?php echo ((($this->view['i'] % 2) == 0)?'productrow_odd':'productrow_even'); ?>">
+	<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_pos">&nbsp;</td>
+	<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name">
+		<?php echo __('Lieferzeit', 'wpsg'); ?>: 
+	</td> 
+	<td style="padding:4px; line-height:100%; vertical-align:middle;" class="col_name" colspan="<?php echo ((sizeof($this->view['basket']['mwst']) > 1 || $this->get_option('wpsg_showMwstAlways') == '1')?'4':'3'); ?>">
+		<?php echo $this->view['wpsg_mod_deliverytime']['deliverytime']; ?>
+		<?php
+		if ($this->view['wpsg_mod_deliverytime']['delaytime'] != '') {
+			echo __('<br />', 'wpsg');
+			echo __($this->view['wpsg_mod_deliverytime']['delaytime'], 'wpsg');
+		}
+		?>
+	</td>
+</tr>

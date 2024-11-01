@@ -1,0 +1,32 @@
+<?php 
+ 
+	/*
+	 * 
+	 * Template für die Ansicht einer einzelnen Produktgruppe
+	 * 
+	 */
+
+?>
+<div class="wpsg_pgruppen_single">
+	<div class="wpsg_pgruppen_single_produkte_wrap">
+		<div class="wpsg_pgruppen_single_produkte">
+		<?php foreach ((array)$this->view['data']['produkte'] as $p) { ?> 
+			<?php if (sizeof($p['bilder']) > 0) { ?>
+			<?php $image = array_rand($p['bilder']); ?>			
+			<div class="wpsg_pgruppen_single_list_image">								
+				<a href="<?php echo $p['url'] ?>">
+					<?php echo wp_get_attachment_image($p['bilder'][0], 'medium', false, array()); ?>
+				</a>
+			</div>
+			<?php } ?>
+		<?php } ?>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+	<div class="wpsg_pgruppen_single_titel"><?php echo $this->view['data']['name']; ?></div>
+	<?php if ($this->view['data']['infopage'] > 0) { ?>	
+	<div class="wpsg_pgruppen_single_link">
+		<a href="<?php echo get_permalink($this->view['data']['infopage']); ?>"><?php echo __("Mehr zur Produktgruppe", "wpsg"); ?></a>
+	</div>
+	<?php } ?>	
+</div>
